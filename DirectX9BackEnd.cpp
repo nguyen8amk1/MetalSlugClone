@@ -114,9 +114,35 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     // Create a surface 
     LPDIRECT3DSURFACE9 surface = NULL;
     g_d3dDevice->CreateOffscreenPlainSurface(200, 200, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
-
-    //d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(255, 0, 0));
     //d3dDevice->StretchRect(surface, NULL, backbuffer, NULL, D3DTEXF_NONE);
+
+	int bytesPerPixel = 4;
+    unsigned char p_bitmap[200 * 200 * 4] = {};
+    memset(p_bitmap, 200, 200*200*4);
+
+    int bitmapWidth = 200;
+    int bitmapHeight = 200;
+
+    // @StartTest
+    // TODO: fill a little small blue circle in side our little gray square   
+
+    int littleSquareWidth = 50;
+    int littleSquareHeight = 50;
+    int littleSquareX = 10;
+    int littleSquareY= 10;
+
+    for (int y = littleSquareY; y < littleSquareY + littleSquareHeight; y++) {
+        for (int x = littleSquareX; x < littleSquareX + littleSquareWidth; x++) {
+            int index = (y * 200 + x) * 4;
+            p_bitmap[index + 0] = 255;      // Blue component
+            p_bitmap[index + 1] = 0;        // Green component
+            p_bitmap[index + 2] = 0;        // Red component
+            p_bitmap[index + 3] = 255;      // Unused padding component
+        }
+    }
+
+
+    // @EndTest
 
     RECT rect; 
 
@@ -148,27 +174,56 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         if (g_d3dDevice->BeginScene()) {
 
             // @StartTest 
+            D3DLOCKED_RECT lockedRect;
+            surface->LockRect(&lockedRect, nullptr, 0);
+
+
+            // Copy data into the locked surface
+            unsigned char* pDest = static_cast<unsigned char*>(lockedRect.pBits);
+            const unsigned char* pSrc = p_bitmap;
+
+            for (int y = 0; y < bitmapHeight; ++y)
+            {
+                memcpy(pDest, pSrc, bitmapWidth * bytesPerPixel);
+                pDest += lockedRect.Pitch;
+                pSrc += bitmapWidth * bytesPerPixel;
+            }
+
+            surface->UnlockRect();
+
+
 
             // The drawing happens here 
+            /*
             int r = rand() % 255;
             int g = rand() % 255;
             int b = rand() % 255;
 
             // fill the surface 
-			g_d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(r, g, b));
+			// g_d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(r, g, b));
 
 			//d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(255, 0, 0));
+            */
 
             // copy the surface to the back buffer
+            /*
             rect.left = rand() % g_winCtx.width /2 ; 
             rect.right = rect.left + rand() % g_winCtx.width/2;
             rect.top = rand() % g_winCtx.height;
             rect.bottom = rect.top + rand() & g_winCtx.height;
+            */
+
+            rect.left = 100; 
+            rect.right = 300;
+            rect.top = 100;
+            rect.bottom = 300;
+            
 
 			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
-
             // @EndTest 
 
+            
+              
             // stop rendering
             g_d3dDevice->EndScene();
         }
