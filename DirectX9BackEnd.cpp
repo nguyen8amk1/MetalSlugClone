@@ -4,6 +4,7 @@
 
 #include <d3d9.h>
 #include <windows.h>
+#include <cassert>
 
 //#pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "d3d9.lib")
@@ -112,22 +113,25 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     g_d3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer); 
 
     // Create a surface 
-#define SURFACE_WIDTH 200   
-#define SURFACE_HEIGHT 200   
-    
-    LPDIRECT3DSURFACE9 surface = NULL;
-    g_d3dDevice->CreateOffscreenPlainSurface(SURFACE_WIDTH, SURFACE_WIDTH, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
-    //d3dDevice->StretchRect(surface, NULL, backbuffer, NULL, D3DTEXF_NONE);
-
-	int bytesPerPixel = 4;
-    unsigned char p_bitmap[SURFACE_HEIGHT * SURFACE_WIDTH * 4] = {};
-    memset(p_bitmap, 150, SURFACE_HEIGHT*SURFACE_WIDTH*bytesPerPixel);
+#define SURFACE_WIDTH  500
+#define SURFACE_HEIGHT 500
 
     int bitmapWidth = SURFACE_WIDTH;
     int bitmapHeight = SURFACE_HEIGHT;
+    
+    LPDIRECT3DSURFACE9 surface = NULL;
+    g_d3dDevice->CreateOffscreenPlainSurface(SURFACE_WIDTH, SURFACE_WIDTH, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
+
+	int bytesPerPixel = 4;
+    // TODO: Allocate a block of memory for the bitmap  
+    int bitmapSize = SURFACE_HEIGHT * SURFACE_WIDTH * bytesPerPixel;
+    unsigned char *p_bitmap = (unsigned char *)malloc(bitmapSize);
+    assert(p_bitmap != NULL);
+	memset(p_bitmap, 150, bitmapSize);
+
 
     // @StartTest
-    // TODO: fill a little small blue circle in side our little gray square   
+    // TODO: fill a little small blue circle inside our little gray square   
 
     int littleSquareWidth = 50;
     int littleSquareHeight = 50;
@@ -136,7 +140,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     for (int y = littleSquareY; y < littleSquareY + littleSquareHeight; y++) {
         for (int x = littleSquareX; x < littleSquareX + littleSquareWidth; x++) {
-            int index = (y * SURFACE_WIDTH + x) * bytesPerPixel;
+            int index = (y * bitmapWidth + x) * bytesPerPixel;
             p_bitmap[index + 0] = 255;      // Blue component
             p_bitmap[index + 1] = 0;        // Green component
             p_bitmap[index + 2] = 0;        // Red component
@@ -164,7 +168,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         }
 
 
-
         if (g_d3dDevice == NULL) {
             OutputDebugStringA("D3D Device is NULL");
             return 1;
@@ -179,7 +182,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             D3DLOCKED_RECT lockedRect;
             surface->LockRect(&lockedRect, nullptr, 0);
 
-
             // Copy data into the locked surface
             unsigned char* pDest = static_cast<unsigned char*>(lockedRect.pBits);
             const unsigned char* pSrc = p_bitmap;
@@ -192,26 +194,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             }
 
             surface->UnlockRect();
-
-            // The drawing happens here 
-            /*
-            int r = rand() % 255;
-            int g = rand() % 255;
-            int b = rand() % 255;
-
-            // fill the surface 
-			// g_d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(r, g, b));
-
-			//d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(255, 0, 0));
-            */
-
-            // copy the surface to the back buffer
-            /*
-            rect.left = rand() % g_winCtx.width /2 ; 
-            rect.right = rect.left + rand() % g_winCtx.width/2;
-            rect.top = rand() % g_winCtx.height;
-            rect.bottom = rect.top + rand() & g_winCtx.height;
-            */
 
             rect.left = 0; 
             rect.right = SURFACE_WIDTH;
@@ -231,6 +213,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         g_d3dDevice->Present(NULL, NULL, NULL, NULL);
     }
 
+    free(p_bitmap);
     cleanUpD3D();
 
     return 0;
