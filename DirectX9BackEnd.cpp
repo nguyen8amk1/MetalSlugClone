@@ -23,18 +23,19 @@ struct WindowContext {
 };
 
 // GLOBAL VARIABLES
-LPDIRECT3D9 d3d = NULL;             // DirectX 9 interface
-LPDIRECT3DDEVICE9 d3dDevice = NULL;
+LPDIRECT3D9 g_d3d = NULL;             // DirectX 9 interface
+LPDIRECT3DDEVICE9 g_d3dDevice = NULL;
 
-const int FULLSCREEN_WIDTH = 1920;
-const int FULLSCREEN_HEIGHT = 1080;
+const int g_FULLSCREEN_WIDTH = 1920;
+const int g_FULLSCREEN_HEIGHT = 1080;
 
-const int WINDOWED_WIDTH = 800;
-const int WINDOWED_HEIGHT = 600;
+const int g_WINDOWED_WIDTH = 800;
+const int g_WINDOWED_HEIGHT = 600;
 
-#define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1: 0)
 #define KEY_UP(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1: 0)
+#define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0: 1)
 
+WindowContext g_winCtx = {};
 
 #define WINDOWED_MODE
 
@@ -51,28 +52,27 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     RegisterClass(&wc);
 
-    WindowContext winCtx = {};
 
     // Create the window.
     // windowed mode 
 #ifdef WINDOWED_MODE 
-    winCtx.x = CW_USEDEFAULT;
-    winCtx.y = CW_USEDEFAULT;
-    winCtx.width = WINDOWED_WIDTH;
-    winCtx.height = WINDOWED_HEIGHT;
-    winCtx.name = L"Metal Slug";
+    g_winCtx.x = CW_USEDEFAULT;
+    g_winCtx.y = CW_USEDEFAULT;
+    g_winCtx.width = g_WINDOWED_WIDTH;
+    g_winCtx.height = g_WINDOWED_HEIGHT;
+    g_winCtx.name = L"Metal Slug";
 #else
-    winCtx.x = 0;
-    winCtx.y = 0;
-    winCtx.width = FULLSCREEN_WIDTH;
-    winCtx.height = FULLSCREEN_HEIGHT;
-    winCtx.name = L"Metal Slug";
+    g_winCtx.x = 0;
+    g_winCtx.y = 0;
+    g_winCtx.width = g_FULLSCREEN_WIDTH;
+    g_winCtx.height = g_FULLSCREEN_HEIGHT;
+    g_winCtx.name = L"Metal Slug";
 #endif 
 
     HWND hwnd = CreateWindowEx(
         0,                              // Optional window styles.
         CLASS_NAME,                     // Window class
-        winCtx.name,    // Window text
+        g_winCtx.name,    // Window text
 
         // WS_OVERLAPPEDWINDOW,            // Window style
 #ifdef WINDOWED_MODE 
@@ -81,10 +81,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         WS_EX_TOPMOST | WS_VISIBLE | WS_POPUP,
 #endif
         // Size and position
-        winCtx.x,                            // X-position
-        winCtx.y,                            // Y-position
-        winCtx.width,                            // Width
-        winCtx.height,                            // Height
+        g_winCtx.x,                            // X-position
+        g_winCtx.y,                            // Y-position
+        g_winCtx.width,                            // Width
+        g_winCtx.height,                            // Height
 
         NULL,       // Parent window    
         NULL,       // Menu
@@ -96,7 +96,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     {
         return 0;
     }
+
     ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
 
     // Setup d3d9
     initD3D(&hwnd);
@@ -104,30 +106,75 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     // Run the message loop.
     MSG msg = { };
     bool done = false;
+
+    // Get back buffer
+    LPDIRECT3DSURFACE9 backbuffer = NULL;
+    g_d3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer); 
+
+    // Create a surface 
+    LPDIRECT3DSURFACE9 surface = NULL;
+    g_d3dDevice->CreateOffscreenPlainSurface(200, 200, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
+
+    //d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(255, 0, 0));
+    //d3dDevice->StretchRect(surface, NULL, backbuffer, NULL, D3DTEXF_NONE);
+
+    RECT rect; 
+
     while (!done)
     {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             if (msg.message == WM_QUIT)
                 done = true;
+
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
 
-        if (d3dDevice == NULL) {
+        // checking key input
+        if (KEY_DOWN(VK_ESCAPE)) {
+            PostMessage(hwnd, WM_DESTROY, 0, 0);
+        }
+
+
+
+        if (g_d3dDevice == NULL) {
             OutputDebugStringA("D3D Device is NULL");
             return 1;
         }
 
-        d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 255), 1.0f, 0);
+        g_d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 255), 1.0f, 0);
 
-        if (d3dDevice->BeginScene()) {
-            // TODO: Draw Frame 
+        // This is the rendering part 
+        if (g_d3dDevice->BeginScene()) {
 
-            d3dDevice->EndScene();
+            // @StartTest 
+
+            // The drawing happens here 
+            int r = rand() % 255;
+            int g = rand() % 255;
+            int b = rand() % 255;
+
+            // fill the surface 
+			g_d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(r, g, b));
+
+			//d3dDevice->ColorFill(surface, NULL, D3DCOLOR_XRGB(255, 0, 0));
+
+            // copy the surface to the back buffer
+            rect.left = rand() % g_winCtx.width /2 ; 
+            rect.right = rect.left + rand() % g_winCtx.width/2;
+            rect.top = rand() % g_winCtx.height;
+            rect.bottom = rect.top + rand() & g_winCtx.height;
+
+			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
+
+            // @EndTest 
+
+            // stop rendering
+            g_d3dDevice->EndScene();
         }
 
         // show the frame 
-        d3dDevice->Present(NULL, NULL, NULL, NULL);
+        g_d3dDevice->Present(NULL, NULL, NULL, NULL);
     }
 
     cleanUpD3D();
@@ -153,32 +200,32 @@ void initD3D(HWND* hwnd) {
     */
 
 #else 
-    d3dpp.Windowed = true; // i don't know why but this works instead of windowed = false 
+    d3dpp.Windowed = true; // @Bug: i don't know why but this works instead of windowed = false 
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
     d3dpp.BackBufferCount = 1;
-    d3dpp.BackBufferWidth = FULLSCREEN_WIDTH;
-    d3dpp.BackBufferWidth = FULLSCREEN_HEIGHT;
+    d3dpp.BackBufferWidth = g_winCtx.width;
+    d3dpp.BackBufferWidth = g_winCtx.height;
     d3dpp.hDeviceWindow = *hwnd;
 #endif 
 
-    d3d = Direct3DCreate9(D3D_SDK_VERSION);
-    d3d->CreateDevice(
+    g_d3d = Direct3DCreate9(D3D_SDK_VERSION);
+    g_d3d->CreateDevice(
         D3DADAPTER_DEFAULT,
         D3DDEVTYPE_HAL,
         *hwnd,
         D3DCREATE_SOFTWARE_VERTEXPROCESSING,
         &d3dpp,
-        &d3dDevice);
+        &g_d3dDevice);
 }
 
 void cleanUpD3D() {
-    if (d3dDevice != NULL) {
-        d3dDevice->Release();
+    if (g_d3dDevice != NULL) {
+        g_d3dDevice->Release();
     }
 
-    if (d3d != NULL) {
-        d3d->Release();
+    if (g_d3d != NULL) {
+        g_d3d->Release();
     }
 }
 
