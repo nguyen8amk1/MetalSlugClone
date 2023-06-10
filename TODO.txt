@@ -1,3 +1,4 @@
 TODO: 
-	i need some way to copy a independent pixel array to d3d9Device back buffer
+	copy the bitmap straight to the back buffer []
 DONE: 
+	i need some way to copy a independent pixel array to d3d9Device surface [X]

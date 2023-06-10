@@ -112,16 +112,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     g_d3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer); 
 
     // Create a surface 
+#define SURFACE_WIDTH 200   
+#define SURFACE_HEIGHT 200   
+    
     LPDIRECT3DSURFACE9 surface = NULL;
-    g_d3dDevice->CreateOffscreenPlainSurface(200, 200, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
+    g_d3dDevice->CreateOffscreenPlainSurface(SURFACE_WIDTH, SURFACE_WIDTH, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
     //d3dDevice->StretchRect(surface, NULL, backbuffer, NULL, D3DTEXF_NONE);
 
 	int bytesPerPixel = 4;
-    unsigned char p_bitmap[200 * 200 * 4] = {};
-    memset(p_bitmap, 200, 200*200*4);
+    unsigned char p_bitmap[SURFACE_HEIGHT * SURFACE_WIDTH * 4] = {};
+    memset(p_bitmap, 150, SURFACE_HEIGHT*SURFACE_WIDTH*bytesPerPixel);
 
-    int bitmapWidth = 200;
-    int bitmapHeight = 200;
+    int bitmapWidth = SURFACE_WIDTH;
+    int bitmapHeight = SURFACE_HEIGHT;
 
     // @StartTest
     // TODO: fill a little small blue circle in side our little gray square   
@@ -133,14 +136,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     for (int y = littleSquareY; y < littleSquareY + littleSquareHeight; y++) {
         for (int x = littleSquareX; x < littleSquareX + littleSquareWidth; x++) {
-            int index = (y * 200 + x) * 4;
+            int index = (y * SURFACE_WIDTH + x) * bytesPerPixel;
             p_bitmap[index + 0] = 255;      // Blue component
             p_bitmap[index + 1] = 0;        // Green component
             p_bitmap[index + 2] = 0;        // Red component
             p_bitmap[index + 3] = 255;      // Unused padding component
         }
     }
-
 
     // @EndTest
 
@@ -191,8 +193,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             surface->UnlockRect();
 
-
-
             // The drawing happens here 
             /*
             int r = rand() % 255;
@@ -213,16 +213,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             rect.bottom = rect.top + rand() & g_winCtx.height;
             */
 
-            rect.left = 100; 
-            rect.right = 300;
-            rect.top = 100;
-            rect.bottom = 300;
+            rect.left = 0; 
+            rect.right = SURFACE_WIDTH;
+            rect.top = 0;
+            rect.bottom = SURFACE_HEIGHT;
             
 
 			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
             // @EndTest 
 
-            
               
             // stop rendering
             g_d3dDevice->EndScene();
