@@ -3,12 +3,10 @@
 #endif 
 
 #include <d3d9.h>
+#include <d3dx9.h>
 #include <windows.h>
 #include <cassert>
 
-//#pragma comment(lib, "d3dx9.lib")
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "winmm.lib")
 
 #define internal static; 
 
@@ -38,7 +36,10 @@ const int g_WINDOWED_HEIGHT = 600;
 
 WindowContext g_winCtx = {};
 
+// TODO: render an image on to the screen  
+
 #define WINDOWED_MODE
+int g_bytesPerPixel = 4;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
@@ -119,20 +120,37 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     int bitmapWidth = SURFACE_WIDTH;
     int bitmapHeight = SURFACE_HEIGHT;
     
+    RECT rect; 
+	rect.left = 0; 
+	rect.right = SURFACE_WIDTH;
+	rect.top = 0;
+	rect.bottom = SURFACE_HEIGHT;
     LPDIRECT3DSURFACE9 surface = NULL;
     g_d3dDevice->CreateOffscreenPlainSurface(SURFACE_WIDTH, SURFACE_WIDTH, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
 
-	int bytesPerPixel = 4;
+    /*
+    rect.top = 100;
+    rect.left = 100;
+    rect.bottom = 300;
+    rect.right = 300;
+    g_d3dDevice->ColorFill(surface, &rect, D3DCOLOR(255));
+    */
+
+    // Loading image from file 
+    int result = D3DXLoadSurfaceFromFileA(surface, NULL, NULL, "assets/imgs/anhgaixinh.bmp", NULL, D3DX_DEFAULT, 0, NULL);
+    assert(result == D3D_OK);
+
     // TODO: Allocate a block of memory for the bitmap  
-    int bitmapSize = SURFACE_HEIGHT * SURFACE_WIDTH * bytesPerPixel;
+    /*
+    int bitmapSize = SURFACE_HEIGHT * SURFACE_WIDTH * g_bytesPerPixel;
     unsigned char *p_bitmap = (unsigned char *)malloc(bitmapSize);
     assert(p_bitmap != NULL);
 	memset(p_bitmap, 150, bitmapSize);
+    */
 
-
+    /*
     // @StartTest
     // TODO: fill a little small blue circle inside our little gray square   
-
     int littleSquareWidth = 50;
     int littleSquareHeight = 50;
     int littleSquareX = 10;
@@ -140,17 +158,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     for (int y = littleSquareY; y < littleSquareY + littleSquareHeight; y++) {
         for (int x = littleSquareX; x < littleSquareX + littleSquareWidth; x++) {
-            int index = (y * bitmapWidth + x) * bytesPerPixel;
+            int index = (y * bitmapWidth + x) * g_bytesPerPixel;
             p_bitmap[index + 0] = 255;      // Blue component
             p_bitmap[index + 1] = 0;        // Green component
             p_bitmap[index + 2] = 0;        // Red component
             p_bitmap[index + 3] = 255;      // Unused padding component
         }
     }
-
     // @EndTest
+    */
 
-    RECT rect; 
 
     while (!done)
     {
@@ -178,6 +195,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         // This is the rendering part 
         if (g_d3dDevice->BeginScene()) {
 
+            /*
             // @StartTest 
             D3DLOCKED_RECT lockedRect;
             surface->LockRect(&lockedRect, nullptr, 0);
@@ -188,21 +206,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             for (int y = 0; y < bitmapHeight; ++y)
             {
-                memcpy(pDest, pSrc, bitmapWidth * bytesPerPixel);
+                memcpy(pDest, pSrc, bitmapWidth * g_bytesPerPixel);
                 pDest += lockedRect.Pitch;
-                pSrc += bitmapWidth * bytesPerPixel;
+                pSrc += bitmapWidth * g_bytesPerPixel;
             }
 
             surface->UnlockRect();
 
-            rect.left = 0; 
-            rect.right = SURFACE_WIDTH;
-            rect.top = 0;
-            rect.bottom = SURFACE_HEIGHT;
             
 
 			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
             // @EndTest 
+            */
+
+			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
 
               
             // stop rendering
@@ -213,7 +230,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         g_d3dDevice->Present(NULL, NULL, NULL, NULL);
     }
 
-    free(p_bitmap);
+    //free(p_bitmap);
     cleanUpD3D();
 
     return 0;
