@@ -142,7 +142,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DirectX9BackEnd.cpp" />
+    <ClCompile Include="MetalSlug.cpp" />
     <ClCompile Include="SDL2BackEnd.cpp" />
+    <ClCompile Include="SDL2PlatformMethodsCollection.cpp" />
+    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

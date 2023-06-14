@@ -2,35 +2,120 @@
 #include<Windows.h>
 #include<SDL.h>
 #include <stdio.h>
+#include "MetalSlug.cpp"
+#include "SDL2PlatformMethodsCollection.cpp"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
+namespace SDL2Platform {
+
+int run() {
+    SDL2PlatformMethodsCollection *methodsCollection = new SDL2PlatformMethodsCollection();
+    MetalSlug::MetalSlug game(methodsCollection);
+
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        return -1;
+    }
+
+    // Create a window
+    SDL_Window* window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+        SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (!window) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        SDL_Quit();
+        return -1;
+    }
+
+    // Create a renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (!renderer) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
+
+    // Timing variables
+    /*
+    Uint32 previousFrameTime = SDL_GetTicks();
+    float deltaTime = 0.0f;
+    */
+
+    // Game loop
+    bool isRunning = true;
+	char s[100];
+
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
+    double deltaTime = 0;
+    const int FPS = 60;
+    const double targetFrameTime = 1000.0 / FPS; // 60 FPS
+
+    while (isRunning) {
+
+        // Handle events
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                isRunning = false;
+            }
+        }
+
+        // Calculate delta time
+        //deltaTime = ((float)frameTime / 1000.0f); // Convert to seconds
+
+        // Game logic
+        // ...
+
+        /*
+        */
+
+        // Physics simulation
+        // ...
+
+        LAST = NOW;
+        NOW = SDL_GetPerformanceCounter();
+        deltaTime = ((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
+
+        /*
+        sprintf_s(s, sizeof(s), "dt: %lf\n", deltaTime);
+        OutputDebugStringA(s);
+        */
+
+        game.updateAndRender(deltaTime);
+
+
+        // Render
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // Draw objects
+        // ...
+
+        SDL_RenderPresent(renderer);
+
+        // Cap the frame rate
+        if (deltaTime < targetFrameTime) {
+            double delayTime = targetFrameTime - deltaTime;
+            SDL_Delay((Uint32)delayTime);
+        }
+    }
+
+    // Clean up
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    delete methodsCollection;
+
+    return 0;
+}
+
+}
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
-	SDL_Window* window = NULL;
-	SDL_Surface* screenSurface = NULL;
-
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		fprintf(stderr, "could not initialize sdl2: %s\n", SDL_GetError());
-		return 1;
-	}
-	window = SDL_CreateWindow(
-		"hello_sdl2",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		SCREEN_WIDTH, SCREEN_HEIGHT,
-		SDL_WINDOW_SHOWN
-	);
-	if (window == NULL) {
-		fprintf(stderr, "could not create window: %s\n", SDL_GetError());
-		return 1;
-	}
-	screenSurface = SDL_GetWindowSurface(window);
-
-	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0x00));
-	SDL_UpdateWindowSurface(window);
-	SDL_Delay(2000);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
-	return 0;
+	return SDL2Platform::run();
 }
