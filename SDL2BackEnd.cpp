@@ -46,13 +46,15 @@ int run() {
         return -1;
     }
 
-    // Timing variables
-    /*
-    Uint32 previousFrameTime = SDL_GetTicks();
-    float deltaTime = 0.0f;
-    */
-
-    // TODO: double buffering 
+    SDL_Texture* frameTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+    if (!frameTexture) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Texture could not be created! SDL_Error: %s\n", SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return -1;
+    }
 
     SDL2PlatformMethodsCollection *methodsCollection = new SDL2PlatformMethodsCollection();
     methodsCollection->renderer = renderer;
@@ -134,12 +136,21 @@ int run() {
         real64 FPS = (real64)PerfCountFrequency / (real64)CounterElapsed;
         real64 MCPF = ((real64)CyclesElapsed / (1000.0f * 1000.0f));
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        // Set the rendering target to the frame texture
+        SDL_SetRenderTarget(renderer, frameTexture);
+
+        // Clear the frame texture
+        SDL_SetRenderDrawColor(renderer, 255, 0, 255, 0);
         SDL_RenderClear(renderer);
 
         game.updateAndRender(gameInput, MSPerFrame/1000.0f);
 
+        SDL_SetRenderTarget(renderer, NULL);
+
+        // Render the frame texture to the back buffer
+        SDL_RenderCopy(renderer, frameTexture, NULL, NULL);
         SDL_RenderPresent(renderer);
+
 
 
         OutputDebugStringA(Util::MessageFormater::print("Seconds perframe: ", MSPerFrame/1000.0f,  ", Millis per frame: ", MSPerFrame, ", FPS: ", FPS, "MCPF: ", MCPF, '\n').c_str());

@@ -9,6 +9,9 @@ namespace SDL2Platform {
 class SDL2PlatformMethodsCollection: public MetalSlug::PlatformSpecficMethodsCollection {
 public: 
     SDL_Renderer* renderer;
+    SDL_Texture* frameTexture;
+    int screenWidth, screenHeight;
+
 public: 
     void loadImage(const std::string& filename) override {
         // TODO: load image using SDL2 methods
