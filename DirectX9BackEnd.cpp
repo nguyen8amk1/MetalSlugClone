@@ -6,19 +6,29 @@
 #include <d3dx9.h>
 #include <windows.h>
 #include <cassert>
+#include <time.h>
 
 
-#define internal static; 
-
+// Prototypes
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 void initD3D(HWND* hwnd);
 void cleanUpD3D();
+void d3dGameProcessing(HWND hwnd);
+LPDIRECT3DTEXTURE9 loadTexture(char* filename, D3DCOLOR transColor);
 
 struct WindowContext {
     const wchar_t* name;
     int x, y, width, height;
+};
+
+struct Sprite {
+    int x, y;
+    int width, height;
+    int moveX, moveY;
+    int curFrame, lastFrame;
+    int animDelay, animCount;
 };
 
 // GLOBAL VARIABLES
@@ -31,12 +41,18 @@ const int g_FULLSCREEN_HEIGHT = 1080;
 const int g_WINDOWED_WIDTH = 800;
 const int g_WINDOWED_HEIGHT = 600;
 
-#define KEY_UP(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1: 0)
+#define KEY_UP(vk_code) ((GetAsyncKeyState(vk_code) * 0x8000) ? 1: 0)
 #define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0: 1)
 
 WindowContext g_winCtx = {};
 
-// TODO: render an image on to the screen  
+LPDIRECT3DTEXTURE9 meo[8];
+Sprite tempMeo;
+LPDIRECT3DSURFACE9 backbuffer = NULL;
+LPD3DXSPRITE spriteHandler;
+
+// timing var  
+long start;
 
 #define WINDOWED_MODE
 int g_bytesPerPixel = 4;
@@ -109,13 +125,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     MSG msg = { };
     bool done = false;
 
-    // Get back buffer
-    LPDIRECT3DSURFACE9 backbuffer = NULL;
-    g_d3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer); 
 
     // Create a surface 
-#define SURFACE_WIDTH  500
-#define SURFACE_HEIGHT 500
+    /*
+#define SURFACE_WIDTH  200
+#define SURFACE_HEIGHT 200
 
     int bitmapWidth = SURFACE_WIDTH;
     int bitmapHeight = SURFACE_HEIGHT;
@@ -127,18 +141,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	rect.bottom = SURFACE_HEIGHT;
     LPDIRECT3DSURFACE9 surface = NULL;
     g_d3dDevice->CreateOffscreenPlainSurface(SURFACE_WIDTH, SURFACE_WIDTH, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, NULL);
-
-    /*
-    rect.top = 100;
-    rect.left = 100;
-    rect.bottom = 300;
-    rect.right = 300;
-    g_d3dDevice->ColorFill(surface, &rect, D3DCOLOR(255));
     */
 
-    // Loading image from file 
-    int result = D3DXLoadSurfaceFromFileA(surface, NULL, NULL, "assets/imgs/anhgaixinh.bmp", NULL, D3DX_DEFAULT, 0, NULL);
+    /*
+    // @StartTest: Loading image from file 
+    int result = D3DXLoadSurfaceFromFileA(surface, NULL, NULL, "assets/imgs/sprites_cat_running.png", NULL, D3DX_DEFAULT, 0, NULL);
     assert(result == D3D_OK);
+    // @EndTest
+    */
+
+    // @StartTest: Animation  
+
+    // TODO:
+
+    // @EndTest 
+
 
     // TODO: Allocate a block of memory for the bitmap  
     /*
@@ -177,63 +194,80 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+
+            d3dGameProcessing(hwnd);
         }
-
-        // checking key input
-        if (KEY_DOWN(VK_ESCAPE)) {
-            PostMessage(hwnd, WM_DESTROY, 0, 0);
-        }
-
-
-        if (g_d3dDevice == NULL) {
-            OutputDebugStringA("D3D Device is NULL");
-            return 1;
-        }
-
-        g_d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 255), 1.0f, 0);
-
-        // This is the rendering part 
-        if (g_d3dDevice->BeginScene()) {
-
-            /*
-            // @StartTest 
-            D3DLOCKED_RECT lockedRect;
-            surface->LockRect(&lockedRect, nullptr, 0);
-
-            // Copy data into the locked surface
-            unsigned char* pDest = static_cast<unsigned char*>(lockedRect.pBits);
-            const unsigned char* pSrc = p_bitmap;
-
-            for (int y = 0; y < bitmapHeight; ++y)
-            {
-                memcpy(pDest, pSrc, bitmapWidth * g_bytesPerPixel);
-                pDest += lockedRect.Pitch;
-                pSrc += bitmapWidth * g_bytesPerPixel;
-            }
-
-            surface->UnlockRect();
-
-            
-
-			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
-            // @EndTest 
-            */
-
-			g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
-
-              
-            // stop rendering
-            g_d3dDevice->EndScene();
-        }
-
-        // show the frame 
-        g_d3dDevice->Present(NULL, NULL, NULL, NULL);
     }
 
     //free(p_bitmap);
     cleanUpD3D();
 
     return 0;
+}
+
+int i = 0;
+void d3dGameProcessing(HWND hwnd) {
+    // checking key input
+    if (KEY_DOWN(VK_ESCAPE)) {
+        PostMessage(hwnd, WM_DESTROY, 0, 0);
+    }
+
+
+    if (g_d3dDevice == NULL) {
+        OutputDebugStringA("D3D Device is NULL");
+        return;
+    }
+
+    g_d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255, 0, 255), 1.0f, 0);
+
+    // This is the rendering part 
+    if (g_d3dDevice->BeginScene()) {
+
+        /*
+        // @StartTest
+        D3DLOCKED_RECT lockedRect;
+        surface->LockRect(&lockedRect, nullptr, 0);
+
+        // Copy data into the locked surface
+        unsigned char* pDest = static_cast<unsigned char*>(lockedRect.pBits);
+        const unsigned char* pSrc = p_bitmap;
+
+        for (int y = 0; y < bitmapHeight; ++y)
+        {
+            memcpy(pDest, pSrc, bitmapWidth * g_bytesPerPixel);
+            pDest += lockedRect.Pitch;
+            pSrc += bitmapWidth * g_bytesPerPixel;
+        }
+
+        surface->UnlockRect();
+
+
+
+        g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
+        // @EndTest
+        */
+
+        //g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
+
+        // TODO: just write the damn thing and make it work 
+        spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
+
+        // All sprite drawing should be done here 
+
+        D3DXVECTOR3 position = {0, 0, 0};
+
+		spriteHandler->Draw(meo[i], NULL, NULL, &position, D3DCOLOR_XRGB(255, 255, 255));
+
+        spriteHandler->End();
+
+
+        // stop rendering
+        g_d3dDevice->EndScene();
+        i = ++i % 8;
+    }
+
+    // show the frame 
+    g_d3dDevice->Present(NULL, NULL, NULL, NULL);
 }
 
 void initD3D(HWND* hwnd) {
@@ -271,6 +305,52 @@ void initD3D(HWND* hwnd) {
         D3DCREATE_SOFTWARE_VERTEXPROCESSING,
         &d3dpp,
         &g_d3dDevice);
+    // Get back buffer
+    g_d3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer); 
+
+    // @StartTest: animation init 
+    start = GetTickCount();
+
+    srand(time(NULL));
+    int result = D3DXCreateSprite(g_d3dDevice, &spriteHandler);
+    assert(result == D3D_OK);
+
+	char s[100];
+    // loading sprites 
+    for (int i = 0; i < 8; i++) {
+        // TODO: get the individual sprites from a single image
+        // but for now i'm just gonna cut it with my hand using PTS 
+        wsprintfA(s, "assets/imgs/testCat/tile00%d.png", i);
+        meo[i] = loadTexture(s, D3DCOLOR_XRGB(255, 0, 255));
+    }
+
+
+    // @EndTest
+}
+
+LPDIRECT3DTEXTURE9 loadTexture(char* filename, D3DCOLOR transColor) {
+    LPDIRECT3DTEXTURE9 texture = NULL; 
+    D3DXIMAGE_INFO info;
+
+    HRESULT result = D3DXGetImageInfoFromFileA(filename, &info);
+    assert(result == D3D_OK);
+
+    result = D3DXCreateTextureFromFileExA(
+        g_d3dDevice, 
+        filename, 
+        info.Width, 
+        info.Height, 
+        1, 
+        D3DPOOL_DEFAULT, 
+        D3DFMT_UNKNOWN, 
+        D3DPOOL_DEFAULT, 
+        D3DX_DEFAULT, 
+        D3DX_DEFAULT, 
+        transColor, &info, NULL, &texture);
+
+    assert(result == D3D_OK);
+
+    return texture;
 }
 
 void cleanUpD3D() {

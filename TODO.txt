@@ -1,3 +1,4 @@
 TODO: 
+	NEED TO CUT THE FRAMES FROM 1 SPRITE SHEET 
 DONE: 
 	i need some way to copy a independent pixel array to d3d9Device surface [X]
