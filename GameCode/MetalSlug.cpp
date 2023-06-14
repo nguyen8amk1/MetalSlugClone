@@ -16,7 +16,7 @@ public:
 		this->platformMethods = platformMethods;
 	}
 
-	int tempSpeed = 2;
+	int tempSpeed = 500;
 	void updateAndRender(GameInputContext &input, double dt) {
 		/*
 		std::string debugString = Util::MessageFormater::print("Delta time: ", dt, '\n');
@@ -27,16 +27,16 @@ public:
 
 		// @StartTest: 
 		if (input.moveLeft) {
-			r.x -= tempSpeed * dt; 
+			r.x -= tempSpeed*dt; 
 		}
 		else if (input.moveRight) {
-			r.x += tempSpeed * dt; 
+			r.x += tempSpeed*dt; 
 		}
 		if (input.moveUp) {
-			r.y -= tempSpeed * dt; 
+			r.y -= tempSpeed*dt; 
 		}
 		else if (input.moveDown) {
-			r.y += tempSpeed * dt; 
+			r.y += tempSpeed*dt; 
 		}
 		// @EndTest
 	}

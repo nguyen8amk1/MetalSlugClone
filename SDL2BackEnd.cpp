@@ -1,5 +1,8 @@
 #pragma once 
 #include<SDL.h>
+#include<cassert>
+#include<stdint.h>
+#include <intrin.h>
 #include "GameCode/MetalSlug.cpp"
 #include "SDL2PlatformMethodsCollection.cpp"
 
@@ -7,6 +10,15 @@
 #define SCREEN_HEIGHT 600
 
 namespace SDL2Platform {
+
+typedef int64_t uint64;
+typedef double real64;
+typedef float real32;
+
+real32 SDLGetSecondsElapsed(uint64 OldCounter, uint64 CurrentCounter)
+{
+    return ((real32)(CurrentCounter - OldCounter) / (real32)(SDL_GetPerformanceFrequency()));
+}
 
 int run() {
 
@@ -26,7 +38,7 @@ int run() {
     }
 
     // Create a renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
@@ -40,27 +52,27 @@ int run() {
     float deltaTime = 0.0f;
     */
 
+    // TODO: double buffering 
+
     SDL2PlatformMethodsCollection *methodsCollection = new SDL2PlatformMethodsCollection();
     methodsCollection->renderer = renderer;
 
     MetalSlug::GameInputContext gameInput = {};
-
     MetalSlug::MetalSlug game(methodsCollection);
 
     // Game loop
     bool isRunning = true;
 
-    Uint64 NOW = SDL_GetPerformanceCounter();
-    Uint64 LAST = 0;
-    double deltaTime = 0;
-    const int FPS = 60;
-    const double targetFrameTime = 1000.0 / FPS; // 60 FPS
-
     const Uint8* keyboardState;
-    while (isRunning) {
-        // TODO: make the game input working
-        // ... 
 
+    uint64 PerfCountFrequency = SDL_GetPerformanceFrequency();
+    uint64 LastCounter = SDL_GetPerformanceCounter();
+    uint64 LastCycleCount = __rdtsc();
+
+    int GameUpdateHz = 30;
+    real32 TargetSecondsPerFrame = 1.0f / (real32)GameUpdateHz;
+
+    while (isRunning) {
         // Handle events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -87,30 +99,55 @@ int run() {
 
             // Get keyboard state
             keyboardState = SDL_GetKeyboardState(NULL);
-            gameInput.moveUp = keyboardState[SDL_SCANCODE_UP];
-            gameInput.moveDown = keyboardState[SDL_SCANCODE_DOWN];
-            gameInput.moveLeft = keyboardState[SDL_SCANCODE_LEFT];
-            gameInput.moveRight = keyboardState[SDL_SCANCODE_RIGHT];
+            gameInput.moveUp = keyboardState[SDL_SCANCODE_W];
+            gameInput.moveDown = keyboardState[SDL_SCANCODE_S];
+            gameInput.moveLeft = keyboardState[SDL_SCANCODE_A];
+            gameInput.moveRight = keyboardState[SDL_SCANCODE_D];
         }
 
-        LAST = NOW;
-        NOW = SDL_GetPerformanceCounter();
-        deltaTime = ((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
 
+        if (SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter()) < TargetSecondsPerFrame)
+        {
+            int TimeToSleep = ((TargetSecondsPerFrame - SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter())) * 1000) - 1;
+            if (TimeToSleep > 0)
+            {
+                SDL_Delay(TimeToSleep);
+            }
+
+            //assert(SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter()) < TargetSecondsPerFrame);
+			while (SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter()) < TargetSecondsPerFrame)
+			{
+				// Waiting...
+			}
+        }
+
+
+        // Get this before SDLUpdateWindow() so that we don't keep missing VBlanks.
+        int64_t EndCounter = SDL_GetPerformanceCounter();
 
         // Render
+        uint64 EndCycleCount = __rdtsc();
+        uint64 CounterElapsed = EndCounter - LastCounter;
+        uint64 CyclesElapsed = EndCycleCount - LastCycleCount;
+
+        real64 MSPerFrame = (((1000.0f * (real64)CounterElapsed) / (real64)PerfCountFrequency));
+        real64 FPS = (real64)PerfCountFrequency / (real64)CounterElapsed;
+        real64 MCPF = ((real64)CyclesElapsed / (1000.0f * 1000.0f));
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        game.updateAndRender(gameInput, deltaTime);
+        game.updateAndRender(gameInput, MSPerFrame/1000.0f);
 
         SDL_RenderPresent(renderer);
 
-        // Cap the frame rate
-        if (deltaTime < targetFrameTime) {
-            double delayTime = targetFrameTime - deltaTime;
-            SDL_Delay((Uint32)delayTime);
-        }
+
+        OutputDebugStringA(Util::MessageFormater::print("Seconds perframe: ", MSPerFrame/1000.0f,  ", Millis per frame: ", MSPerFrame, ", FPS: ", FPS, "MCPF: ", MCPF, '\n').c_str());
+
+        LastCycleCount = EndCycleCount;
+        LastCounter = EndCounter;
+
+        // @EndTest
     }
 
     // Clean up
