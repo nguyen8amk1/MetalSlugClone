@@ -56,6 +56,7 @@ int run() {
     const int FPS = 60;
     const double targetFrameTime = 1000.0 / FPS; // 60 FPS
 
+    const Uint8* keyboardState;
     while (isRunning) {
         // TODO: make the game input working
         // ... 
@@ -66,6 +67,30 @@ int run() {
             if (event.type == SDL_QUIT) {
                 isRunning = false;
             }
+            else if (event.type == SDL_KEYDOWN) {
+                // Handle key press
+                switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                    // Handle up key press
+                    break;
+                }
+            }
+            else if (event.type == SDL_KEYUP) {
+                // Handle key release
+                switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                    // Handle up key release
+                    isRunning = false;
+                    break;
+                }
+            }
+
+            // Get keyboard state
+            keyboardState = SDL_GetKeyboardState(NULL);
+            gameInput.moveUp = keyboardState[SDL_SCANCODE_UP];
+            gameInput.moveDown = keyboardState[SDL_SCANCODE_DOWN];
+            gameInput.moveLeft = keyboardState[SDL_SCANCODE_LEFT];
+            gameInput.moveRight = keyboardState[SDL_SCANCODE_RIGHT];
         }
 
         LAST = NOW;

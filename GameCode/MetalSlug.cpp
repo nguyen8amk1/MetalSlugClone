@@ -18,8 +18,11 @@ public:
 
 	int tempSpeed = 2;
 	void updateAndRender(GameInputContext &input, double dt) {
+		/*
 		std::string debugString = Util::MessageFormater::print("Delta time: ", dt, '\n');
 		platformMethods->debugLog(debugString);
+		*/
+
 		platformMethods->fillRectangle(r);
 
 		// @StartTest: 
