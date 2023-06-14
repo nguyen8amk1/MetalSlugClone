@@ -42,4 +42,9 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameCode\MetalSlug.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

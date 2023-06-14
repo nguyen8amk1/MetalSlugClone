@@ -41,11 +41,11 @@ int run() {
     */
 
     SDL2PlatformMethodsCollection *methodsCollection = new SDL2PlatformMethodsCollection();
-    PlatformSpecificWindowContext windowContext = {};
-    MetalSlug::GameInputContext gameInput = {};
-    windowContext.renderer = renderer;
+    methodsCollection->renderer = renderer;
 
-    MetalSlug::MetalSlug game(&windowContext, methodsCollection);
+    MetalSlug::GameInputContext gameInput = {};
+
+    MetalSlug::MetalSlug game(methodsCollection);
 
     // Game loop
     bool isRunning = true;
@@ -58,6 +58,8 @@ int run() {
 
     while (isRunning) {
         // TODO: make the game input working
+        // ... 
+
         // Handle events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {

@@ -153,6 +153,9 @@
   <ItemGroup>
     <Image Include="assets\imgs\anhgaixinh.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameCode\MetalSlug.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
