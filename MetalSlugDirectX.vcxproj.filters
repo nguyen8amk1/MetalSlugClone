@@ -33,6 +33,9 @@
     <ClCompile Include="GameCode\MetalSlug.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
+    <ClCompile Include="GameCode\Animation.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

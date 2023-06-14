@@ -1,5 +1,6 @@
 #pragma once 
 #include<SDL.h>
+#include<SDL_image.h>
 #include<cassert>
 #include<stdint.h>
 #include <intrin.h>
@@ -74,6 +75,8 @@ int run() {
     int GameUpdateHz = 30;
     real32 TargetSecondsPerFrame = 1.0f / (real32)GameUpdateHz;
 
+    game.setup();
+
     while (isRunning) {
         // Handle events
         SDL_Event event;
@@ -136,6 +139,9 @@ int run() {
         real64 FPS = (real64)PerfCountFrequency / (real64)CounterElapsed;
         real64 MCPF = ((real64)CyclesElapsed / (1000.0f * 1000.0f));
 
+        float secondsPerframe = MSPerFrame / 1000.0f;
+        OutputDebugStringA(Util::MessageFormater::print("Seconds perframe: ", secondsPerframe,  ", Millis per frame: ", MSPerFrame, ", FPS: ", FPS, "MCPF: ", MCPF, '\n').c_str());
+
         // Set the rendering target to the frame texture
         SDL_SetRenderTarget(renderer, frameTexture);
 
@@ -143,7 +149,7 @@ int run() {
         SDL_SetRenderDrawColor(renderer, 255, 0, 255, 0);
         SDL_RenderClear(renderer);
 
-        game.updateAndRender(gameInput, MSPerFrame/1000.0f);
+        game.updateAndRender(gameInput, secondsPerframe);
 
         SDL_SetRenderTarget(renderer, NULL);
 
@@ -152,13 +158,8 @@ int run() {
         SDL_RenderPresent(renderer);
 
 
-
-        OutputDebugStringA(Util::MessageFormater::print("Seconds perframe: ", MSPerFrame/1000.0f,  ", Millis per frame: ", MSPerFrame, ", FPS: ", FPS, "MCPF: ", MCPF, '\n').c_str());
-
         LastCycleCount = EndCycleCount;
         LastCounter = EndCounter;
-
-        // @EndTest
     }
 
     // Clean up

@@ -1,8 +1,15 @@
 #pragma once
 
+#include<string>
 #include<SDL.h>
+#include<SDL_image.h>
 #include<Windows.h>
-#include "GameCode/MetalSlug.cpp"
+#include "GameCode/MetalSlug.h"
+
+struct PlatformSpecificImage {
+    SDL_Texture* texture;
+    SDL_Rect textureRect;
+};
 
 namespace SDL2Platform {
 
@@ -10,19 +17,31 @@ class SDL2PlatformMethodsCollection: public MetalSlug::PlatformSpecficMethodsCol
 public: 
     SDL_Renderer* renderer;
     SDL_Texture* frameTexture;
-    int screenWidth, screenHeight;
 
 public: 
-    void loadImage(const std::string& filename) override {
+
+    PlatformSpecificImage loadImage(const std::string& filename) override {
         // TODO: load image using SDL2 methods
+        PlatformSpecificImage image;
+		SDL_Texture* img = IMG_LoadTexture(renderer, filename.c_str());
+		int w, h;
+		SDL_QueryTexture(img, NULL, NULL, &w, &h); 
+		SDL_Rect texr; 
+		texr.x = 0; 
+		texr.y = 0;
+		texr.w = w;
+		texr.h = h;
+        image.texture = img;
+        image.textureRect = texr;
+        return image;
     }
 
     void debugLog(const std::string& debugString) override {
         OutputDebugStringA(debugString.c_str());
     }
 
-    void renderImage() override {
-		// TODO: 
+    void renderImage(PlatformSpecificImage image) override {
+        SDL_RenderCopy(renderer, image.texture, NULL, &image.textureRect);
     }
 
     void fillRectangle(MetalSlug::Rect &rect) override {

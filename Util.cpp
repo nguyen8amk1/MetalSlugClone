@@ -15,7 +15,7 @@ const class MessageFormater {
 
 	template<typename T, typename... Args>
 	static void appendToStream(std::ostringstream& oss, const T& arg, const Args&... args) {
-		oss << arg << ' ';
+		oss << arg;
 		appendToStream(oss, args...);
 	}
 

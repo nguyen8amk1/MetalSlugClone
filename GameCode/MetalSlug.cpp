@@ -1,8 +1,10 @@
 #pragma once
 
 #include<iostream>
+#include<vector>
 #include "../Util.cpp"
-#include "MetalSlug.h"
+#include "../SDL2PlatformMethodsCollection.cpp"
+#include "Animation.cpp"
 
 namespace MetalSlug {
 
@@ -16,14 +18,19 @@ public:
 		this->platformMethods = platformMethods;
 	}
 
-	int tempSpeed = 500;
-	void updateAndRender(GameInputContext &input, double dt) {
-		/*
-		std::string debugString = Util::MessageFormater::print("Delta time: ", dt, '\n');
-		platformMethods->debugLog(debugString);
-		*/
+	std::vector<std::string> frameFiles;
+	Animation *tempAnim;
 
-		platformMethods->fillRectangle(r);
+	void setup() {
+		// load all the frames
+		for (int i = 0; i < 8; i++) {
+			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
+		}
+		tempAnim = new Animation(.1f, frameFiles, platformMethods);
+	}
+
+	float tempSpeed = 500;
+	void updateAndRender(GameInputContext &input, double dt) {
 
 		// @StartTest: 
 		if (input.moveLeft) {
@@ -39,7 +46,16 @@ public:
 			r.y += tempSpeed*dt; 
 		}
 		// @EndTest
+
+		platformMethods->fillRectangle(r);
+		tempAnim->animate(dt);
+		tempAnim->changePos(r.x, r.y);
 	}
+	
+	~MetalSlug() {
+		delete tempAnim;
+	}
+	
 };
 
 }
