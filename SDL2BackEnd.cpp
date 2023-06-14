@@ -1,8 +1,6 @@
-#include<stdio.h>
-#include<Windows.h>
+#pragma once 
 #include<SDL.h>
-#include <stdio.h>
-#include "MetalSlug.cpp"
+#include "GameCode/MetalSlug.cpp"
 #include "SDL2PlatformMethodsCollection.cpp"
 
 #define SCREEN_WIDTH 800
@@ -11,8 +9,6 @@
 namespace SDL2Platform {
 
 int run() {
-    SDL2PlatformMethodsCollection *methodsCollection = new SDL2PlatformMethodsCollection();
-    MetalSlug::MetalSlug game(methodsCollection);
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -44,9 +40,15 @@ int run() {
     float deltaTime = 0.0f;
     */
 
+    SDL2PlatformMethodsCollection *methodsCollection = new SDL2PlatformMethodsCollection();
+    PlatformSpecificWindowContext windowContext = {};
+    MetalSlug::GameInputContext gameInput = {};
+    windowContext.renderer = renderer;
+
+    MetalSlug::MetalSlug game(&windowContext, methodsCollection);
+
     // Game loop
     bool isRunning = true;
-	char s[100];
 
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
@@ -55,7 +57,7 @@ int run() {
     const double targetFrameTime = 1000.0 / FPS; // 60 FPS
 
     while (isRunning) {
-
+        // TODO: make the game input working
         // Handle events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -64,36 +66,16 @@ int run() {
             }
         }
 
-        // Calculate delta time
-        //deltaTime = ((float)frameTime / 1000.0f); // Convert to seconds
-
-        // Game logic
-        // ...
-
-        /*
-        */
-
-        // Physics simulation
-        // ...
-
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
         deltaTime = ((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
-
-        /*
-        sprintf_s(s, sizeof(s), "dt: %lf\n", deltaTime);
-        OutputDebugStringA(s);
-        */
-
-        game.updateAndRender(deltaTime);
 
 
         // Render
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        // Draw objects
-        // ...
+        game.updateAndRender(gameInput, deltaTime);
 
         SDL_RenderPresent(renderer);
 
@@ -108,12 +90,16 @@ int run() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
     delete methodsCollection;
 
     return 0;
 }
 
 }
+
+
+
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {

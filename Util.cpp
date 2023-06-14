@@ -4,7 +4,7 @@
 #include<sstream>
 #include<string>
 
-namespace MetalSlug {
+namespace Util {
 	
 template<typename T>
 void appendToStream(std::ostringstream& oss, const T& arg) {
