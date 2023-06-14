@@ -8,7 +8,7 @@
 #include <cassert>
 #include <time.h>
 
-
+#ifdef DIRECTX
 // Prototypes
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -43,6 +43,7 @@ const int g_WINDOWED_HEIGHT = 600;
 
 #define KEY_UP(vk_code) ((GetAsyncKeyState(vk_code) * 0x8000) ? 1: 0)
 #define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 0: 1)
+
 
 WindowContext g_winCtx = {};
 
@@ -185,7 +186,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     // @EndTest
     */
 
+    // @StartTest: 
+    tempMeo.x = 0;
+    tempMeo.y = 0;
+    tempMeo.width = 120;
+    tempMeo.height = 90;
+    tempMeo.curFrame = 0;
+    tempMeo.lastFrame = 7;
+    tempMeo.animDelay = 1;
+    tempMeo.animCount = 0;
+    tempMeo.moveX = 8;
+    tempMeo.moveY = 0;
+    // @EndTest
 
+
+    char s[100];
     while (!done)
     {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -195,7 +210,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             TranslateMessage(&msg);
             DispatchMessage(&msg);
 
-            d3dGameProcessing(hwnd);
+            long delta = GetTickCount() - start;
+
+            if (delta >= 30) {
+                start = GetTickCount();
+				d3dGameProcessing(hwnd);
+
+                //wsprintfA(s, "delta: %ld\n", delta);
+                //OutputDebugStringA(s);
+            }
         }
     }
 
@@ -208,9 +231,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 int i = 0;
 void d3dGameProcessing(HWND hwnd) {
     // checking key input
-    if (KEY_DOWN(VK_ESCAPE)) {
+    if (KEY_UP(VK_ESCAPE)) {
         PostMessage(hwnd, WM_DESTROY, 0, 0);
     }
+
+    /*
+    if (KEY_DOWN(VK_RETURN)) {
+        OutputDebugStringA("Enter\n");
+    }
+    */
 
 
     if (g_d3dDevice == NULL) {
@@ -241,22 +270,47 @@ void d3dGameProcessing(HWND hwnd) {
 
         surface->UnlockRect();
 
-
-
         g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
         // @EndTest
         */
 
         //g_d3dDevice->StretchRect(surface, NULL, backbuffer, &rect, D3DTEXF_NONE);
+        tempMeo.x += tempMeo.moveX;
+        tempMeo.y += tempMeo.moveY;
 
-        // TODO: just write the damn thing and make it work 
+        char s[100];
+		wsprintfA(s, "tempMeo.x: %d, win width: %d\n", tempMeo.x, g_winCtx.width - tempMeo.width);
+		OutputDebugStringA(s);
+        if (tempMeo.x >= (g_winCtx.width - tempMeo.width)) {
+            tempMeo.x = 0;
+        }
+
+        if (tempMeo.y >= (g_winCtx.height - tempMeo.height)) {
+            tempMeo.y = 0;
+        }
+
+
+        // @StartTest: animation 
+        if (++tempMeo.animCount > tempMeo.animDelay) {
+            tempMeo.animCount = 0;
+            if (++tempMeo.curFrame > tempMeo.lastFrame) {
+                tempMeo.curFrame = 0;
+            }
+        }
+        // @EndTest 
+        /*
+        RECT rect = {};
+        rect.top = 0;
+        rect.left = 0;
+        rect.bottom = 120;
+        rect.right = 90;
+        */
+
         spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
         // All sprite drawing should be done here 
-
-        D3DXVECTOR3 position = {0, 0, 0};
-
-		spriteHandler->Draw(meo[i], NULL, NULL, &position, D3DCOLOR_XRGB(255, 255, 255));
+        D3DXVECTOR3 position = {(FLOAT)tempMeo.x, (FLOAT)tempMeo.y, 0};
+		spriteHandler->Draw(meo[tempMeo.curFrame], NULL, NULL, &position, D3DCOLOR_XRGB(255, 255, 255));
 
         spriteHandler->End();
 
@@ -282,13 +336,14 @@ void initD3D(HWND* hwnd) {
 
     /*
     d3dpp.BackBufferCount = 1;
+    size of mode 
     d3dpp.BackBufferWidth = WINDOWED_WIDTH;
     d3dpp.BackBufferWidth = WINDOWED_HEIGHT;
     d3dpp.hDeviceWindow = *hwnd;
     */
 
 #else 
-    d3dpp.Windowed = true; // @Bug: i don't know why but this works instead of windowed = false 
+    d3dpp.Windowed = false; // @Bug: i don't know why but this works instead of windowed = false 
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
     d3dpp.BackBufferCount = 1;
@@ -323,7 +378,6 @@ void initD3D(HWND* hwnd) {
         wsprintfA(s, "assets/imgs/testCat/tile00%d.png", i);
         meo[i] = loadTexture(s, D3DCOLOR_XRGB(255, 0, 255));
     }
-
 
     // @EndTest
 }
@@ -379,3 +433,4 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+#endif 
