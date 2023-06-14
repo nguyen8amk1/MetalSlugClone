@@ -26,7 +26,8 @@ public:
 		for (int i = 0; i < 8; i++) {
 			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
 		}
-		tempAnim = new Animation(.1f, frameFiles, platformMethods);
+		Rect animRect = { 100, 100, 100, 100 };
+		tempAnim = new Animation(0.1f, frameFiles, platformMethods, animRect);
 	}
 
 	float tempSpeed = 500;
@@ -47,9 +48,13 @@ public:
 		}
 		// @EndTest
 
+		/*
+		tempAnim->changePos(r.x, r.y);
+		tempAnim->changeSize(100, 100);
+		*/
+
 		platformMethods->fillRectangle(r);
 		tempAnim->animate(dt);
-		tempAnim->changePos(r.x, r.y);
 	}
 	
 	~MetalSlug() {

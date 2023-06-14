@@ -9,7 +9,7 @@ namespace MetalSlug {
 class Animation {
 private:
 	Rect rect; 
-	PlatformSpecificImage frames[8]; // -> TODO: dynamically allocate this thing 
+	std::vector<PlatformSpecificImage> frames; // -> TODO: dynamically allocate this thing 
 	
 	int currentFrameIndex = 0;
 	float timeAccumulator = 0.0f;
@@ -18,13 +18,21 @@ private:
 	PlatformSpecficMethodsCollection* platformMethods;
 	
 public: 
-	Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods) {
+	Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {
 		this->platformMethods = platformMethods;
 		this->animDelay = animDelay;
 
+		this->rect = rect;
+
 		// loading the frames;
-		for (int i = 0; i < 8; i++) {
-			frames[i] = this->platformMethods->loadImage(frameFiles[i]);
+		for (std::string filename: frameFiles) {
+			PlatformSpecificImage img = this->platformMethods->loadImage(filename);
+			img.textureRect.x = rect.x;
+			img.textureRect.y = rect.y;
+			img.textureRect.w = rect.width;
+			img.textureRect.h = rect.height;
+
+			frames.push_back(img);
 		}
 	}
 
@@ -32,10 +40,12 @@ public:
 
 		timeAccumulator += dt;
 		if (timeAccumulator >= animDelay) {
-			++currentFrameIndex %= 8;
+			++currentFrameIndex %= frames.size();
 
 			frames[currentFrameIndex].textureRect.x = rect.x;
 			frames[currentFrameIndex].textureRect.y = rect.y;
+			frames[currentFrameIndex].textureRect.w = rect.width;
+			frames[currentFrameIndex].textureRect.h = rect.height;
 
 			timeAccumulator -= animDelay;
 		}
@@ -45,6 +55,11 @@ public:
 	void changePos(int x, int y) {
 		rect.x = x;
 		rect.y = y;
+	}
+
+	void changeSize(int width, int height) {
+		rect.width = width;
+		rect.height = height;
 	}
 };
 
