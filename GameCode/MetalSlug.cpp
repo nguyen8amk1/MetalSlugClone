@@ -38,7 +38,7 @@ public:
 		*/
 	}
 
-	float tempSpeed = 500;
+	float tempSpeed = 200;
 	void updateAndRender(GameInputContext &input, double dt) {
 
 		// @StartTest: 
@@ -57,11 +57,10 @@ public:
 		// @EndTest
 
 		//platformMethods->renderImage(tempImg);
+		//platformMethods->fillRectangle(r);
 
 		tempAnim->changePos(r.x, r.y);
 		tempAnim->changeSize(100, 100);
-
-		platformMethods->fillRectangle(r);
 		tempAnim->animate(dt);
 	}
 	

@@ -72,7 +72,7 @@ int run() {
     uint64 LastCounter = SDL_GetPerformanceCounter();
     uint64 LastCycleCount = __rdtsc();
 
-    int GameUpdateHz = 30;
+    int GameUpdateHz = 60;
     real32 TargetSecondsPerFrame = 1.0f / (real32)GameUpdateHz;
 
     game.setup();

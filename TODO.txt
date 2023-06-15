@@ -1,20 +1,40 @@
 TODO: 
-	FIX: black background when having transparent background (1h) 
-		(normal rendering works, only the portion not working) []
-		
 	NORMALIZED COORDINATE SYSTEM (4h) []
 		-> coordinate goes from -1 to 1 on each axis (the horizontal might be larger than abs(1) cause it's longer :v)
-
-	USING TILED SPRITE SHEET (2h) []
-		-> FUTURE:  write a python program (or a class in the game itself) to take an abitrary sprite sheet 
-					and output the frames into a json file which contains the rect of each frames 
+		-> use the normalized coord in the game code 
+		-> the backend gonna translate convert it back to the one it needs 
 
 	ROUGH CAMERA SYSTEM (4h) []
 		-> can show part of the screen and move around 
 
+	GO FULL SCREEN (2h) []
+		2 solutions: 
+			use fixed resolution then scale it up (this one seems simpler) -> @@@ use this 
+			or scale everything to match the solution ?? 
+
 	ROUGH PHYSICS  (2h) []
 		-> (COLLISION, MOVING, JUMPING)
+		-> box collider, 
+		-> circle collider (do this first)
 
+	SHOWING DEBUG INFO (2h) []
+		line: line collider 
+		dot 
+		rectangle: box collider 
+		circle: circle collider 
+		text: Seconds perframe: 0.0421196, Millis per frame: 42.1196, FPS: 23.7419, MCPF: 75.6704
+
+
+	USING TILED SPRITE SHEET (2h) []
+		-> FUTURE:  write a python program (or a class in the game itself) to take an abitrary sprite sheet 
+					and output the frames into a json file which contains the rect of each frames 
+BUG: 
+	FIX: black background when having transparent background (2h) 
+		(normal rendering works, only the portion not working) []
+		(NOTE: test on the sdl2 backend)
+
+	FLICKERING WHEN MOVING (2h) []
+	
 DONE: 
 	USING TILED SPRITE SHEET (2h) [X]
 		-> load a single texture into an array of animation using 2 inputs: rows, columns  
