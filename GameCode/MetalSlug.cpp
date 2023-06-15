@@ -48,10 +48,8 @@ public:
 		}
 		// @EndTest
 
-		/*
 		tempAnim->changePos(r.x, r.y);
 		tempAnim->changeSize(100, 100);
-		*/
 
 		platformMethods->fillRectangle(r);
 		tempAnim->animate(dt);

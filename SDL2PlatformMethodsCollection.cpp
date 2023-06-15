@@ -6,12 +6,20 @@
 #include<Windows.h>
 #include "GameCode/MetalSlug.h"
 
-struct PlatformSpecificImage {
-    SDL_Texture* texture;
-    SDL_Rect textureRect;
-};
 
 namespace SDL2Platform {
+
+struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
+    SDL_Texture* texture;
+    SDL_Rect textureRect;
+
+    void setRect(MetalSlug::Rect &rect) override {
+        textureRect.x = rect.x;
+        textureRect.y = rect.y;
+        textureRect.w = rect.width;
+        textureRect.h = rect.height;
+    }
+};
 
 class SDL2PlatformMethodsCollection: public MetalSlug::PlatformSpecficMethodsCollection {
 public: 
@@ -20,9 +28,9 @@ public:
 
 public: 
 
-    PlatformSpecificImage loadImage(const std::string& filename) override {
+    MetalSlug::PlatformSpecificImage* loadImage(const std::string& filename) override {
         // TODO: load image using SDL2 methods
-        PlatformSpecificImage image;
+        SDL2PlatformSpecificImage *image = new SDL2PlatformSpecificImage();
 		SDL_Texture* img = IMG_LoadTexture(renderer, filename.c_str());
 		int w, h;
 		SDL_QueryTexture(img, NULL, NULL, &w, &h); 
@@ -31,8 +39,8 @@ public:
 		texr.y = 0;
 		texr.w = w;
 		texr.h = h;
-        image.texture = img;
-        image.textureRect = texr;
+        image->texture = img;
+        image->textureRect = texr;
         return image;
     }
 
@@ -40,8 +48,9 @@ public:
         OutputDebugStringA(debugString.c_str());
     }
 
-    void renderImage(PlatformSpecificImage image) override {
-        SDL_RenderCopy(renderer, image.texture, NULL, &image.textureRect);
+    void renderImage(MetalSlug::PlatformSpecificImage *image) override {
+        SDL2PlatformSpecificImage *img = (SDL2PlatformSpecificImage*) image;
+        SDL_RenderCopy(renderer, img->texture, NULL, &img->textureRect);
     }
 
     void fillRectangle(MetalSlug::Rect &rect) override {
