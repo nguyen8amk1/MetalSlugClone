@@ -1,23 +1,33 @@
 TODO: 
-	ROUGH CAMERA SYSTEM (4h) []
-		-> can show part of the screen and move around 
-
-	GO FULL SCREEN (2h) []
-		2 solutions: 
-			use fixed resolution then scale it up (this one seems simpler) -> @@@ use this 
-			or scale everything to match the solution ?? 
-
-	ROUGH PHYSICS  (2h) []
-		-> (COLLISION, MOVING, JUMPING)
-		-> box collider, 
-		-> circle collider (do this first)
-
 	SHOWING DEBUG INFO (2h) []
+		text: Seconds perframe: 0.0421196, Millis per frame: 42.1196, FPS: 23.7419, MCPF: 75.6704 -> @Show this 
+
 		line: line collider 
 		dot 
 		rectangle: box collider 
 		circle: circle collider 
-		text: Seconds perframe: 0.0421196, Millis per frame: 42.1196, FPS: 23.7419, MCPF: 75.6704
+
+	FIX: black background when having transparent background (2h) 
+		(normal rendering works, only the portion not working) []
+		(NOTE: test on the sdl2 backend)
+
+
+	ROUGH PHYSICS  (2h) []
+		-> COLLISION: 
+			-> box collider, 
+			-> circle collider (do this first)
+
+		-> MOVING:
+			basic movement using vector (maybe)
+
+		-> JUMPING: 
+			predetermined jump i guess 
+			-> jump arc 
+
+	ROUGH CAMERA SYSTEM (4h) []
+		-> can show part of the screen and move around 
+
+
 
 	PHAN HOACH KHONG GIAN (4h) []
 
@@ -26,13 +36,14 @@ TODO:
 		-> FUTURE:  write a python program (or a class in the game itself) to take an abitrary sprite sheet 
 					and output the frames into a json file which contains the rect of each frames 
 BUG: 
-	FIX: black background when having transparent background (2h) 
-		(normal rendering works, only the portion not working) []
-		(NOTE: test on the sdl2 backend)
-
+	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
 	FLICKERING WHEN MOVING (2h) []
 	
 DONE: 
+	GO FULL SCREEN (2h) [X]
+		2 solutions: 
+			use fixed resolution then scale it up (this one seems simpler) -> @@@ use this 
+			or scale everything to match the solution ?? 
 	NORMALIZED COORDINATE SYSTEM (4h) [X]
 		-> coordinate goes from -1 to 1 on each axis (the horizontal might be larger than abs(1) cause it's longer :v)
 		-> use the normalized coord in the game code 

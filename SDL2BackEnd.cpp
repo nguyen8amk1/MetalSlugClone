@@ -16,12 +16,23 @@ typedef int64_t uint64;
 typedef double real64;
 typedef float real32;
 
+
 real32 SDLGetSecondsElapsed(uint64 OldCounter, uint64 CurrentCounter)
 {
     return ((real32)(CurrentCounter - OldCounter) / (real32)(SDL_GetPerformanceFrequency()));
 }
 
+void toggleFullScreen(SDL_Window *window, bool fullScreen = false) {
+	if (fullScreen) {
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	}
+	else {
+		SDL_SetWindowFullscreen(window, 0);
+	}
+}
+
 int run() {
+	bool fullScreen = true;
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -37,6 +48,8 @@ int run() {
         SDL_Quit();
         return -1;
     }
+    toggleFullScreen(window, fullScreen);
+
 
     // Create a renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -85,6 +98,11 @@ int run() {
                 isRunning = false;
             }
             else if (event.type == SDL_KEYDOWN) {
+                if ((event.key.keysym.mod & (KMOD_LALT | KMOD_RALT)) && event.key.keysym.sym == SDLK_RETURN) {
+					fullScreen = !fullScreen;
+					toggleFullScreen(window, fullScreen);
+                }
+
                 // Handle key press
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
