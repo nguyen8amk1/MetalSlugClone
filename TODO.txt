@@ -1,13 +1,23 @@
 TODO: 
 	USING TILED SPRITE SHEET (2h) []
+		-> load a single texture into an array of animation using 2 inputs: rows, columns  
+		-> FUTURE:  write a python program (or a class in the game itself) to take an abitrary sprite sheet 
+					and output the frames into a json file which contains the rect of each frames 
+
 	NORMALIZED COORDINATE SYSTEM (4h) []
+		-> coordinate goes from -1 to 1 on each axis (the horizontal might be larger than abs(1) cause it's longer :v)
+
 
 	ROUGH CAMERA SYSTEM (4h) []
-	ROUGH PHYSICS (COLLISION) (2h) []
+		-> can show part of the screen and move around 
+
+	ROUGH PHYSICS  (2h) []
+		-> (COLLISION, MOVING, JUMPING)
+
 DONE: 
 	ROUGH ANIMATION SYSTEM (2h) [X]
 	DOUBLE BUFFERING SO THAT WE DON'T SEE THE TEAR ON THE SCREEN (2h) [X] - we still saw the tear, kinda :))
 	GAME LOOP WITH GOOD TIMING IN SDL2 (2h) [X]
 	GET THE GAME INPUT WORKING (1h) [X]
 	ROUGH CONTROL (2h) [X]
-	PLATFORM INDEPENDENT THE WHOLE THING (2h) [X] (kind of)
+	PLATFORM INDEPENDENT THE WHOLE THING (2h) [X]nternet (kind of)

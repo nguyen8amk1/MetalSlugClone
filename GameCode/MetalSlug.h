@@ -1,5 +1,6 @@
 #pragma once
 
+
 struct PlatformSpecificImage;
 
 namespace MetalSlug {

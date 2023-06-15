@@ -9,7 +9,7 @@ namespace MetalSlug {
 class Animation {
 private:
 	Rect rect; 
-	std::vector<PlatformSpecificImage> frames; // -> TODO: dynamically allocate this thing 
+	std::vector<PlatformSpecificImage> frames; 
 	
 	int currentFrameIndex = 0;
 	float timeAccumulator = 0.0f;
