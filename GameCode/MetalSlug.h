@@ -9,6 +9,9 @@ struct Rect {
 
 struct PlatformSpecificImage {
 	virtual void setRect(Rect &rect) = 0;
+	virtual PlatformSpecificImage* getImagePortion(Rect &rect) = 0;
+	virtual int getWidth() = 0;
+	virtual int getHeight() = 0;
 };
 
 

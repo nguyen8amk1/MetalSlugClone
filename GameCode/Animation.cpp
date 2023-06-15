@@ -21,7 +21,6 @@ public:
 	Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {
 		this->platformMethods = platformMethods;
 		this->animDelay = animDelay;
-
 		this->rect = rect;
 
 		// loading the frames;
@@ -32,6 +31,34 @@ public:
 
 			frames.push_back(img);
 		}
+	}
+
+	Animation(float animDelay, const std::string &tiledSheetFileName, PlatformSpecficMethodsCollection *platformMethods, Rect &rect, int rows, int columns) {
+		this->platformMethods = platformMethods;
+		this->animDelay = animDelay;
+		this->rect = rect;
+
+		// TODO: loading the frames from tiledspritesheet
+		PlatformSpecificImage *img = this->platformMethods->loadImage(tiledSheetFileName);
+		Rect r;
+
+		int frameWidth = img->getWidth()/columns;
+		int frameHeight = img->getHeight()/rows;
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				r.width = frameWidth;
+				r.height = frameHeight;
+				r.x = j * r.width;
+				r.y = i * r.height;
+
+				PlatformSpecificImage* portion = img->getImagePortion(r);
+				portion->setRect(rect);
+
+				frames.push_back(portion);
+			}
+		}
+
 	}
 
 	void animate(double dt) {

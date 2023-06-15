@@ -20,14 +20,22 @@ public:
 
 	std::vector<std::string> frameFiles;
 	Animation *tempAnim;
+	PlatformSpecificImage* tempImg;
 
 	void setup() {
 		// load all the frames
 		for (int i = 0; i < 8; i++) {
 			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
 		}
-		Rect animRect = { 100, 100, 100, 100 };
-		tempAnim = new Animation(0.1f, frameFiles, platformMethods, animRect);
+
+		Rect animRect = { 100, 100, 150, 100 };
+		tempAnim = new Animation(0.1f, "Assets/Imgs/sprites_cat_running_trans.png", platformMethods, animRect, 2, 4);
+
+		/*
+		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
+		Rect portionRect = {0, 0, 500, 200};
+		tempImg = tempImg->getImagePortion(portionRect);
+		*/
 	}
 
 	float tempSpeed = 500;
@@ -47,6 +55,8 @@ public:
 			r.y += tempSpeed*dt; 
 		}
 		// @EndTest
+
+		//platformMethods->renderImage(tempImg);
 
 		tempAnim->changePos(r.x, r.y);
 		tempAnim->changeSize(100, 100);
