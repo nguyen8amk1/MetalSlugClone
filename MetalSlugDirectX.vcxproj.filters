@@ -24,7 +24,7 @@
     <ClCompile Include="SDL2BackEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Util.cpp">
+    <ClCompile Include="SDL2Util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SDL2PlatformMethodsCollection.cpp">

@@ -146,7 +146,7 @@
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="SDL2BackEnd.cpp" />
     <ClCompile Include="SDL2PlatformMethodsCollection.cpp" />
-    <ClCompile Include="Util.cpp" />
+    <ClCompile Include="SDL2Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

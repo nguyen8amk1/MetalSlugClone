@@ -1,9 +1,4 @@
 TODO: 
-	NORMALIZED COORDINATE SYSTEM (4h) []
-		-> coordinate goes from -1 to 1 on each axis (the horizontal might be larger than abs(1) cause it's longer :v)
-		-> use the normalized coord in the game code 
-		-> the backend gonna translate convert it back to the one it needs 
-
 	ROUGH CAMERA SYSTEM (4h) []
 		-> can show part of the screen and move around 
 
@@ -24,6 +19,8 @@ TODO:
 		circle: circle collider 
 		text: Seconds perframe: 0.0421196, Millis per frame: 42.1196, FPS: 23.7419, MCPF: 75.6704
 
+	PHAN HOACH KHONG GIAN (4h) []
+
 
 	USING TILED SPRITE SHEET (2h) []
 		-> FUTURE:  write a python program (or a class in the game itself) to take an abitrary sprite sheet 
@@ -36,6 +33,10 @@ BUG:
 	FLICKERING WHEN MOVING (2h) []
 	
 DONE: 
+	NORMALIZED COORDINATE SYSTEM (4h) [X]
+		-> coordinate goes from -1 to 1 on each axis (the horizontal might be larger than abs(1) cause it's longer :v)
+		-> use the normalized coord in the game code 
+		-> the backend gonna translate convert it back to the one it needs 
 	USING TILED SPRITE SHEET (2h) [X]
 		-> load a single texture into an array of animation using 2 inputs: rows, columns  
 	ROUGH ANIMATION SYSTEM (2h) [X]

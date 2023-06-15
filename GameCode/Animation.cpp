@@ -33,17 +33,17 @@ public:
 		}
 	}
 
-	Animation(float animDelay, const std::string &tiledSheetFileName, PlatformSpecficMethodsCollection *platformMethods, Rect &rect, int rows, int columns) {
+	Animation(float animDelay, const std::string &tiledSheetFileName, PlatformSpecficMethodsCollection *platformMethods, Rect &normRect, int rows, int columns) {
 		this->platformMethods = platformMethods;
 		this->animDelay = animDelay;
-		this->rect = rect;
+		this->rect = normRect;
 
 		// TODO: loading the frames from tiledspritesheet
 		PlatformSpecificImage *img = this->platformMethods->loadImage(tiledSheetFileName);
 		Rect r;
 
-		int frameWidth = img->getWidth()/columns;
-		int frameHeight = img->getHeight()/rows;
+		int frameWidth = img->getPixelWidth()/columns;
+		int frameHeight = img->getPixelHeight()/rows;
 
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
@@ -75,7 +75,7 @@ public:
 		platformMethods->renderImage(frames[currentFrameIndex]);
 	}
 
-	void changePos(int x, int y) {
+	void changePos(float x, float y) {
 		rect.x = x;
 		rect.y = y;
 	}

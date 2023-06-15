@@ -4,6 +4,7 @@
 #include<SDL.h>
 #include<SDL_image.h>
 #include<Windows.h>
+#include "SDL2Util.cpp"
 #include "GameCode/MetalSlug.h"
 
 
@@ -15,26 +16,26 @@ struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
     SDL_Renderer *renderer; 
 
     void setRect(MetalSlug::Rect &rect) override {
-        textureRect.x = rect.x;
-        textureRect.y = rect.y;
-        textureRect.w = rect.width;
-        textureRect.h = rect.height;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(rect.x, rect.y, textureRect.x, textureRect.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(rect.width, rect.height, textureRect.w, textureRect.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(textureRect.x, textureRect.y, textureRect.w, textureRect.h);
     }
 
-    int getWidth() {
+    int getPixelWidth() override {
         return textureRect.w;
     }
 
-    int getHeight() {
+    int getPixelHeight() override {
         return textureRect.h;
     }
 
-    MetalSlug::PlatformSpecificImage* getImagePortion(MetalSlug::Rect& rect) {
+
+    MetalSlug::PlatformSpecificImage* getImagePortion(MetalSlug::Rect& pixelRect) {
         SDL_Rect imgPartRect;
-        imgPartRect.x = rect.x;
-        imgPartRect.y = rect.y;
-        imgPartRect.w = rect.width;
-        imgPartRect.h = rect.height;
+        imgPartRect.x = pixelRect.x;
+        imgPartRect.y = pixelRect.y;
+        imgPartRect.w = pixelRect.width;
+        imgPartRect.h = pixelRect.height;
 
         SDL2PlatformSpecificImage *image = new SDL2PlatformSpecificImage();
         SDL_Texture* myTexturePart = getAreaTexture(imgPartRect, renderer, texture);
@@ -97,12 +98,11 @@ public:
         SDL_RenderCopy(renderer, img->texture, NULL, &img->textureRect);
     }
 
-    void fillRectangle(MetalSlug::Rect &rect) override {
+    void fillRectangle(MetalSlug::Rect &normRect) override {
         SDL_Rect r;
-        r.x = rect.x;
-        r.y = rect.y;
-        r.w = rect.width;
-        r.h = rect.height;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, r.x, r.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(normRect.width, normRect.height, r.w, r.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(r.x, r.y, r.w, r.h);
 
         // Set render color to blue ( rect will be rendered in this color )
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
@@ -111,12 +111,11 @@ public:
         SDL_RenderFillRect(renderer, &r);
     }
 
-    void drawRectangle(MetalSlug::Rect &rect) override {
+    void drawRectangle(MetalSlug::Rect &normRect) override {
         SDL_Rect r;
-        r.x = rect.x;
-        r.y = rect.y;
-        r.w = rect.width;
-        r.h = rect.height;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, r.x, r.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(normRect.width, normRect.height, r.w, r.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(r.x, r.y, r.w, r.h);
 
         // Set render color to blue ( rect will be rendered in this color )
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);

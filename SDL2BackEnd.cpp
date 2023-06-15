@@ -140,7 +140,7 @@ int run() {
         real64 MCPF = ((real64)CyclesElapsed / (1000.0f * 1000.0f));
 
         float secondsPerframe = MSPerFrame / 1000.0f;
-        OutputDebugStringA(Util::MessageFormater::print("Seconds perframe: ", secondsPerframe,  ", Millis per frame: ", MSPerFrame, ", FPS: ", FPS, "MCPF: ", MCPF, '\n').c_str());
+        OutputDebugStringA(SDL2Util::MessageFormater::print("Seconds perframe: ", secondsPerframe,  ", Millis per frame: ", MSPerFrame, ", FPS: ", FPS, "MCPF: ", MCPF, '\n').c_str());
 
         // Set the rendering target to the frame texture
         SDL_SetRenderTarget(renderer, frameTexture);

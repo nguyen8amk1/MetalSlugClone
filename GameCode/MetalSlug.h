@@ -4,14 +4,14 @@
 namespace MetalSlug {
 
 struct Rect {
-	int x, y, width, height;
+	float x, y, width, height;
 };
 
 struct PlatformSpecificImage {
 	virtual void setRect(Rect &rect) = 0;
 	virtual PlatformSpecificImage* getImagePortion(Rect &rect) = 0;
-	virtual int getWidth() = 0;
-	virtual int getHeight() = 0;
+	virtual int getPixelWidth() = 0;
+	virtual int getPixelHeight() = 0;
 };
 
 
@@ -26,6 +26,12 @@ public:
 	virtual void renderImage(PlatformSpecificImage *image) = 0;
 	virtual void fillRectangle(Rect &rect) = 0;
 	virtual void drawRectangle(Rect &rect) = 0;
+
+	/*
+	virtual void drawPoint(Rect &rect) = 0;
+	virtual void fillEllipse(Rect &rect) = 0;
+	virtual void drawEllipse(Rect &rect) = 0;
+	*/
 	virtual void debugLog(const std::string& debugString) = 0;
 };
 

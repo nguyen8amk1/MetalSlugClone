@@ -2,7 +2,7 @@
 
 #include<iostream>
 #include<vector>
-#include "../Util.cpp"
+#include "../SDL2Util.cpp"
 #include "../SDL2PlatformMethodsCollection.cpp"
 #include "Animation.cpp"
 
@@ -11,7 +11,7 @@ namespace MetalSlug {
 class MetalSlug {
 private: 
 	PlatformSpecficMethodsCollection *platformMethods; 
-	Rect r = {50, 50, 50, 50};
+	Rect r = {0, 0, .1f, .1f};
 
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -25,10 +25,10 @@ public:
 	void setup() {
 		// load all the frames
 		for (int i = 0; i < 8; i++) {
-			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
+			frameFiles.push_back(SDL2Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
 		}
 
-		Rect animRect = { 100, 100, 150, 100 };
+		Rect animRect = { 0, 0, .5f, .3f};
 		tempAnim = new Animation(0.1f, "Assets/Imgs/sprites_cat_running_trans.png", platformMethods, animRect, 2, 4);
 
 		/*
@@ -38,7 +38,7 @@ public:
 		*/
 	}
 
-	float tempSpeed = 200;
+	float tempSpeed = 1;
 	void updateAndRender(GameInputContext &input, double dt) {
 
 		// @StartTest: 
@@ -60,7 +60,6 @@ public:
 		//platformMethods->fillRectangle(r);
 
 		tempAnim->changePos(r.x, r.y);
-		tempAnim->changeSize(100, 100);
 		tempAnim->animate(dt);
 	}
 	
