@@ -1,17 +1,4 @@
 TODO: 
-	SHOWING DEBUG INFO (2h) []
-		text: Seconds perframe: 0.0421196, Millis per frame: 42.1196, FPS: 23.7419, MCPF: 75.6704 -> @Show this 
-
-		line: line collider 
-		dot 
-		rectangle: box collider 
-		circle: circle collider 
-
-	FIX: black background when having transparent background (2h) 
-		(normal rendering works, only the portion not working) []
-		(NOTE: test on the sdl2 backend)
-
-
 	ROUGH PHYSICS  (2h) []
 		-> COLLISION: 
 			-> box collider, 
@@ -24,9 +11,25 @@ TODO:
 			predetermined jump i guess 
 			-> jump arc 
 
+	SHOWING DEBUG INFO (2h) []
+		text: Millis per frame: 42.1196, FPS: 23.7419  [X]
+			-> destroy all the resource after using (SDL destroy) -> currently have memory leaks (1h) []
+
+		line: line collider 
+		dot 
+		rectangle: box collider 
+		circle: circle collider 
+
+	FIX: black background when having transparent background (2h) 
+		(normal rendering works, only the portion not working) []
+		(NOTE: test on the sdl2 backend)
+
+
+
+	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
+
 	ROUGH CAMERA SYSTEM (4h) []
 		-> can show part of the screen and move around 
-
 
 
 	PHAN HOACH KHONG GIAN (4h) []

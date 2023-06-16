@@ -14,9 +14,19 @@ struct PlatformSpecificImage {
 	virtual int getPixelHeight() = 0;
 };
 
+struct PlatformDebugInfo {
+	float frameTimeMillis;
+	float fps;
+};
 
 struct GameInputContext {
 	bool moveLeft, moveRight, moveUp, moveDown;
+};
+
+struct GameText {
+	virtual void setText(const std::string &text) = 0;
+	virtual void setPixelPos(int x, int y) = 0;
+	virtual void clean() = 0;
 };
 
 // This is interface only  
@@ -26,6 +36,8 @@ public:
 	virtual void renderImage(PlatformSpecificImage *image) = 0;
 	virtual void fillRectangle(Rect &rect) = 0;
 	virtual void drawRectangle(Rect &rect) = 0;
+	virtual GameText* createText(int x, int y) = 0;
+	virtual void drawText(GameText *text) = 0;
 
 	/*
 	virtual void drawPoint(Rect &rect) = 0;

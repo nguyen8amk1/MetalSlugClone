@@ -3,31 +3,11 @@
 #include<iostream>
 #include<sstream>
 #include<string>
+#include<stdint.h>
+#include<SDL.h>
+
 
 namespace SDL2Util {
-
-const class MessageFormater {
-	private: 
-	template<typename T>
-	static void appendToStream(std::ostringstream& oss, const T& arg) {
-		oss << arg;
-	}
-
-	template<typename T, typename... Args>
-	static void appendToStream(std::ostringstream& oss, const T& arg, const Args&... args) {
-		oss << arg;
-		appendToStream(oss, args...);
-	}
-
-	public: 
-	template<typename... Args>
-	static std::string print(const Args&... args) {
-		std::ostringstream oss;
-		appendToStream(oss, args...);
-		return oss.str();
-	}
-
-};
 
 const class NormalizeCoordConverter {
 public:
@@ -48,6 +28,14 @@ public:
 	static void toMiddleOrigin(int &x, int &y, int width, int height) {
 		x -= (width/2);
 		y -= (height/2);
+	}
+};
+
+const class TimeUtil {
+public:
+	static float SDLGetSecondsElapsed(int64_t OldCounter, int64_t CurrentCounter)
+	{
+		return ((float)(CurrentCounter - OldCounter) / (float)(SDL_GetPerformanceFrequency()));
 	}
 };
 

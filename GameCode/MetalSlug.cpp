@@ -2,7 +2,7 @@
 
 #include<iostream>
 #include<vector>
-#include "../SDL2Util.cpp"
+#include "../Util.cpp"
 #include "../SDL2PlatformMethodsCollection.cpp"
 #include "Animation.cpp"
 
@@ -13,23 +13,32 @@ private:
 	PlatformSpecficMethodsCollection *platformMethods; 
 	Rect r = {0, 0, .1f, .1f};
 
+	std::vector<std::string> frameFiles;
+	Animation *tempAnim;
+	PlatformSpecificImage* tempImg;
+
+	GameText *frameMillis = NULL;
+	GameText *fps = NULL;
+
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;
 	}
 
-	std::vector<std::string> frameFiles;
-	Animation *tempAnim;
-	PlatformSpecificImage* tempImg;
+	PlatformDebugInfo *platformDebugInfo = NULL;
 
 	void setup() {
 		// load all the frames
 		for (int i = 0; i < 8; i++) {
-			frameFiles.push_back(SDL2Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
+			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
 		}
 
 		Rect animRect = { 0, 0, .5f, .3f};
 		tempAnim = new Animation(0.1f, "Assets/Imgs/sprites_cat_running_trans.png", platformMethods, animRect, 2, 4);
+		
+		// TODO: figure out a way to bypass this 
+		frameMillis = platformMethods->createText(0, 0);
+		fps  = platformMethods->createText(0, 25);
 
 		/*
 		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
@@ -40,6 +49,13 @@ public:
 
 	float tempSpeed = 1;
 	void updateAndRender(GameInputContext &input, double dt) {
+		if (platformDebugInfo) {
+			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
+			fps->setText(Util::MessageFormater::print("FPS: ", platformDebugInfo->fps));
+
+			platformMethods->drawText(frameMillis);
+			platformMethods->drawText(fps);
+		}
 
 		// @StartTest: 
 		if (input.moveLeft) {
@@ -65,6 +81,14 @@ public:
 	
 	~MetalSlug() {
 		delete tempAnim;
+
+		/*
+		frameMillis->clean();
+		fps->clean();
+		*/
+
+		delete frameMillis;
+		delete fps;
 	}
 	
 };

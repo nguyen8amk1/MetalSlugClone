@@ -3,9 +3,10 @@
 #include<string>
 #include<SDL.h>
 #include<SDL_image.h>
+#include<SDL_ttf.h>
 #include<Windows.h>
 #include "SDL2Util.cpp"
-#include "GameCode/MetalSlug.h"
+#include "SDL2Components.cpp"
 
 
 namespace SDL2Platform {
@@ -69,6 +70,16 @@ public:
 
 public: 
 
+    SDL2PlatformMethodsCollection() {
+		if (TTF_Init() == -1)
+		{
+			std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
+			OutputDebugStringA(Util::MessageFormater::print("SDL_ttf could not initialize! TTF_Error: ", TTF_GetError(),  '\n').c_str());
+			return;
+		}
+
+    }
+
     MetalSlug::PlatformSpecificImage* loadImage(const std::string& filename) override {
         // TODO: load image using SDL2 methods
         SDL2PlatformSpecificImage *image = new SDL2PlatformSpecificImage();
@@ -122,5 +133,16 @@ public:
 
         SDL_RenderDrawRect(renderer, &r);
     }
+
+    MetalSlug::GameText* createText(int x, int y) override {
+        SDL2GameText* text = new SDL2GameText(renderer, x, y);
+        return text;
+    }
+
+    void drawText(MetalSlug::GameText *text) {
+        SDL2GameText* txt = (SDL2GameText*) text;
+		SDL_RenderCopy(renderer, txt->message, NULL, &txt->pixelRect);
+    }
 };
+
 }
