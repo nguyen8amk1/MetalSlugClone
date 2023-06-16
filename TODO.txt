@@ -4,7 +4,7 @@ TODO:
 			-> box collider 
 			-> circle collider (do this first)
 			-> line collision 
-			-> capsule collision @Do this  
+			-> capsule collision 
 
 		-> MOVING: []
 			basic movement using vector (maybe)
