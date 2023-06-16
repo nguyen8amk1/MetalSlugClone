@@ -17,16 +17,16 @@ TODO:
 		(normal rendering works, only the portion not working) []
 		(NOTE: test on the sdl2 backend)
 
-
+	ROUGH CAMERA SYSTEM (4h) []
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 
-	ROUGH CAMERA SYSTEM (4h) []
+	COLLIDER COMBINATION FOR DIFFERENT SHAPES () []
+		-> basically circle and rectangle -> capsule shape  
+
 		-> can show part of the screen and move around 
 
-
 	PHAN HOACH KHONG GIAN (4h) []
-
 
 	USING TILED SPRITE SHEET (2h) []
 		-> FUTURE:  write a python program (or a class in the game itself) to take an abitrary sprite sheet 
