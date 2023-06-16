@@ -55,6 +55,23 @@ public:
 		return distance <= c.r;
 	}
 
+
+	static bool doesCapsuleVsLineCollide(const Capsule& capsule, const Point& lineStart, const Point& lineEnd) {
+		// Check for collision between the line segment and the capsule's cylindrical part
+		if (doesLineSegmentVsLineSegmentCollide(lineStart, lineEnd, capsule.start, capsule.end))
+			return true;
+
+		// Check for collision between the line segment and the capsule's end caps
+		if (doesCircleVsLineSegmentCollide(capsule.start, capsule.r, lineStart, lineEnd))
+			return true;
+
+		if (doesCircleVsLineSegmentCollide(capsule.end, capsule.r, lineStart, lineEnd))
+			return true;
+
+		return false;
+	}
+
+
 private:
 	static float calculateDistanceToLineSegment(float cx, float cy, float ax, float ay, float bx, float by) {
 		float lineLength = calculateDistance(ax, ay, bx, by);
@@ -91,6 +108,68 @@ private:
 		return sqrtf(dx * dx + dy * dy);
 	}
 
+	static bool doesLineSegmentVsLineSegmentCollide(const Point& a, const Point& b, const Point& c, const Point& d) {
+		// Calculate the direction vectors of the line segments
+		Point ab = { b.x - a.x, b.y - a.y };
+		Point cd = { d.x - c.x, d.y - c.y };
+
+		// Calculate the denominator of the intersection test
+		float denominator = ab.x * cd.y - ab.y * cd.x;
+
+		// If the denominator is zero, the line segments are parallel or coincident
+		if (denominator == 0.0f)
+			return false;
+
+		// Calculate the vectors between the start points of the line segments
+		Point ac = { c.x - a.x, c.y - a.y };
+
+		// Calculate the numerator of the intersection test
+		float numerator1 = ac.x * cd.y - ac.y * cd.x;
+		float numerator2 = ac.x * ab.y - ac.y * ab.x;
+
+		// Calculate the intersection parameter along the line segments
+		float t1 = numerator1 / denominator;
+		float t2 = numerator2 / denominator;
+
+		// Check if the line segments intersect within their bounds
+		return t1 >= 0.0f && t1 <= 1.0f && t2 >= 0.0f && t2 <= 1.0f;
+	}
+
+	static bool doesCircleVsLineSegmentCollide(const Point& center, float radius, const Point& lineStart, const Point& lineEnd) {
+		// Calculate the direction vector of the line segment
+		Point lineDirection = { lineEnd.x - lineStart.x, lineEnd.y - lineStart.y };
+
+		// Calculate the vector from the line segment's start point to the circle's center
+		Point startToCenter = { center.x - lineStart.x, center.y - lineStart.y };
+
+		// Calculate the squared length of the line segment
+		float lineLengthSquared = lineDirection.x * lineDirection.x + lineDirection.y * lineDirection.y;
+
+		// If the line segment has zero length, check for collision with the circle's center
+		if (lineLengthSquared == 0.0f)
+			return calculateDistanceSquared(center, lineStart) <= radius * radius;
+
+		// Calculate the projection parameter along the line segment
+		float t = (startToCenter.x * lineDirection.x + startToCenter.y * lineDirection.y) / lineLengthSquared;
+
+		// Clamp the parameter within the bounds of the line segment
+		t = fmaxf(0.0f, fminf(t, 1.0f));
+
+		// Calculate the closest point on the line segment to the circle's center
+		Point closestPoint = {
+			lineStart.x + t * lineDirection.x,
+			lineStart.y + t * lineDirection.y
+		};
+
+		// Check for collision between the closest point and the circle
+		return calculateDistanceSquared(center, closestPoint) <= radius * radius;
+	}
+
+	static float calculateDistanceSquared(const Point& a, const Point& b) {
+		float dx = b.x - a.x;
+		float dy = b.y - a.y;
+		return dx * dx + dy * dy;
+	}
 };
 
 }

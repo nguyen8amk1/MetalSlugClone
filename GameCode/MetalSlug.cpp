@@ -17,6 +17,13 @@ private:
 	Rect rect2 = {0, 0, .2f, .2f};
 	Circle circle1 = { 0, 0, .2 };
 	Circle circle2 = { .5, .5, .2 };
+	Point a = {-.5f, 0};
+	Point b = {-.5, -.5};
+
+	Point c = {.25, .25};
+	Point d = {.5, -.5};
+
+	Capsule capsule = {a, b, .1f};
 
 	std::vector<std::string> frameFiles;
 	Animation *tempAnim;
@@ -32,6 +39,7 @@ private:
 	Color rect2Color = {0, 0, 255, 255};
 	Color circle1Color = {255, 255, 255, 255};
 	Color circle2Color = {255, 255, 255, 255};
+	Color capsuleColor = {0, 255, 0};
 
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -96,27 +104,39 @@ public:
 
 		//platformMethods->renderImage(tempImg);
 		//platformMethods->fillRectangle(r);
-		Point a = {0, 0};
-		Point b = {-1, -1};
 
 
 		if (CollisionChecker::doesRectVsRectCollide(r, rect2)) {
 			rect1Color = collidedColor;
 			rect2Color = collidedColor;
 		}
-		else if (CollisionChecker::doesCircleVsCircleCollide(circle1, circle2)) {
-			circle2Color = collidedColor;
-			circle1Color = collidedColor;
-		}
-		else if (CollisionChecker::doesCircleVsLineCollide(circle1, a, b)) {
-			circle1Color = collidedColor;
-		}
 		else {
 			rect1Color = {255, 255, 255, 255};
 			rect2Color = {255, 255, 0, 255};
+		}
+		if (CollisionChecker::doesCircleVsCircleCollide(circle1, circle2)) {
+			circle2Color = collidedColor;
+			circle1Color = collidedColor;
+		}
+		else {
 			circle1Color = {255, 255, 255, 255};
 			circle2Color = {255, 255, 255, 255};
 		}
+		if (CollisionChecker::doesCircleVsLineCollide(circle1, a, b)) {
+			circle1Color = collidedColor;
+		}
+		else {
+			circle1Color = {255, 255, 255, 255};
+		}
+		if (CollisionChecker::doesCapsuleVsLineCollide(capsule, c, d)) {
+			capsuleColor = collidedColor;
+		}
+		else {
+			capsuleColor = {0, 255, 0};
+		}
+
+		capsule.start.x = r.x;
+		//capsule.end.x = capsule.start.x;
 
 		platformMethods->drawRectangle(r, rect1Color);
 		platformMethods->drawRectangle(rect2, rect2Color);
@@ -124,7 +144,10 @@ public:
 		platformMethods->drawCircle(circle1, circle1Color);
 		platformMethods->drawCircle(circle2, circle2Color);
 
-		platformMethods->drawLine(a, b, rect1Color);
+		//platformMethods->drawLine(a, b, rect1Color);
+		platformMethods->drawLine(c, d, rect1Color);
+
+		platformMethods->drawCapsule(capsule, capsuleColor);
 
 		/*
 		tempAnim->changePos(r.x, r.y);

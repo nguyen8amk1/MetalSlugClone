@@ -1,15 +1,17 @@
 TODO: 
 	ROUGH PHYSICS  (2h) []
-		-> COLLISION: 
+		-> COLLISION: [X]
 			-> box collider 
 			-> circle collider (do this first)
 			-> line collision 
+			-> capsule collision @Do this  
 
-		-> MOVING:
+		-> MOVING: []
 			basic movement using vector (maybe)
 
-		-> JUMPING: 
+		-> JUMPING: []
 			-> jump arc 
+
 
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 

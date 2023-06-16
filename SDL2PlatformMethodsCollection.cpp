@@ -216,6 +216,61 @@ public:
         SDL2GameText* txt = (SDL2GameText*) text;
 		SDL_RenderCopy(renderer, txt->message, NULL, &txt->pixelRect);
     }
+
+    void drawCapsule(MetalSlug::Capsule& capsule, MetalSlug::Color &color) {
+        // Set the drawing color
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+        int startX;
+        int startY;
+        int endX;
+        int endY;
+        int radius;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(capsule.start.x, capsule.start.y, startX, startY);
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(capsule.end.x, capsule.end.y, endX, endY);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(capsule.r, capsule.r, radius, radius);
+
+
+        // Draw the cylindrical part of the capsule
+        SDL_RenderDrawLine(renderer, capsule.start.x, capsule.start.y, capsule.end.x, capsule.end.y);
+
+        // Calculate the direction vector of the capsule
+        float dx = endX - startX;
+        float dy = endY - startY;
+        float length = std::sqrt(dx * dx + dy * dy);
+
+        // Normalize the direction vector
+        float nx = dx / length;
+        float ny = dy / length;
+
+        // Calculate the perpendicular vector
+        float px = -ny;
+        float py = nx;
+
+        // Calculate the offsets for the end caps
+        float offsetX = px * radius;
+        float offsetY = py * radius;
+
+        // Calculate the coordinates for the end cap points
+        int cap1X1 = startX + offsetX;
+        int cap1Y1 = startY + offsetY;
+        int cap1X2 = startX - offsetX;
+        int cap1Y2 = startY - offsetY;
+
+        int cap2X1 = endX + offsetX;
+        int cap2Y1 = endY + offsetY;
+        int cap2X2 = endX - offsetX;
+        int cap2Y2 = endY - offsetY;
+
+        // Draw the end caps of the capsule
+        SDL_RenderDrawLine(renderer, cap1X1, cap1Y1, cap2X1, cap2Y1);
+        SDL_RenderDrawLine(renderer, cap1X2, cap1Y2, cap2X2, cap2Y2);
+
+        MetalSlug::Circle circleStart = {capsule.start.x, capsule.start.y, capsule.r};
+        MetalSlug::Circle circleEnd = {capsule.end.x, capsule.end.y, capsule.r};
+        drawCircle(circleStart, color);
+        drawCircle(circleEnd, color);
+    }
 };
 
 }

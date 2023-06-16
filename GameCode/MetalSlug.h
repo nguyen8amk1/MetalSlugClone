@@ -42,6 +42,12 @@ struct Point {
 	float x, y;
 };
 
+struct Capsule {
+	Point start;
+	Point end;
+	float r;
+};
+
 // This is interface only  
 class PlatformSpecficMethodsCollection {
 public: 
@@ -56,6 +62,7 @@ public:
 
 	virtual void drawPoint(Point &p, Color &color) = 0;
 	virtual void drawLine(Point &a, Point &b, Color &color) = 0;
+	virtual void drawCapsule(Capsule &capsule, Color &color) = 0;
 
 	virtual void debugLog(const std::string& debugString) = 0;
 };
