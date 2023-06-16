@@ -1,4 +1,5 @@
 #pragma once
+#include<string>
 
 
 namespace MetalSlug {
@@ -29,21 +30,33 @@ struct GameText {
 	virtual void clean() = 0;
 };
 
+struct Circle {
+	float x, y, r;
+};
+
+struct Color {
+	int r, g, b, a;
+};
+
+struct Point {
+	float x, y;
+};
+
 // This is interface only  
 class PlatformSpecficMethodsCollection {
 public: 
 	virtual PlatformSpecificImage* loadImage(const std::string& filename) = 0;
 	virtual void renderImage(PlatformSpecificImage *image) = 0;
-	virtual void fillRectangle(Rect &rect) = 0;
-	virtual void drawRectangle(Rect &rect) = 0;
+	virtual void fillRectangle(Rect &rect, Color &color) = 0;
+	virtual void drawRectangle(Rect &rect, Color &color) = 0;
+	virtual void fillCircle(Circle &circle , Color &color) = 0;
+	virtual void drawCircle(Circle &circle, Color &color) = 0;
 	virtual GameText* createText(int x, int y) = 0;
 	virtual void drawText(GameText *text) = 0;
 
-	/*
-	virtual void drawPoint(Rect &rect) = 0;
-	virtual void fillEllipse(Rect &rect) = 0;
-	virtual void drawEllipse(Rect &rect) = 0;
-	*/
+	virtual void drawPoint(Point &p, Color &color) = 0;
+	virtual void drawLine(Point &a, Point &b, Color &color) = 0;
+
 	virtual void debugLog(const std::string& debugString) = 0;
 };
 

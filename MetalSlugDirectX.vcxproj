@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClCompile Include="DirectX9BackEnd.cpp" />
     <ClCompile Include="GameCode\Animation.cpp" />
+    <ClCompile Include="GameCode\CollisionChecker.cpp" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SDL2BackEnd.cpp" />

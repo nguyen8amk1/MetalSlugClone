@@ -82,7 +82,7 @@ public:
 		uint64 LastCounter = SDL_GetPerformanceCounter();
 		uint64 LastCycleCount = __rdtsc();
 
-		int GameUpdateHz = 60;
+		int GameUpdateHz = 30;
 		real32 TargetSecondsPerFrame = 1.0f / (real32)GameUpdateHz;
 		MetalSlug::PlatformDebugInfo debugInfo = {};
 

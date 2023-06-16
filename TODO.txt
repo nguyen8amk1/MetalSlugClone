@@ -1,24 +1,17 @@
 TODO: 
 	ROUGH PHYSICS  (2h) []
 		-> COLLISION: 
-			-> box collider, 
+			-> box collider 
 			-> circle collider (do this first)
+			-> line collision 
 
 		-> MOVING:
 			basic movement using vector (maybe)
 
 		-> JUMPING: 
-			predetermined jump i guess 
 			-> jump arc 
 
-	SHOWING DEBUG INFO (2h) []
-		text: Millis per frame: 42.1196, FPS: 23.7419  [X]
-			-> destroy all the resource after using (SDL destroy) -> currently have memory leaks (1h) []
-
-		line: line collider 
-		dot 
-		rectangle: box collider 
-		circle: circle collider 
+	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
@@ -43,6 +36,14 @@ BUG:
 	FLICKERING WHEN MOVING (2h) []
 	
 DONE: 
+	SHOWING DEBUG INFO (2h) [X]
+		text: Millis per frame: 42.1196, FPS: 23.7419  [X]
+
+		line: line collider [X]
+		dot [X]
+		rectangle: box collider  [X]
+		circle: circle collider  [X]
+
 	GO FULL SCREEN (2h) [X]
 		2 solutions: 
 			use fixed resolution then scale it up (this one seems simpler) -> @@@ use this 

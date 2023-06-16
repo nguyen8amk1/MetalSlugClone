@@ -109,29 +109,102 @@ public:
         SDL_RenderCopy(renderer, img->texture, NULL, &img->textureRect);
     }
 
-    void fillRectangle(MetalSlug::Rect &normRect) override {
-        SDL_Rect r;
-        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, r.x, r.y);
-        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(normRect.width, normRect.height, r.w, r.h);
-        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(r.x, r.y, r.w, r.h);
+    void fillRectangle(MetalSlug::Rect &normRect, MetalSlug::Color &color) override {
+        SDL_Rect rect;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, rect.x, rect.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(normRect.width, normRect.height, rect.w, rect.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(rect.x, rect.y, rect.w, rect.h);
 
         // Set render color to blue ( rect will be rendered in this color )
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
         // Render rect
-        SDL_RenderFillRect(renderer, &r);
+        SDL_RenderFillRect(renderer, &rect);
     }
 
-    void drawRectangle(MetalSlug::Rect &normRect) override {
-        SDL_Rect r;
-        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, r.x, r.y);
-        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(normRect.width, normRect.height, r.w, r.h);
-        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(r.x, r.y, r.w, r.h);
+    void drawRectangle(MetalSlug::Rect &normRect, MetalSlug::Color &color) override {
+        SDL_Rect rect;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, rect.x, rect.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(normRect.width, normRect.height, rect.w, rect.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(rect.x, rect.y, rect.w, rect.h);
 
         // Set render color to blue ( rect will be rendered in this color )
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-        SDL_RenderDrawRect(renderer, &r);
+        SDL_RenderDrawRect(renderer, &rect);
+    }
+
+    void fillCircle(MetalSlug::Circle& circle, MetalSlug::Color &color) override {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+        int centerX;
+        int centerY;
+        int radius;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(circle.x, circle.y, centerX, centerY);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(circle.r, circle.r, radius, radius);
+
+        for (int y = -radius; y <= radius; y++) {
+            for (int x = -radius; x <= radius; x++) {
+                if (x * x + y * y <= radius * radius) {
+                    SDL_RenderDrawPoint(renderer, centerX + x, centerY + y);
+                }
+            }
+        }
+    }
+
+    void drawCircle(MetalSlug::Circle& circle, MetalSlug::Color &color) override {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+        int centerX;
+        int centerY;
+        int radius;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(circle.x, circle.y, centerX, centerY);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(circle.r, circle.r, radius, radius);
+
+        int x = radius - 1;
+        int y = 0;
+        int dx = 1;
+        int dy = 1;
+        int err = dx - (radius << 1);
+
+        while (x >= y) {
+            SDL_RenderDrawPoint(renderer, centerX + x, centerY + y);
+            SDL_RenderDrawPoint(renderer, centerX + y, centerY + x);
+            SDL_RenderDrawPoint(renderer, centerX - y, centerY + x);
+            SDL_RenderDrawPoint(renderer, centerX - x, centerY + y);
+            SDL_RenderDrawPoint(renderer, centerX - x, centerY - y);
+            SDL_RenderDrawPoint(renderer, centerX - y, centerY - x);
+            SDL_RenderDrawPoint(renderer, centerX + y, centerY - x);
+            SDL_RenderDrawPoint(renderer, centerX + x, centerY - y);
+
+            if (err <= 0) {
+                y++;
+                err += dy;
+                dy += 2;
+            }
+
+            if (err > 0) {
+                x--;
+                dx += 2;
+                err += dx - (radius << 1);
+            }
+        }
+    }
+
+    void drawPoint(MetalSlug::Point& p, MetalSlug::Color &color) override {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+        int x, y;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(p.x, p.y, x, y);
+		SDL_RenderDrawPoint(renderer, x, y);
+    }
+
+    void drawLine(MetalSlug::Point& a, MetalSlug::Point& b, MetalSlug::Color &color) override {
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+        int ax, ay, bx, by;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(a.x, a.y, ax, ay);
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(b.x, b.y, bx, by);
+
+        SDL_RenderDrawLine(renderer, ax, ay, bx, by);
     }
 
     MetalSlug::GameText* createText(int x, int y) override {
@@ -139,7 +212,7 @@ public:
         return text;
     }
 
-    void drawText(MetalSlug::GameText *text) {
+    void drawText(MetalSlug::GameText *text) override {
         SDL2GameText* txt = (SDL2GameText*) text;
 		SDL_RenderCopy(renderer, txt->message, NULL, &txt->pixelRect);
     }
