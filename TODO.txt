@@ -22,7 +22,7 @@ TODO:
 					onground -> just pure left and right move - no fall, no jump @1st 
 					jump -> from bottom to peak 
 					fall -> from peak to bottom (or some ) -> gravity is just fall state 
-				
+
 
 
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
@@ -32,6 +32,11 @@ TODO:
 		(NOTE: test on the sdl2 backend)
 
 	ROUGH CAMERA SYSTEM (4h) []
+		-> have a stitched image of mission 1 and display in and test the camera 
+		-> this program seems promising: https://github.com/SSARCandy/panoramas-image-stitching
+					   this vid as well: https://www.youtube.com/watch?v=Zs51cg4mb0k&ab_channel=NicolaiNielsenkj
+
+	PARALAX BACKGROUND (2h) []
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 

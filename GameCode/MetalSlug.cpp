@@ -83,7 +83,7 @@ public:
 	}
 
 	float tempSpeed = 1;
-	float gravity = .2f;
+	float gravity = 1;
 	void updateAndRender(GameInputContext &input, double dt) {
 		if (platformDebugInfo) {
 			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
@@ -100,15 +100,6 @@ public:
 		else if (input.moveRight) {
 			playerPos.x += (float)(tempSpeed*dt); 
 		}
-
-		/*
-		if (input.moveUp) {
-			playerPos.y += (float)(tempSpeed*dt); 
-		}
-		else if (input.moveDown) {
-			playerPos.y -= (float)(tempSpeed*dt); 
-		}
-		*/
 
 		// Physics state machine
 		if (physicState == FALL) {
@@ -129,7 +120,14 @@ public:
 			}
 		}
 		else if (physicState == JUMP) {
+			// TODO: do the jumping curve - the fun stuff 
+			// the curve is just a simple parabola  
 			playerPos.y += (float)(5*gravity*dt); 
+
+			// event checking 
+			if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
+				physicState = ONGROUND;
+			}
 
 			// temp
 			if (playerPos.y >= .5f) {
