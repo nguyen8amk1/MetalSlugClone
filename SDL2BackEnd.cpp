@@ -130,7 +130,7 @@ public:
 
 			if (SDL2Util::TimeUtil::SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter()) < TargetSecondsPerFrame)
 			{
-				int TimeToSleep = ((TargetSecondsPerFrame - SDL2Util::TimeUtil::SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter())) * 1000) - 1;
+				int TimeToSleep = (int)((TargetSecondsPerFrame - SDL2Util::TimeUtil::SDLGetSecondsElapsed(LastCounter, SDL_GetPerformanceCounter())) * 1000) - 1;
 				if (TimeToSleep > 0)
 				{
 					SDL_Delay(TimeToSleep);

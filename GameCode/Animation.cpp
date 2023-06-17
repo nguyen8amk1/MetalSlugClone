@@ -38,21 +38,20 @@ public:
 		this->animDelay = animDelay;
 		this->rect = normRect;
 
-		// TODO: loading the frames from tiledspritesheet
 		PlatformSpecificImage *img = this->platformMethods->loadImage(tiledSheetFileName);
-		Rect r;
+		Rect pixelRect;
 
 		int frameWidth = img->getPixelWidth()/columns;
 		int frameHeight = img->getPixelHeight()/rows;
 
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				r.width = frameWidth;
-				r.height = frameHeight;
-				r.x = j * r.width;
-				r.y = i * r.height;
+				pixelRect.width = (float)frameWidth;
+				pixelRect.height = (float)frameHeight;
+				pixelRect.x = (float)(j * pixelRect.width);
+				pixelRect.y = (float)(i * pixelRect.height);
 
-				PlatformSpecificImage* portion = img->getImagePortion(r);
+				PlatformSpecificImage* portion = img->getImagePortion(pixelRect);
 				portion->setRect(rect);
 
 				frames.push_back(portion);
@@ -80,7 +79,7 @@ public:
 		rect.y = y;
 	}
 
-	void changeSize(int width, int height) {
+	void changeSize(float width, float height) {
 		rect.width = width;
 		rect.height = height;
 	}

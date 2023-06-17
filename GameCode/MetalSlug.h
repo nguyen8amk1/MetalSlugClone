@@ -42,6 +42,8 @@ struct Point {
 	float x, y;
 };
 
+typedef Point Vec2f;
+
 struct Capsule {
 	Point start;
 	Point end;

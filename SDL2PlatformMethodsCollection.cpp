@@ -33,10 +33,10 @@ struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
 
     MetalSlug::PlatformSpecificImage* getImagePortion(MetalSlug::Rect& pixelRect) {
         SDL_Rect imgPartRect;
-        imgPartRect.x = pixelRect.x;
-        imgPartRect.y = pixelRect.y;
-        imgPartRect.w = pixelRect.width;
-        imgPartRect.h = pixelRect.height;
+        imgPartRect.x = (int)pixelRect.x;
+        imgPartRect.y = (int)pixelRect.y;
+        imgPartRect.w = (int)pixelRect.width;
+        imgPartRect.h = (int)pixelRect.height;
 
         SDL2PlatformSpecificImage *image = new SDL2PlatformSpecificImage();
         SDL_Texture* myTexturePart = getAreaTexture(imgPartRect, renderer, texture);
@@ -252,15 +252,15 @@ public:
         float offsetY = py * radius;
 
         // Calculate the coordinates for the end cap points
-        int cap1X1 = startX + offsetX;
-        int cap1Y1 = startY + offsetY;
-        int cap1X2 = startX - offsetX;
-        int cap1Y2 = startY - offsetY;
+        int cap1X1 = (int)(startX + offsetX);
+        int cap1Y1 = (int)(startY + offsetY);
+        int cap1X2 = (int)(startX - offsetX);
+        int cap1Y2 = (int)(startY - offsetY);
 
-        int cap2X1 = endX + offsetX;
-        int cap2Y1 = endY + offsetY;
-        int cap2X2 = endX - offsetX;
-        int cap2Y2 = endY - offsetY;
+        int cap2X1 = (int)(endX + offsetX);
+        int cap2Y1 = (int)(endY + offsetY);
+        int cap2X2 = (int)(endX - offsetX);
+        int cap2Y2 = (int)(endY - offsetY);
 
         // Draw the end caps of the capsule
         SDL_RenderDrawLine(renderer, cap1X1, cap1Y1, cap2X1, cap2Y1);

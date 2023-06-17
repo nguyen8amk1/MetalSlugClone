@@ -16,13 +16,13 @@ public:
 
 	// NOTE: this only works for 800 and 600 -> will find better formula later 
 	static void normalizedCoordToPixelCoord(float normX, float normY, int &pixelX, int &pixelY) {
-		pixelX = ((3*normX + 4) * 100.0f);
-		pixelY = ((normY + 1)/2.0f)*600;
+		pixelX = (int)((3*normX + 4) * 100.0f);
+		pixelY = (int)( - 300 * normY + 300);
 	}
 
 	static void normalizedSizeToPixelSize(float normWidth, float normHeight, int &pixelWidth, int &pixelHeight) {
-		pixelWidth = 300*normWidth;
-		pixelHeight = 300*normHeight;
+		pixelWidth = (int)(300*normWidth);
+		pixelHeight = (int)(300*normHeight);
 	}
 
 	static void toMiddleOrigin(int &x, int &y, int width, int height) {
