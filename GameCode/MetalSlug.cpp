@@ -20,13 +20,15 @@ private:
 	// debug 
 	GameText *frameMillis = NULL;
 	GameText *fps = NULL;
+	GameText *playerXY = NULL;
+	GameText *playerPhysicState = NULL;
 
 	// TODO: change the coord conversion a little bit: 
 	// from something
 	// temp
 	Point planeStart = {-1.0f, -.25f};
 	Point planeEnd = {1.0f, -.25f};
-	Vec2f playerPos = {-.5f, 0.0f};
+	Vec2f playerPos = {-.5f, 0.6f};
 	Point playerStart = {-.4f, .4f};
 	Point playerEnd = {-.4f, 0.0f};
 	float playerHalfWidth = .1f;
@@ -35,6 +37,22 @@ private:
 	Color collidedColor = {255, 0, 0, 255};
 	Color planeColor = {255, 255, 0, 255};
 	Color playerColor = {0, 0, 255, 255};
+
+	// TODO: write a physics state machine
+	// let's draw a state machine transition map 
+		// onground -> jump -> fall -> onground 
+
+	// DO FALL AND ONGROUND FIRST @Current
+	// FALL - pull down 
+	// ONGROUND - y stick to the plane 
+
+	enum PhysicState {
+		ONGROUND, 
+		JUMP, 
+		FALL
+	};
+
+	PhysicState physicState = ONGROUND;
 
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -54,6 +72,8 @@ public:
 		
 		frameMillis = platformMethods->createText(0, 0);
 		fps  = platformMethods->createText(0, 25);
+		playerXY  = platformMethods->createText(0, 50);
+		playerPhysicState  = platformMethods->createText(0, 75);
 
 		/*
 		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
@@ -63,8 +83,7 @@ public:
 	}
 
 	float tempSpeed = 1;
-	// TODO: apply 
-	// 
+	float gravity = .2f;
 	void updateAndRender(GameInputContext &input, double dt) {
 		if (platformDebugInfo) {
 			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
@@ -81,14 +100,43 @@ public:
 		else if (input.moveRight) {
 			playerPos.x += (float)(tempSpeed*dt); 
 		}
+
+		/*
 		if (input.moveUp) {
 			playerPos.y += (float)(tempSpeed*dt); 
 		}
 		else if (input.moveDown) {
 			playerPos.y -= (float)(tempSpeed*dt); 
 		}
+		*/
 
-		// Debug collision
+		// Physics state machine
+		if (physicState == FALL) {
+			playerPos.y -= (float)(gravity*dt); 
+
+			// event checking 
+			if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
+				physicState = ONGROUND;
+			}
+		}
+		else if (physicState == ONGROUND) {
+			if (!CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
+				physicState = FALL;
+			}
+			else if(CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd) && 
+					input.moveUp) {
+				physicState = JUMP;
+			}
+		}
+		else if (physicState == JUMP) {
+			playerPos.y += (float)(5*gravity*dt); 
+
+			// temp
+			if (playerPos.y >= .5f) {
+				physicState = FALL;
+			}
+		}
+
 		if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
 			planeColor = collidedColor;
 			playerColor = collidedColor;
@@ -98,8 +146,9 @@ public:
 			playerColor = {0, 0, 255, 255};
 		}
 
+		// Debug collision
 		float d = fabs(player.start.y - player.end.y)/2;
-
+		
 		player.start.x = playerPos.x;
 		player.start.y = playerPos.y + d;
 
@@ -110,10 +159,22 @@ public:
 		platformMethods->drawCapsule(player, playerColor);
 		platformMethods->drawLine(planeStart, planeEnd, planeColor);
 
-		/*
-		tempAnim->changePos(r.x, r.y);
-		tempAnim->animate(dt);
-		*/
+		// Debug info
+		playerXY->setText(Util::MessageFormater::print("Player pos: ", playerPos.x, ", ", playerPos.y));
+		platformMethods->drawText(playerXY);
+
+		std::string physicStateStr;
+		if (physicState == FALL) {
+			physicStateStr = "FALL";
+		}
+		else if (physicState == ONGROUND) {
+			physicStateStr = "ONGROUND";
+		}
+		else if (physicState == JUMP) {
+			physicStateStr = "JUMP";
+		}
+		playerPhysicState->setText(Util::MessageFormater::print("Physic state: ", physicStateStr));
+		platformMethods->drawText(playerPhysicState);
 	}
 	
 	~MetalSlug() {

@@ -6,7 +6,7 @@ TODO:
 			-> line collision 
 			-> capsule collision 
 
-		PHAKE PHYSICS: @Current
+		PHAKE PHYSICS: @Current - done 50%
 			all the physics will be just state machine and interpolation with different ease function
 			state: 
 				jump -> from bottom to peak 
