@@ -84,6 +84,11 @@ public:
 
 	float tempSpeed = 1;
 	float gravity = 1;
+	float jumpT = 0;
+	float jumpProgress = 0;
+	float playerOriginalGroundY = 0;
+	float jumpHeight = 1.0f;
+
 	void updateAndRender(GameInputContext &input, double dt) {
 		if (platformDebugInfo) {
 			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
@@ -117,22 +122,31 @@ public:
 			else if(CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd) && 
 					input.moveUp) {
 				physicState = JUMP;
+				jumpT = 0;
+				playerOriginalGroundY = planeStart.y;
 			}
 		}
 		else if (physicState == JUMP) {
 			// TODO: do the jumping curve - the fun stuff 
 			// the curve is just a simple parabola  
-			playerPos.y += (float)(5*gravity*dt); 
+			//playerPos.y += (float)(5*gravity*dt); 
+			jumpT += gravity*dt;
+			jumpProgress = -pow((jumpT*2-1), 2) + 1;
+			playerPos.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
 			// event checking 
+			/*
 			if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
 				physicState = ONGROUND;
 			}
+			*/
 
 			// temp
+			/*
 			if (playerPos.y >= .5f) {
 				physicState = FALL;
 			}
+			*/
 		}
 
 		if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
