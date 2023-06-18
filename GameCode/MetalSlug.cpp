@@ -23,6 +23,7 @@ private:
 	GameText *fps = NULL;
 	GameText *playerXY = NULL;
 	GameText *playerPhysicState = NULL;
+	GameText *backgroundRectText = NULL;
 
 	// TODO: change the coord conversion a little bit: 
 	// from something
@@ -54,6 +55,8 @@ public:
 	}
 
 	PlatformDebugInfo *platformDebugInfo = NULL;
+	Rect backgroundRect;
+	float backgroundScale = 1.43f;
 
 	void setup() {
 		// load all the frames
@@ -68,6 +71,7 @@ public:
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
 		playerPhysicState  = platformMethods->createText(0, 45, 10);
+		backgroundRectText  = platformMethods->createText(0, 60, 10);
 
 		/*
 		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
@@ -76,23 +80,53 @@ public:
 		*/
 
 		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
-		float backgroundScaleX = 2;
-		float backgroundScaleY = 2;
-		Rect backgroundRect = {0, 0, backgroundScaleX*backgroundImg->getGameWidth(), backgroundScaleY*backgroundImg->getGameHeight()};
+		backgroundRect = {25.1f, 0.357f, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
 		backgroundImg->setRect(backgroundRect);
 	}
 
 	float tempSpeed = 1;
-	float gravity = 2.2;
+	float gravity = 2.2f;
 	float jumpT = 0;
 	float jumpProgress = 0;
 	float playerOriginalGroundY = 0;
-	float jumpHeight = .8;
+	float jumpHeight = .8f;
 
 	void updateAndRender(GameInputContext &input, double dt) {
 		// @StartTest: Camera
-		// TODO: how to make it fill the screen in the right size 
+		/*
+		if (input.pressRightArrow) {
+			backgroundRect.x += tempSpeed*dt;
+		}
+		else if (input.pressLeftArrow) {
+			backgroundRect.x -= tempSpeed*dt;
+		}
+
+		if (input.pressUpArrow) {
+			backgroundRect.y -= tempSpeed*dt;
+		}
+		else if (input.pressDownArrow) {
+			backgroundRect.y += tempSpeed*dt;
+		}
+		*/
+
+		/*
+		if (input.pressDebugZoomInBackground) {
+			backgroundScale += .001;
+			backgroundRect.width = backgroundScale * backgroundImg->getGameWidth(); 
+			backgroundRect.height = backgroundScale * backgroundImg->getGameHeight(); 
+		}
+		else if (input.pressDebugZoomOutBackground) {
+			backgroundScale -= .1;
+			backgroundRect.width = backgroundScale * backgroundImg->getGameWidth(); 
+			backgroundRect.height = backgroundScale * backgroundImg->getGameHeight(); 
+		}
+		*/
+
+		backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
+		backgroundImg->setRect(backgroundRect);
 		platformMethods->renderImage(backgroundImg);
+		platformMethods->drawText(backgroundRectText);
+
 		// @EndTest
 
 		if (platformDebugInfo) {

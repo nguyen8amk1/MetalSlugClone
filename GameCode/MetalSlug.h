@@ -33,6 +33,8 @@ struct GameInputContext {
 		pressDownArrow,
 		pressLeftArrow,
 		pressRightArrow,
+		pressDebugZoomInBackground,
+		pressDebugZoomOutBackground,
 		pressEnter;
 };
 

@@ -144,6 +144,9 @@ public:
 				gameInput.pressRightArrow = keyboardState[SDL_SCANCODE_RIGHT];
 				gameInput.pressEnter = keyboardState[SDL_SCANCODE_RETURN];
 
+				gameInput.pressDebugZoomInBackground = keyboardState[SDL_SCANCODE_M];
+				gameInput.pressDebugZoomOutBackground = keyboardState[SDL_SCANCODE_N];
+
 				// TODO: Handle Joystick
 			}
 
