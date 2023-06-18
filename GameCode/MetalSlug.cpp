@@ -16,6 +16,7 @@ private:
 	std::vector<std::string> frameFiles;
 	Animation *tempAnim;
 	PlatformSpecificImage* tempImg;
+	PlatformSpecificImage* backgroundImg;
 
 	// debug 
 	GameText *frameMillis = NULL;
@@ -26,8 +27,8 @@ private:
 	// TODO: change the coord conversion a little bit: 
 	// from something
 	// temp
-	Point planeStart = {-1.0f, -.25f};
-	Point planeEnd = {1.0f, -.25f};
+	Point planeStart = {-10, -.25f};
+	Point planeEnd = {10, -.25f};
 	Vec2f playerPos = {-.5f, 0.6f};
 	Point playerStart = {-.4f, .4f};
 	Point playerEnd = {-.4f, 0.0f};
@@ -70,16 +71,22 @@ public:
 		Rect animRect = { 0, 0, .5f, .3f};
 		tempAnim = new Animation(0.1f, "Assets/Imgs/sprites_cat_running_trans.png", platformMethods, animRect, 2, 4);
 		
-		frameMillis = platformMethods->createText(0, 0);
-		fps  = platformMethods->createText(0, 25);
-		playerXY  = platformMethods->createText(0, 50);
-		playerPhysicState  = platformMethods->createText(0, 75);
+		frameMillis = platformMethods->createText(0, 0, 10);
+		fps  = platformMethods->createText(0, 15, 10);
+		playerXY  = platformMethods->createText(0, 30, 10);
+		playerPhysicState  = platformMethods->createText(0, 45, 10);
 
 		/*
 		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
 		Rect portionRect = {0, 0, 500, 200};
 		tempImg = tempImg->getImagePortion(portionRect);
 		*/
+
+		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
+		float backgroundScaleX = 2;
+		float backgroundScaleY = 2;
+		Rect backgroundRect = {0, 0, backgroundScaleX*backgroundImg->getGameWidth(), backgroundScaleY*backgroundImg->getGameHeight()};
+		backgroundImg->setRect(backgroundRect);
 	}
 
 	float tempSpeed = 1;
@@ -87,9 +94,14 @@ public:
 	float jumpT = 0;
 	float jumpProgress = 0;
 	float playerOriginalGroundY = 0;
-	float jumpHeight = 1.0f;
+	float jumpHeight = .5;
 
 	void updateAndRender(GameInputContext &input, double dt) {
+		// @StartTest: Camera
+		// TODO: how to make it fill the screen in the right size 
+		platformMethods->renderImage(backgroundImg);
+		// @EndTest
+
 		if (platformDebugInfo) {
 			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
 			fps->setText(Util::MessageFormater::print("FPS: ", platformDebugInfo->fps));
@@ -99,10 +111,10 @@ public:
 		}
 
 		// @StartTest: 
-		if (input.moveLeft) {
+		if (input.pressLeft) {
 			playerPos.x -= (float)(tempSpeed*dt); 
 		}
-		else if (input.moveRight) {
+		else if (input.pressRight) {
 			playerPos.x += (float)(tempSpeed*dt); 
 		}
 
@@ -120,16 +132,14 @@ public:
 				physicState = FALL;
 			}
 			else if(CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd) && 
-					input.moveUp) {
+					input.pressJump) {
 				physicState = JUMP;
 				jumpT = 0;
-				playerOriginalGroundY = planeStart.y;
+				// TODO: need to figure out collision handling before doing anything else - ASAP
+				playerOriginalGroundY = playerPos.y; 
 			}
 		}
 		else if (physicState == JUMP) {
-			// TODO: do the jumping curve - the fun stuff 
-			// the curve is just a simple parabola  
-			//playerPos.y += (float)(5*gravity*dt); 
 			jumpT += gravity*dt;
 			jumpProgress = -pow((jumpT*2-1), 2) + 1;
 			playerPos.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
@@ -138,13 +148,6 @@ public:
 			/*
 			if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
 				physicState = ONGROUND;
-			}
-			*/
-
-			// temp
-			/*
-			if (playerPos.y >= .5f) {
-				physicState = FALL;
 			}
 			*/
 		}
@@ -157,6 +160,10 @@ public:
 			planeColor = {255, 255, 0, 255};
 			playerColor = {0, 0, 255, 255};
 		}
+
+		Point tempPoint = {playerPos.x, playerOriginalGroundY};
+		platformMethods->drawPoint(playerPos, planeColor);
+		platformMethods->drawPoint(tempPoint, planeColor);
 
 		// Debug collision
 		float d = fabs(player.start.y - player.end.y)/2;

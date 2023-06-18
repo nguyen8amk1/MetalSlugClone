@@ -17,7 +17,7 @@ struct SDL2GameText : public MetalSlug::GameText {
     TTF_Font* font;
     SDL_Color textColor = { 255, 255, 255 };
 
-    SDL2GameText(SDL_Renderer *renderer, int x, int y, int fontSize = 20, const std::string &text = "ditmesaigon") {
+    SDL2GameText(SDL_Renderer *renderer, int x, int y, int fontSize = 10, const std::string &text = "ditmesaigon") {
         // set the font: 
 		std::string fontPath = "D:/Programming/Workspace/MetalSlugClone_DirectX/Assets/Fonts/Consolas.ttf";
 		font = TTF_OpenFont(fontPath.c_str(), fontSize);

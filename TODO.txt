@@ -6,7 +6,7 @@ TODO:
 			-> line collision 
 			-> capsule collision 
 
-		PHAKE PHYSICS: @Current - done 50%
+		PHAKE PHYSICS: @Backburner - done 50%
 			all the physics will be just state machine and interpolation with different ease function
 			state: 
 				jump -> from bottom to peak 
@@ -23,7 +23,7 @@ TODO:
 					jump -> from bottom to peak 
 					fall -> from peak to bottom (or some ) -> gravity is just fall state 
 
-	ROUGH CAMERA SYSTEM (4h) []
+	ROUGH CAMERA SYSTEM (4h) [] - @Current
 		-> load the mission1_level and test the camera 
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []

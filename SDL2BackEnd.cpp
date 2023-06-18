@@ -8,8 +8,12 @@
 #include "GameCode/MetalSlug.cpp"
 #include "SDL2PlatformMethodsCollection.cpp"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+// TODO: change the screen width and screen height to 320x224
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 224
+#define SCALE_FACTOR 4
+#define SCALED_SCREEN_WIDTH SCALE_FACTOR*SCREEN_WIDTH
+#define SCALED_SCREEN_HEIGHT SCALE_FACTOR*SCREEN_HEIGHT
 
 namespace SDL2Platform {
 
@@ -39,7 +43,7 @@ public:
 
 		// Create a window
 		SDL_Window* window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-			SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+			SCALED_SCREEN_WIDTH, SCALED_SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (!window) {
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
 			SDL_Quit();
@@ -89,6 +93,12 @@ public:
 		game.setup();
 		game.platformDebugInfo = &debugInfo;
 
+		SDL_Rect stretchedScreenRect;
+		stretchedScreenRect.x = 0;
+		stretchedScreenRect.y = 0;
+		stretchedScreenRect.w = SCALED_SCREEN_WIDTH;  // Double the width of the frame texture
+		stretchedScreenRect.h = SCALED_SCREEN_HEIGHT;  // Double the height of the frame texture
+
 		while (isRunning) {
 			// Handle events
 			SDL_Event event;
@@ -121,10 +131,20 @@ public:
 
 				// Get keyboard state
 				keyboardState = SDL_GetKeyboardState(NULL);
-				gameInput.moveUp = keyboardState[SDL_SCANCODE_W];
-				gameInput.moveDown = keyboardState[SDL_SCANCODE_S];
-				gameInput.moveLeft = keyboardState[SDL_SCANCODE_A];
-				gameInput.moveRight = keyboardState[SDL_SCANCODE_D];
+				gameInput.pressUp = keyboardState[SDL_SCANCODE_W];
+				gameInput.pressDown = keyboardState[SDL_SCANCODE_S];
+				gameInput.pressLeft = keyboardState[SDL_SCANCODE_A];
+				gameInput.pressRight = keyboardState[SDL_SCANCODE_D];
+				gameInput.pressJump = keyboardState[SDL_SCANCODE_K];
+				gameInput.pressShoot = keyboardState[SDL_SCANCODE_J];
+
+				gameInput.pressUpArrow = keyboardState[SDL_SCANCODE_UP];
+				gameInput.pressDownArrow = keyboardState[SDL_SCANCODE_DOWN];
+				gameInput.pressLeftArrow = keyboardState[SDL_SCANCODE_LEFT];
+				gameInput.pressRightArrow = keyboardState[SDL_SCANCODE_RIGHT];
+				gameInput.pressEnter = keyboardState[SDL_SCANCODE_RETURN];
+
+				// TODO: Handle Joystick
 			}
 
 
@@ -174,8 +194,10 @@ public:
 
 			SDL_SetRenderTarget(renderer, NULL);
 
+			// Render the frame texture to the back buffer with stretching
+			SDL_RenderCopy(renderer, frameTexture, NULL, &stretchedScreenRect);
+
 			// Render the frame texture to the back buffer
-			SDL_RenderCopy(renderer, frameTexture, NULL, NULL);
 			SDL_RenderPresent(renderer);
 
 

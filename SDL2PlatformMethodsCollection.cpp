@@ -10,6 +10,7 @@
 
 
 namespace SDL2Platform {
+class SDL2PlatformMethodsCollection;
 
 struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
     SDL_Texture* texture;
@@ -28,6 +29,14 @@ struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
 
     int getPixelHeight() override {
         return textureRect.h;
+    }
+
+    float getGameWidth() override {
+        return ((float)textureRect.w/320)*2.0f;
+    }
+
+    float getGameHeight() override {
+        return ((float)textureRect.h/224)*2.0f;
     }
 
 
@@ -207,8 +216,8 @@ public:
         SDL_RenderDrawLine(renderer, ax, ay, bx, by);
     }
 
-    MetalSlug::GameText* createText(int x, int y) override {
-        SDL2GameText* text = new SDL2GameText(renderer, x, y);
+    MetalSlug::GameText* createText(int x, int y, int fontSize) override {
+        SDL2GameText* text = new SDL2GameText(renderer, x, y, fontSize);
         return text;
     }
 

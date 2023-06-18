@@ -55,7 +55,6 @@ public:
 		return distance <= c.r;
 	}
 
-
 	static bool doesCapsuleVsLineCollide(const Capsule& capsule, const Point& lineStart, const Point& lineEnd) {
 		// Check for collision between the line segment and the capsule's cylindrical part
 		if (doesLineSegmentVsLineSegmentCollide(lineStart, lineEnd, capsule.start, capsule.end))
@@ -70,7 +69,6 @@ public:
 
 		return false;
 	}
-
 
 private:
 	static float calculateDistanceToLineSegment(float cx, float cy, float ax, float ay, float bx, float by) {
