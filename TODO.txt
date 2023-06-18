@@ -1,5 +1,31 @@
 TODO: 
-	ROUGH PHYSICS  (2h) []
+	ROUGH CAMERA SYSTEM (4h) [] - @Current
+		-> load the mission1_level and test the camera 
+
+	COLLISION RESOLVER PROBLEM (4h) []
+
+	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
+
+	FIX: black background when having transparent background (2h) 
+		(normal rendering works, only the portion not working) []
+		(NOTE: test on the sdl2 backend)
+
+	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
+
+	ATTACH THE COLLIDER WITH THE ANIMATION (4h) []
+
+	PLACE ALL THE STUFF ON THE LEVEL (4h) []
+
+	PARALAX BACKGROUND (2h) []
+
+	PHAN HOACH KHONG GIAN (4h) []
+
+BUG: 
+	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
+	FLICKERING WHEN MOVING (2h) []
+	
+DONE: 
+	ROUGH PHYSICS  (2h) [X]
 		-> COLLISION: [X]
 			-> box collider 
 			-> circle collider (do this first)
@@ -23,30 +49,6 @@ TODO:
 					jump -> from bottom to peak 
 					fall -> from peak to bottom (or some ) -> gravity is just fall state 
 
-	ROUGH CAMERA SYSTEM (4h) [] - @Current
-		-> load the mission1_level and test the camera 
-
-	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
-
-	FIX: black background when having transparent background (2h) 
-		(normal rendering works, only the portion not working) []
-		(NOTE: test on the sdl2 backend)
-
-	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
-
-	ATTACH THE COLLIDER WITH THE ANIMATION (4h) []
-
-	PLACE ALL THE STUFF ON THE LEVEL (4h) []
-
-	PARALAX BACKGROUND (2h) []
-
-	PHAN HOACH KHONG GIAN (4h) []
-
-BUG: 
-	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
-	FLICKERING WHEN MOVING (2h) []
-	
-DONE: 
 	SHOWING DEBUG INFO (2h) [X]
 		text: Millis per frame: 42.1196, FPS: 23.7419  [X]
 
