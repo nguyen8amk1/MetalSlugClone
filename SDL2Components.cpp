@@ -15,7 +15,7 @@ struct SDL2GameText : public MetalSlug::GameText {
 
     SDL_Renderer* renderer;
     TTF_Font* font;
-    SDL_Color textColor = { 255, 255, 255 };
+    SDL_Color textColor = {255, 0, 255};
 
     SDL2GameText(SDL_Renderer *renderer, int x, int y, int fontSize = 10, const std::string &text = "ditmesaigon") {
         // set the font: 

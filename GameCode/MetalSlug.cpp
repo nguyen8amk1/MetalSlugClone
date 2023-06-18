@@ -39,17 +39,10 @@ private:
 	Color planeColor = {255, 255, 0, 255};
 	Color playerColor = {0, 0, 255, 255};
 
-	// TODO: write a physics state machine
-	// let's draw a state machine transition map 
-		// onground -> jump -> fall -> onground 
-
-	// DO FALL AND ONGROUND FIRST @Current
-	// FALL - pull down 
-	// ONGROUND - y stick to the plane 
-
 	enum PhysicState {
 		ONGROUND, 
-		JUMP, 
+		JUMPUP, 
+		JUMPDOWN, 
 		FALL
 	};
 
@@ -90,11 +83,11 @@ public:
 	}
 
 	float tempSpeed = 1;
-	float gravity = 1;
+	float gravity = 2.2;
 	float jumpT = 0;
 	float jumpProgress = 0;
 	float playerOriginalGroundY = 0;
-	float jumpHeight = .5;
+	float jumpHeight = .8;
 
 	void updateAndRender(GameInputContext &input, double dt) {
 		// @StartTest: Camera
@@ -133,23 +126,35 @@ public:
 			}
 			else if(CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd) && 
 					input.pressJump) {
-				physicState = JUMP;
+				physicState = JUMPUP;
 				jumpT = 0;
 				// TODO: need to figure out collision handling before doing anything else - ASAP
 				playerOriginalGroundY = playerPos.y; 
 			}
 		}
-		else if (physicState == JUMP) {
+		else if (physicState == JUMPUP) {
 			jumpT += gravity*dt;
-			jumpProgress = -pow((jumpT*2-1), 2) + 1;
+			jumpProgress = -pow((jumpT-1), 2) + 1;
+			playerPos.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
+			bool suddenHitPlatform = false;
+			if (jumpT >= 1) {
+				jumpT -= 1;
+				physicState = JUMPDOWN;
+			}
+			// TODO: handle if sudden hit another object on the head -> physicState = FALL
+			else if (suddenHitPlatform) {
+				physicState = FALL;
+			}
+		}
+		else if (physicState == JUMPDOWN) {
+			jumpT += gravity*dt;
+			jumpProgress = -pow(jumpT, 2) + 1;
 			playerPos.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
 			// event checking 
-			/*
 			if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
 				physicState = ONGROUND;
 			}
-			*/
 		}
 
 		if (CollisionChecker::doesCapsuleVsLineCollide(player, planeStart, planeEnd)) {
@@ -189,8 +194,11 @@ public:
 		else if (physicState == ONGROUND) {
 			physicStateStr = "ONGROUND";
 		}
-		else if (physicState == JUMP) {
-			physicStateStr = "JUMP";
+		else if (physicState == JUMPUP) {
+			physicStateStr = "JUMPUP";
+		}
+		else if (physicState == JUMPDOWN) {
+			physicStateStr = "JUMPDOWN";
 		}
 		playerPhysicState->setText(Util::MessageFormater::print("Physic state: ", physicStateStr));
 		platformMethods->drawText(playerPhysicState);
