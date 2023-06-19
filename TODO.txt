@@ -4,6 +4,8 @@ TODO:
 		-> 
 
 	COLLISION RESOLVER PROBLEM (4h) []
+		-> using SweptAABB should fix the problem 
+		-> look into the Separating Axis Theorem (SAT) or the Circle-Circle 
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 

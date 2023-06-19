@@ -108,15 +108,13 @@ public:
 	float playerOriginalGroundY = 0;
 	float jumpHeight = .8f;
 
-	// Camera -> TODO: let's just apply the camera plainly first 
-	// Problem: currently the player pos does not have any relationship with the world coord 
-	// -> TODO: set the player pos to match with the background, the plane as well  
-
-	// NOTE: New problem all the entity in the game is in world space not camera space, 
+	// Camera 
+	// NOTE: All the pos of entity in the game is in world space not camera space, 
 	// the camera calculation is just for rendering   
 
 	// NOTE: text not involve with the camera 
-	// Problem: currently we don't have the world size and the camera size, how tf do we know how to render ?? 
+	// Problem: currently we don't have the WORLD SIZE and the CAMERA SIZE
+	// how tf do we know how to render ?? (we already render it correctly but how ??) 
 	// I know we scale the background is up to 1.43 to fit with the screen, but that's it :)) 
 	// Problem: When changing the scale everything broke -> make things work independent off the scale 
 
