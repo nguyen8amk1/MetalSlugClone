@@ -28,11 +28,13 @@ private:
 	// TODO: change the coord conversion a little bit: 
 	// from something
 	// temp
-	Point planeStart = {-10, -.25f};
-	Point planeEnd = {10, -.25f};
-	Vec2f playerPos = {-.5f, 0.6f};
-	Point playerStart = {-.4f, .4f};
-	Point playerEnd = {-.4f, 0.0f};
+	Point planeStart = {-30, -.8f};
+	Point planeEnd = {30, -.5f};
+
+	Vec2f playerPos = {-24.5f, 0.6f};
+	Point playerStart = {-24.5f, .4f};
+	Point playerEnd = {-24.5f, 0.0f};
+
 	float playerHalfWidth = .1f;
 	Capsule player = {playerStart, playerEnd, playerHalfWidth};
 
@@ -56,7 +58,10 @@ public:
 
 	PlatformDebugInfo *platformDebugInfo = NULL;
 	Rect backgroundRect;
-	float backgroundScale = 1.43f;
+	float backgroundScale = 1.43f; // to scale 224 as big as 320 -> scale by factor of 320/224
+	//float backgroundScale = 1; // to scale 224 as big as 320 -> scale by factor of 320/224
+
+	Vec2f cameraPos = {-25.1f, -.357f};
 
 	void setup() {
 		// load all the frames
@@ -80,8 +85,20 @@ public:
 		*/
 
 		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
-		backgroundRect = {25.1f, 0.357f, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
+		//backgroundRect = {25.1f, 0.357f, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
+		backgroundRect = {0, 0, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
 		backgroundImg->setRect(backgroundRect);
+
+		// apply the camera 
+		playerPos.x -= cameraPos.x;
+		playerPos.y -= cameraPos.y;
+		planeStart.x -= cameraPos.x;
+		planeStart.y -= cameraPos.y;
+		planeEnd.x -= cameraPos.x;
+		planeEnd.y -= cameraPos.y;
+		backgroundRect.x -= cameraPos.x;
+		backgroundRect.y -= cameraPos.y;
+
 	}
 
 	float tempSpeed = 1;
@@ -91,39 +108,41 @@ public:
 	float playerOriginalGroundY = 0;
 	float jumpHeight = .8f;
 
+	// Camera -> TODO: let's just apply the camera plainly first 
+	// Problem: currently the player pos does not have any relationship with the world coord 
+	// -> TODO: set the player pos to match with the background, the plane as well  
+
+	// NOTE: New problem all the entity in the game is in world space not camera space, 
+	// the camera calculation is just for rendering   
+
+	// NOTE: text not involve with the camera 
+	// Problem: currently we don't have the world size and the camera size, how tf do we know how to render ?? 
+	// I know we scale the background is up to 1.43 to fit with the screen, but that's it :)) 
+	// Problem: When changing the scale everything broke -> make things work independent off the scale 
+
 	void updateAndRender(GameInputContext &input, double dt) {
 		// @StartTest: Camera
-		/*
 		if (input.pressRightArrow) {
-			backgroundRect.x += tempSpeed*dt;
+			float d = tempSpeed * dt;
+			cameraPos.x += d;
+
+			playerPos.x -= d;
+			planeStart.x -= d;
+			planeEnd.x -= d;
+			backgroundRect.x -= d;
 		}
 		else if (input.pressLeftArrow) {
-			backgroundRect.x -= tempSpeed*dt;
+			float d = tempSpeed * dt;
+			cameraPos.x -= d;
+
+			playerPos.x += d;
+			planeStart.x += d;
+			planeEnd.x += d;
+			backgroundRect.x += d;
 		}
 
-		if (input.pressUpArrow) {
-			backgroundRect.y -= tempSpeed*dt;
-		}
-		else if (input.pressDownArrow) {
-			backgroundRect.y += tempSpeed*dt;
-		}
-		*/
-
-		/*
-		if (input.pressDebugZoomInBackground) {
-			backgroundScale += .001;
-			backgroundRect.width = backgroundScale * backgroundImg->getGameWidth(); 
-			backgroundRect.height = backgroundScale * backgroundImg->getGameHeight(); 
-		}
-		else if (input.pressDebugZoomOutBackground) {
-			backgroundScale -= .1;
-			backgroundRect.width = backgroundScale * backgroundImg->getGameWidth(); 
-			backgroundRect.height = backgroundScale * backgroundImg->getGameHeight(); 
-		}
-		*/
-
-		backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		backgroundImg->setRect(backgroundRect);
+		backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		platformMethods->renderImage(backgroundImg);
 		platformMethods->drawText(backgroundRectText);
 

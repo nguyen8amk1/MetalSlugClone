@@ -4,6 +4,7 @@
 #include<string>
 #include<Windows.h>
 #include"Util.cpp"
+#include"SDL2Util.cpp"
 #include"GameCode/MetalSlug.h"
 
 namespace SDL2Platform {
@@ -72,6 +73,66 @@ struct SDL2GameText : public MetalSlug::GameText {
 		TTF_CloseFont(font);
     }
     
+};
+
+struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
+    SDL_Texture* texture;
+    SDL_Rect textureRect;
+    SDL_Renderer *renderer; 
+
+    void setRect(MetalSlug::Rect &rect) override {
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(rect.x, rect.y, textureRect.x, textureRect.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(rect.width, rect.height, textureRect.w, textureRect.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(textureRect.x, textureRect.y, textureRect.w, textureRect.h);
+    }
+
+    int getPixelWidth() override {
+        return textureRect.w;
+    }
+
+    int getPixelHeight() override {
+        return textureRect.h;
+    }
+
+    float getGameWidth() override {
+        return ((float)textureRect.w/320)*2.0f;
+    }
+
+    float getGameHeight() override {
+        return ((float)textureRect.h/224)*2.0f;
+    }
+
+
+    MetalSlug::PlatformSpecificImage* getImagePortion(MetalSlug::Rect& pixelRect) {
+        SDL_Rect imgPartRect;
+        imgPartRect.x = (int)pixelRect.x;
+        imgPartRect.y = (int)pixelRect.y;
+        imgPartRect.w = (int)pixelRect.width;
+        imgPartRect.h = (int)pixelRect.height;
+
+        SDL2PlatformSpecificImage *image = new SDL2PlatformSpecificImage();
+        SDL_Texture* myTexturePart = getAreaTexture(imgPartRect, renderer, texture);
+
+        image->texture = myTexturePart;
+        image->textureRect = imgPartRect;
+
+        return image;
+    }
+
+private:
+    SDL_Texture* getAreaTexture(SDL_Rect rect, SDL_Renderer* renderer, SDL_Texture* source)
+    {
+        SDL_Texture* result = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, rect.w, rect.h);
+        SDL_SetRenderTarget(renderer, result);
+        SDL_SetTextureBlendMode(source, SDL_BLENDMODE_NONE); // @Fixme: not working, now the background turns white :))
+
+        SDL_RenderCopy(renderer, source, &rect, NULL);
+
+        // the folowing line should reset the target to default(the screen)
+        //SDL_SetRenderTarget(renderer, NULL);
+        // I also removed the RenderPresent funcion as it is not needed here      
+        return result;
+    }
 };
 
 }

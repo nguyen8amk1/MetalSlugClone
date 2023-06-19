@@ -1,6 +1,7 @@
 TODO: 
 	ROUGH CAMERA SYSTEM (4h) [] - @Current
 		-> load the mission1_level and test the camera 
+		-> 
 
 	COLLISION RESOLVER PROBLEM (4h) []
 
@@ -17,6 +18,11 @@ TODO:
 	PLACE ALL THE STUFF ON THE LEVEL (4h) []
 
 	PARALAX BACKGROUND (2h) []
+
+	RENDER ONLY PART OF THE MAP (2h) []
+		-> get the portion of the map and only render that part 
+		-> may be get 2 mapsize portion so that the scrolling smoother
+		-> only get new portion when the camera get's move by so much :v (event = camera move by X -> append new portion)
 
 	PHAN HOACH KHONG GIAN (4h) []
 
