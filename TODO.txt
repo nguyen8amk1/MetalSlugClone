@@ -1,7 +1,11 @@
 TODO: 
-	ROUGH CAMERA SYSTEM (4h) [] - @Current
-		-> load the mission1_level and test the camera 
-		-> 
+	// TODO: SWITCH TO PLAYER WITH DIFFERENT SHAPE: SQUARE
+	// IMPLEMENT THE SWEPTAABB 
+
+	ROUGH CAMERA SYSTEM (4h) [] - @Current - 70% done 
+		-> load the mission1_level and test the camera [X]
+		-> refactor the camera code into a reusable camera system, [] - @Current 
+			maybe even use matrix to perform the operation needed
 
 	COLLISION RESOLVER PROBLEM (4h) []
 		-> using SweptAABB should fix the problem 
@@ -18,6 +22,8 @@ TODO:
 	ATTACH THE COLLIDER WITH THE ANIMATION (4h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) []
+
+	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
 
 	PARALAX BACKGROUND (2h) []
 

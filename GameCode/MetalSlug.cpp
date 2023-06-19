@@ -28,12 +28,12 @@ private:
 	// TODO: change the coord conversion a little bit: 
 	// from something
 	// temp
-	Point planeStart = {-30, -.8f};
-	Point planeEnd = {30, -.5f};
+	Point planeStart = {-30, -.3f};
+	Point planeEnd = {30, -.3f};
 
-	Vec2f playerPos = {-24.5f, 0.6f};
-	Point playerStart = {-24.5f, .4f};
-	Point playerEnd = {-24.5f, 0.0f};
+	Vec2f playerPos = {-17, 0.6f};
+	Point playerStart = {-17, .4f};
+	Point playerEnd = {-17, 0.0f};
 
 	float playerHalfWidth = .1f;
 	Capsule player = {playerStart, playerEnd, playerHalfWidth};
@@ -58,12 +58,20 @@ public:
 
 	PlatformDebugInfo *platformDebugInfo = NULL;
 	Rect backgroundRect;
-	float backgroundScale = 1.43f; // to scale 224 as big as 320 -> scale by factor of 320/224
-	//float backgroundScale = 1; // to scale 224 as big as 320 -> scale by factor of 320/224
+	float zoomFactor = 1.43333f; // to scale 224 as big as 320 -> scale by factor of 320/224
+	//float zoomFactor = 1; 
 
-	Vec2f cameraPos = {-25.1f, -.357f};
+	// TODO: SWITCH TO PLAYER WITH DIFFERENT SHAPE: SQUARE
+	// IMPLEMENT THE SWEPTAABB 
+
+	// SO THE POSITION STILL ONLY WORKS WITH A CERTAIN SCALE FACTOR, WE'LL JUST LIVE WITH THAT :)) 
+	Vec2f cameraPos = {-17.5529f, -0.2472f};
 
 	void setup() {
+		// scale the camera 
+		cameraPos.x *= zoomFactor;
+		cameraPos.y *= zoomFactor;
+
 		// load all the frames
 		for (int i = 0; i < 8; i++) {
 			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
@@ -86,19 +94,43 @@ public:
 
 		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
 		//backgroundRect = {25.1f, 0.357f, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
-		backgroundRect = {0, 0, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
+		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
 		backgroundImg->setRect(backgroundRect);
+
+		// change the position according to the scale 
+		playerPos.x *= zoomFactor;
+		playerPos.y *= zoomFactor;
+		playerStart.x *= zoomFactor;
+		playerStart.y *= zoomFactor;
+		playerEnd.x *= zoomFactor;
+		playerEnd.y *= zoomFactor;
+
+		planeStart.x *= zoomFactor;
+		planeStart.y *= zoomFactor;
+		planeEnd.x *= zoomFactor;
+		planeEnd.y *= zoomFactor;
+		backgroundRect.x *= zoomFactor;
+		backgroundRect.y *= zoomFactor;
+
+		// enlarge numbers according to the scale as well 
+		player.r *= zoomFactor;
+		backgroundRect.width *= zoomFactor;
+		backgroundRect.height *= zoomFactor;
 
 		// apply the camera 
 		playerPos.x -= cameraPos.x;
 		playerPos.y -= cameraPos.y;
+		playerStart.x -= cameraPos.x;
+		playerStart.y -= cameraPos.y;
+		playerEnd.x -= cameraPos.x;
+		playerEnd.y -= cameraPos.y;
+
 		planeStart.x -= cameraPos.x;
 		planeStart.y -= cameraPos.y;
 		planeEnd.x -= cameraPos.x;
 		planeEnd.y -= cameraPos.y;
 		backgroundRect.x -= cameraPos.x;
 		backgroundRect.y -= cameraPos.y;
-
 	}
 
 	float tempSpeed = 1;
@@ -125,6 +157,8 @@ public:
 			cameraPos.x += d;
 
 			playerPos.x -= d;
+			playerStart.x -= d;
+			playerEnd.x -= d;
 			planeStart.x -= d;
 			planeEnd.x -= d;
 			backgroundRect.x -= d;
@@ -134,9 +168,36 @@ public:
 			cameraPos.x -= d;
 
 			playerPos.x += d;
+			playerStart.x += d;
+			playerEnd.x += d;
+
 			planeStart.x += d;
 			planeEnd.x += d;
 			backgroundRect.x += d;
+		}
+		if (input.pressUpArrow) {
+			float d = tempSpeed * dt;
+			cameraPos.y += d;
+
+			playerPos.y -= d;
+			playerStart.y -= d;
+			playerEnd.y -= d;
+
+			planeStart.y -= d;
+			planeEnd.y -= d;
+			backgroundRect.y -= d;
+		}
+		else if (input.pressDownArrow) {
+			float d = tempSpeed * dt;
+			cameraPos.y -= d;
+
+			playerPos.y += d;
+			playerStart.y += d;
+			playerEnd.y += d;
+
+			planeStart.y += d;
+			planeEnd.y += d;
+			backgroundRect.y += d;
 		}
 
 		backgroundImg->setRect(backgroundRect);
