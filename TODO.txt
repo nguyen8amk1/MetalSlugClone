@@ -1,15 +1,8 @@
 TODO: 
-	// TODO: SWITCH TO PLAYER WITH DIFFERENT SHAPE: SQUARE
-	// IMPLEMENT THE SWEPTAABB 
-
-	ROUGH CAMERA SYSTEM (4h) [] - @Current - 70% done 
-		-> load the mission1_level and test the camera [X]
-		-> refactor the camera code into a reusable camera system, [] - @Current 
-			maybe even use matrix to perform the operation needed
-
 	COLLISION RESOLVER PROBLEM (4h) []
 		-> using SweptAABB should fix the problem 
 		-> look into the Separating Axis Theorem (SAT) or the Circle-Circle 
+		IMPLEMENT THE SWEPTAABB @Next
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 
@@ -19,13 +12,19 @@ TODO:
 
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
-	ATTACH THE COLLIDER WITH THE ANIMATION (4h) []
+	ATTACH THE ANIMATION WITH THE COLLIDER (4h) []
 
-	PLACE ALL THE STUFF ON THE LEVEL (4h) []
+	PLACE ALL THE STUFF ON THE LEVEL (4h) [] -  by all the stuff i mean the enemy solders and hostages, 
+												the boss fight and houses and things could wait 
 
 	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
+		-> when level1 done, have proper structure for a level, a separate file for level 
 
 	PARALAX BACKGROUND (2h) []
+
+	GRENADE (2h) []
+		BOUNCE: 
+		-> a bounce is jumps with reduce height every time hit the ground 
 
 	RENDER ONLY PART OF THE MAP (2h) []
 		-> get the portion of the map and only render that part 
@@ -39,6 +38,8 @@ BUG:
 	FLICKERING WHEN MOVING (2h) []
 	
 DONE: 
+	ROUGH CAMERA SYSTEM (4h) [X] 
+		-> load the mission1_level and test the camera [X]
 	ROUGH PHYSICS  (2h) [X]
 		-> COLLISION: [X]
 			-> box collider 

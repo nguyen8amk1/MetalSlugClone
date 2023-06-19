@@ -16,7 +16,7 @@ struct SDL2GameText : public MetalSlug::GameText {
 
     SDL_Renderer* renderer;
     TTF_Font* font;
-    SDL_Color textColor = {255, 0, 255};
+    SDL_Color textColor = {0, 255, 0};
 
     SDL2GameText(SDL_Renderer *renderer, int x, int y, int fontSize = 10, const std::string &text = "ditmesaigon") {
         // set the font: 
@@ -95,11 +95,11 @@ struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
     }
 
     float getGameWidth() override {
-        return ((float)textureRect.w/320)*2.0f;
+        return ((float)textureRect.w/320)*2.86;
     }
 
     float getGameHeight() override {
-        return ((float)textureRect.h/224)*2.0f;
+        return ((float)textureRect.h/224)*2;
     }
 
 

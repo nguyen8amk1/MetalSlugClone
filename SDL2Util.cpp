@@ -9,7 +9,7 @@
 namespace SDL2Util {
 const class NormalizeCoordConverter {
 public:
-	// TODO: this one is still hard coded size :)) 
+	// NOTE: this one is still hard coded size :)) 
 	static void normalizedCoordToPixelCoord(float normX, float normY, int &pixelX, int &pixelY) {
 		//int pixelHeight = MetalSlug::MetalSlug::pixelScreenHeight;
 		//int pixelWidth = MetalSlug::MetalSlug::pixelScreenWidth;
@@ -19,8 +19,8 @@ public:
 	}
 
 	static void normalizedSizeToPixelSize(float normWidth, float normHeight, int &pixelWidth, int &pixelHeight) {
-		pixelWidth = (int)(160*normWidth);
-		pixelHeight = (int)(78.321*normHeight);
+		pixelWidth = (int)(111.888*normWidth);  // FIXME: still have something wrong with the size conversion 
+		pixelHeight = (int)(112*normHeight); 
 	}
 
 	static void toMiddleOrigin(int &x, int &y, int width, int height) {

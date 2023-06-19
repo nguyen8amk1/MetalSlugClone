@@ -70,6 +70,28 @@ public:
 		return false;
 	}
 
+	static bool doesRectangleVsLineCollide(const Rect& rect, const Point& lineStart, const Point& lineEnd) {
+		// Calculate the coordinates of the four corners of the rectangle
+		float rectLeft = rect.x;
+		float rectRight = rect.x + rect.width;
+		float rectTop = rect.y;
+		float rectBottom = rect.y + rect.height;
+
+		// Check if any of the rectangle's edges intersect with the line segment
+		if (doesLineSegmentVsLineSegmentCollide({ rectLeft, rectTop }, { rectRight, rectTop }, lineStart, lineEnd))
+			return true;
+
+		if (doesLineSegmentVsLineSegmentCollide({ rectRight, rectTop }, { rectRight, rectBottom }, lineStart, lineEnd))
+			return true;
+
+		if (doesLineSegmentVsLineSegmentCollide({ rectRight, rectBottom }, { rectLeft, rectBottom }, lineStart, lineEnd))
+			return true;
+
+		if (doesLineSegmentVsLineSegmentCollide({ rectLeft, rectBottom }, { rectLeft, rectTop }, lineStart, lineEnd))
+			return true;
+		return false;
+	}
+
 private:
 	static float calculateDistanceToLineSegment(float cx, float cy, float ax, float ay, float bx, float by) {
 		float lineLength = calculateDistance(ax, ay, bx, by);
