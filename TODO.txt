@@ -1,10 +1,5 @@
 TODO: 
-	COLLISION RESOLVER PROBLEM (4h) []
-		-> using SweptAABB should fix the problem 
-		-> look into the Separating Axis Theorem (SAT) or the Circle-Circle 
-		IMPLEMENT THE SWEPTAABB @Next
-
-	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
+	ATTACH THE ANIMATION WITH THE COLLIDER (4h) []
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
@@ -12,7 +7,7 @@ TODO:
 
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
-	ATTACH THE ANIMATION WITH THE COLLIDER (4h) []
+	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] -  by all the stuff i mean the enemy solders and hostages, 
 												the boss fight and houses and things could wait 
@@ -38,6 +33,11 @@ BUG:
 	FLICKERING WHEN MOVING (2h) []
 	
 DONE: 
+	COLLISION RESOLVER PROBLEM (4h) [X]
+		-> using SweptAABB should fix the problem 
+		-> look into the Separating Axis Theorem (SAT) or the Circle-Circle 
+		IMPLEMENT THE SWEPTAABB 
+
 	ROUGH CAMERA SYSTEM (4h) [X] 
 		-> load the mission1_level and test the camera [X]
 	ROUGH PHYSICS  (2h) [X]
