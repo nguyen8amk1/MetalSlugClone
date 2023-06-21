@@ -70,7 +70,6 @@ public:
 	*/
 
 
-	// TODO: load the animation using a data structure 
 	Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;
 		this->animDelay = metaData.animDelay;

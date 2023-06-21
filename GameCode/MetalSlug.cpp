@@ -12,6 +12,7 @@ namespace MetalSlug {
 class MetalSlug {
 private: 
 	PlatformSpecficMethodsCollection *platformMethods; 
+	Rect backgroundRect;
 
 	std::vector<std::string> frameFiles;
 	Animation *playerTopHalfAnim;
@@ -22,9 +23,10 @@ private:
 	GameText *frameMillis = NULL;
 	GameText *fps = NULL;
 	GameText *playerXY = NULL;
-	GameText *groundPos = NULL;
-	GameText *playerPhysicState = NULL;
-	GameText *backgroundRectText = NULL;
+	//GameText *groundPos = NULL;
+	GameText *playerPhysicStateText = NULL;
+	GameText *playerAnimationStateText = NULL;
+	//GameText *backgroundRectText = NULL;
 
 	Rect player = {-17, .3f, .2f, .2f};
 	Rect ground = {0, -1.12f, 60, .488f};
@@ -40,21 +42,28 @@ private:
 		FALL
 	};
 
-	PlayerPhysicState physicState = ONGROUND;
+	enum PlayerAnimationState {
+		IDLING, 
+		JUMPING, 
+		FALLING, 
+		WALKING
+	};
+
+	PlayerPhysicState playerPhysicState = ONGROUND;
+	PlayerAnimationState playerAnimationState = IDLING;
 
 public:
+
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;
 	}
 
 	PlatformDebugInfo *platformDebugInfo = NULL;
-	Rect backgroundRect;
 
 	// NOTE: the only feature we have with the camera is move up, down, left, right 
 	// no zoom, no scale -> fixed view port is 320 by 224
-
 	Vec2f cameraPos = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
-	//Vec2f cameraPos = {0, 0};
+
 	Rect topHalfAnimRect;
 	Rect bottomHalfAnimRect;
 	float topHalfAnimOffsetX = 0;
@@ -76,6 +85,7 @@ public:
 		bottomHalfAnimMetaData.animRect = bottomHalfAnimRect;
 		bottomHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
 
+		// TODO: load all the sample frame for each state 
 		// Animation init 
 		int topHalfWidth = 35;
 		int topHalfHeight = 40;
@@ -108,9 +118,12 @@ public:
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
 
-		playerPhysicState  = platformMethods->createText(0, 45, 10);
+		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
+		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
+		/*
 		backgroundRectText  = platformMethods->createText(0, 60, 10);
 		groundPos  = platformMethods->createText(0, 75, 10);
+		*/
 
 		/*
 		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
@@ -184,10 +197,11 @@ public:
 			ground.y += d;
 			backgroundRect.y += d;
 		}
+
 		backgroundImg->setRect(backgroundRect);
-		backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
+		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		platformMethods->renderImage(backgroundImg);
-		platformMethods->drawText(backgroundRectText);
+		//platformMethods->drawText(backgroundRectText);
 
 		// @EndTest
 
@@ -208,29 +222,29 @@ public:
 		}
 
 		// Physics state machine
-		if (physicState == FALL) {
+		if (playerPhysicState == FALL) {
 			player.y -= (float)(gravity*dt); 
 
 			CollisionInfo colInfo;
 			CollisionChecker::doesRectangleVsRectangleCollide(player, ground, colInfo);
 			if (colInfo.count > 0) {
-				physicState = ONGROUND;
+				playerPhysicState = ONGROUND;
 				player.x -= colInfo.normal.x * colInfo.depths[0];
 				player.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
-		else if (physicState == ONGROUND) {
+		else if (playerPhysicState == ONGROUND) {
 			if (!CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
-				physicState = FALL;
+				playerPhysicState = FALL;
 			}
 			else if(CollisionChecker::doesRectangleVsRectangleCollide(player, ground) && 
 					input.pressJump) {
-				physicState = JUMPUP;
+				playerPhysicState = JUMPUP;
 				jumpT = 0;
 				playerOriginalGroundY = player.y; 
 			}
 		}
-		else if (physicState == JUMPUP) {
+		else if (playerPhysicState == JUMPUP) {
 			jumpT += gravity*dt;
 			jumpProgress = -pow((jumpT-1), 2) + 1;
 			player.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
@@ -240,13 +254,13 @@ public:
 
 			if (jumpT >= 1) {
 				jumpT -= 1;
-				physicState = JUMPDOWN;
+				playerPhysicState = JUMPDOWN;
 			}
 			else if (suddenHitPlatform) {
-				physicState = FALL;
+				playerPhysicState = FALL;
 			}
 		}
-		else if (physicState == JUMPDOWN) {
+		else if (playerPhysicState == JUMPDOWN) {
 			jumpT += gravity*dt;
 			jumpProgress = -pow(jumpT, 2) + 1;
 			player.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
@@ -254,12 +268,77 @@ public:
 			CollisionInfo colInfo;
 			CollisionChecker::doesRectangleVsRectangleCollide(player, ground, colInfo);
 			if (colInfo.count > 0) {
-				physicState = ONGROUND;
+				playerPhysicState = ONGROUND;
 
 				player.x -= colInfo.normal.x * colInfo.depths[0];
 				player.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
+
+		// TODO: animation state machine (sometimes the animation state based on the physics state)
+		switch (playerAnimationState) {
+		case IDLING: {
+			// TODO: change the animation to IDLING 
+
+			bool onGround = playerPhysicState == ONGROUND;
+			if (input.pressLeft) {
+				playerAnimationState = WALKING;
+			}
+			else if (input.pressRight) {
+				playerAnimationState = WALKING;
+			}
+
+			if (input.pressJump) {
+				playerAnimationState = JUMPING;
+			}
+			else if (!onGround) {
+				playerAnimationState = PlayerAnimationState::FALLING;
+			}
+		}break;
+
+		case WALKING: {
+			// TODO: change the animation to WALKING
+
+			bool isPressingMove = input.pressLeft || input.pressRight;
+			if (!isPressingMove && 
+				playerPhysicState != JUMPUP && 
+				playerPhysicState != JUMPDOWN && 
+				playerPhysicState != PlayerPhysicState::FALL) {
+
+				playerAnimationState = IDLING;
+			}
+			else if (playerPhysicState == JUMPUP) {
+				playerAnimationState = JUMPING;
+			}
+			else if (playerPhysicState == PlayerPhysicState::FALL) {
+				playerAnimationState = PlayerAnimationState::FALLING;
+			}
+		} break;
+
+		case JUMPING: {
+			// TODO: change the animation to jump
+
+			if (playerPhysicState == JUMPDOWN ||
+				playerPhysicState == PlayerPhysicState::FALL) {
+
+				playerAnimationState = PlayerAnimationState::FALLING;
+			}
+
+		} break;
+
+		case PlayerAnimationState::FALLING: {
+			// TODO: change the animation to fall
+
+			if (playerPhysicState == ONGROUND) {
+				playerAnimationState = IDLING;
+			}
+		} break;
+
+		default: 
+			// TODO: handle error "Animation state not recoginize"
+			break;
+		}
+
 
 		if (CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
 			groundColor = collidedColor;
@@ -293,24 +372,42 @@ public:
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
 		platformMethods->drawText(playerXY);
 
-		groundPos->setText(Util::MessageFormater::print("Ground pos: ", ground.x, ", ", ground.y));
-		platformMethods->drawText(groundPos);
+		//groundPos->setText(Util::MessageFormater::print("Ground pos: ", ground.x, ", ", ground.y));
+		//platformMethods->drawText(groundPos);
 
 		std::string physicStateStr;
-		if (physicState == FALL) {
+		if (playerPhysicState == FALL) {
 			physicStateStr = "FALL";
 		}
-		else if (physicState == ONGROUND) {
+		else if (playerPhysicState == ONGROUND) {
 			physicStateStr = "ONGROUND";
 		}
-		else if (physicState == JUMPUP) {
+		else if (playerPhysicState == JUMPUP) {
 			physicStateStr = "JUMPUP";
 		}
-		else if (physicState == JUMPDOWN) {
+		else if (playerPhysicState == JUMPDOWN) {
 			physicStateStr = "JUMPDOWN";
 		}
-		playerPhysicState->setText(Util::MessageFormater::print("Physic state: ", physicStateStr));
-		platformMethods->drawText(playerPhysicState);
+
+		std::string animationStateStr;
+		if (playerAnimationState == PlayerAnimationState::FALLING) {
+			animationStateStr = "FALL";
+		}
+		else if (playerAnimationState == IDLING) {
+			animationStateStr = "IDLING";
+		}
+		else if (playerAnimationState == JUMPING) {
+			animationStateStr = "JUMP";
+		}
+		else if (playerAnimationState == WALKING) {
+			animationStateStr = "WALKING";
+		}
+
+		playerPhysicStateText->setText(Util::MessageFormater::print("Physic state: ", physicStateStr));
+		platformMethods->drawText(playerPhysicStateText);
+
+		playerAnimationStateText->setText(Util::MessageFormater::print("Animation state: ", animationStateStr));
+		platformMethods->drawText(playerAnimationStateText);
 
 	}
 	

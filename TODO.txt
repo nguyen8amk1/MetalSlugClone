@@ -1,7 +1,8 @@
 TODO: 
 	DO THE PLAYER ANIMATION CHANGING (2h) []
 		-> Desc: animation states: IDLE, JUMP, FALL, WALK (with direction as well) > Each just a frame 
-		-> do the animation changing (2h) []
+		-> animation state changing now works (2h) [X]
+		-> do the animation changing (2h) [] @Current 
 
 	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
 
