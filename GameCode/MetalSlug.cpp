@@ -26,12 +26,6 @@ private:
 	GameText *playerPhysicState = NULL;
 	GameText *backgroundRectText = NULL;
 
-	// temp
-	/*
-	Point groundStart = {-30, -.6f};
-	Point groundEnd = {30, -.6f};
-	*/
-
 	Rect player = {-17, .3f, .2f, .2f};
 	Rect ground = {0, -1.12f, 60, .488f};
 
@@ -39,14 +33,14 @@ private:
 	Color groundColor = {255, 255, 0, 255};
 	Color playerColor = {0, 0, 255, 255};
 
-	enum PhysicState {
+	enum PlayerPhysicState {
 		ONGROUND, 
 		JUMPUP, 
 		JUMPDOWN, 
 		FALL
 	};
 
-	PhysicState physicState = ONGROUND;
+	PlayerPhysicState physicState = ONGROUND;
 
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -82,27 +76,11 @@ public:
 		bottomHalfAnimMetaData.animRect = bottomHalfAnimRect;
 		bottomHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
 
-		/*
-		Rect pixelRect;
-		int frameWidth = 512;
-		int frameHeight = 256;
-
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 4; j++) {
-				pixelRect.width = (float)frameWidth;
-				pixelRect.height = (float)frameHeight;
-				pixelRect.x = (float)(j * pixelRect.width);
-				pixelRect.y = (float)(i * pixelRect.height);
-
-				topHalfAnimMetaData.framePixelRects.push_back(pixelRect);
-			}
-		}
-		*/
-
 		// Animation init 
 		int topHalfWidth = 35;
 		int topHalfHeight = 40;
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(24, 317, topHalfWidth, topHalfHeight));
+		/*
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, topHalfWidth, topHalfHeight));
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, topHalfWidth, topHalfHeight));
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, topHalfWidth, topHalfHeight));
@@ -112,16 +90,18 @@ public:
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, topHalfWidth, topHalfHeight));
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, topHalfWidth, topHalfHeight));
 		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, topHalfWidth, topHalfHeight));
+		*/
 		playerTopHalfAnim = new Animation(topHalfAnimMetaData, platformMethods);
 
 		int bottomHalfWidth = 21;
 		int bottomHalfHeight = 16;
 		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(20, 463, bottomHalfWidth, bottomHalfHeight));
+		/*
 		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(46, 463, bottomHalfWidth, bottomHalfHeight));
 		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(72, 463, bottomHalfWidth, bottomHalfHeight));
 		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(98, 463, bottomHalfWidth, bottomHalfHeight));
+		*/
 		playerBottomHalfAnim = new Animation(bottomHalfAnimMetaData, platformMethods);
-
 
 		
 		frameMillis = platformMethods->createText(0, 0, 10);

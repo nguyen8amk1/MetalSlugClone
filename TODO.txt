@@ -1,5 +1,9 @@
 TODO: 
-	REFACTOR THE PLAYER ANIMATION CODE INTO PLAYER CLASS (2h) []
+	DO THE PLAYER ANIMATION CHANGING (2h) []
+		-> Desc: animation states: IDLE, JUMP, FALL, WALK (with direction as well) > Each just a frame 
+		-> do the animation changing (2h) []
+
+	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
