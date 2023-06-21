@@ -33,7 +33,7 @@ private:
 	*/
 
 	Rect player = {-17, .3f, .2f, .2f};
-	Rect ground = {0, -1, 60, .5f};
+	Rect ground = {0, -1.12f, 60, .488f};
 
 	Color collidedColor = {255, 0, 0, 255};
 	Color groundColor = {255, 255, 0, 255};
@@ -63,14 +63,41 @@ public:
 	//Vec2f cameraPos = {0, 0};
 
 	void setup() {
-		// scale the camera 
-		// load all the frames
-		for (int i = 0; i < 8; i++) {
-			frameFiles.push_back(Util::MessageFormater::print("Assets/Imgs/testCat/tile00", i, ".png"));
-		}
+		Rect animRect = { 0, 0, .5f, .8f};
+		AnimationMetaData animMetaData;
+		animMetaData.animDelay = .1f;
+		animMetaData.animRect = animRect;
+		animMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_cut.png";
 
-		Rect animRect = { 0, 0, .5f, .3f};
-		tempAnim = new Animation(0.1f, "Assets/Imgs/sprites_cat_running_trans.png", platformMethods, animRect, 2, 4);
+		/*
+		Rect pixelRect;
+		int frameWidth = 512;
+		int frameHeight = 256;
+
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 4; j++) {
+				pixelRect.width = (float)frameWidth;
+				pixelRect.height = (float)frameHeight;
+				pixelRect.x = (float)(j * pixelRect.width);
+				pixelRect.y = (float)(i * pixelRect.height);
+
+				animMetaData.framePixelRects.push_back(pixelRect);
+			}
+		}
+		*/
+
+		animMetaData.framePixelRects.push_back({10, 297, 29, 40});
+		animMetaData.framePixelRects.push_back({44, 297, 29, 40});
+		animMetaData.framePixelRects.push_back({78, 297, 29, 40});
+		animMetaData.framePixelRects.push_back({112, 297, 32, 40});
+		animMetaData.framePixelRects.push_back({149, 297, 32, 40});
+		animMetaData.framePixelRects.push_back({186, 297, 35, 40});
+		animMetaData.framePixelRects.push_back({226, 297, 34, 40});
+		animMetaData.framePixelRects.push_back({261, 297, 34, 40});
+		animMetaData.framePixelRects.push_back({300, 297, 29, 40});
+		animMetaData.framePixelRects.push_back({334, 297, 29, 40});
+
+		tempAnim = new Animation(animMetaData, platformMethods);
 		
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
@@ -196,7 +223,6 @@ public:
 					input.pressJump) {
 				physicState = JUMPUP;
 				jumpT = 0;
-				// TODO: need to figure out collision handling before doing anything else - ASAP
 				playerOriginalGroundY = player.y; 
 			}
 		}
@@ -204,12 +230,14 @@ public:
 			jumpT += gravity*dt;
 			jumpProgress = -pow((jumpT-1), 2) + 1;
 			player.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
+
+			// TODO: handle if sudden hit another object on the head -> physicState = FALL
 			bool suddenHitPlatform = false;
+
 			if (jumpT >= 1) {
 				jumpT -= 1;
 				physicState = JUMPDOWN;
 			}
-			// TODO: handle if sudden hit another object on the head -> physicState = FALL
 			else if (suddenHitPlatform) {
 				physicState = FALL;
 			}
@@ -224,7 +252,6 @@ public:
 			if (colInfo.count > 0) {
 				physicState = ONGROUND;
 
-				// TODO: figure out how to subtract it back 
 				player.x -= colInfo.normal.x * colInfo.depths[0];
 				player.y -= colInfo.normal.y * colInfo.depths[0];
 			}
@@ -239,10 +266,13 @@ public:
 			playerColor = {0, 0, 255, 255};
 		}
 
+
 		// Debug collision
 		// @EndTest
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
+
+		tempAnim->animate(dt);
 
 		// Debug info
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));

@@ -1,5 +1,13 @@
 TODO: 
+	HAVE A DATASTRUCTURE FOR ANIMATION (4h) []
+		-> load the animation using the data structure 
+		target: Load Marco Rossi character 
+			-> first loading the first half 
+			-> load the second half 
+			-> attach both of them 
+
 	ATTACH THE ANIMATION WITH THE COLLIDER (4h) []
+		-> just attach animation pos with the collider, that will work 
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
@@ -7,19 +15,24 @@ TODO:
 
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
-	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
+	GRENADE (2h) []
+		BOUNCE: 
+		-> a bounce is jumps with reduce height every time hit the ground 
+
+	ENEMY (2h) []
+
+	ENEMY INTERACTION WITH PLAYER (2h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] -  by all the stuff i mean the enemy solders and hostages, 
 												the boss fight and houses and things could wait 
+
+	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
+
 
 	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
 		-> when level1 done, have proper structure for a level, a separate file for level 
 
 	PARALAX BACKGROUND (2h) []
-
-	GRENADE (2h) []
-		BOUNCE: 
-		-> a bounce is jumps with reduce height every time hit the ground 
 
 	RENDER ONLY PART OF THE MAP (2h) []
 		-> get the portion of the map and only render that part 

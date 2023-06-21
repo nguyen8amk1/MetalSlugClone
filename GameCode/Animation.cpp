@@ -1,10 +1,18 @@
 #pragma once 
 #include<vector>
+#include<cassert>
 #include<string>
 #include "MetalSlug.h"
 #include "../SDL2PlatformMethodsCollection.cpp"
 
 namespace MetalSlug {
+
+struct AnimationMetaData {
+	float animDelay;
+	std::vector<Rect> framePixelRects;
+	std::string spriteSheetFileName;
+	Rect animRect;
+};
 
 class Animation {
 private:
@@ -18,6 +26,7 @@ private:
 	PlatformSpecficMethodsCollection* platformMethods;
 	
 public: 
+	/*
 	Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {
 		this->platformMethods = platformMethods;
 		this->animDelay = animDelay;
@@ -57,6 +66,24 @@ public:
 				frames.push_back(portion);
 			}
 		}
+	}
+	*/
+
+
+	// TODO: load the animation using a data structure 
+	Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollection *platformMethods) {
+		this->platformMethods = platformMethods;
+		this->animDelay = metaData.animDelay;
+		this->rect = metaData.animRect;
+
+		PlatformSpecificImage *img = NULL;
+		img = this->platformMethods->loadImage(metaData.spriteSheetFileName);
+
+		for(Rect &pixelRect : metaData.framePixelRects) {
+			PlatformSpecificImage* portion = img->getImagePortion(pixelRect);
+			portion->setRect(rect);
+			frames.push_back(portion);
+		}
 
 	}
 
@@ -71,6 +98,7 @@ public:
 			timeAccumulator -= animDelay;
 		}
 
+		// FIXME: the image get stretch to fit the rect, but i don't want it that way any more 
 		platformMethods->renderImage(frames[currentFrameIndex]);
 	}
 

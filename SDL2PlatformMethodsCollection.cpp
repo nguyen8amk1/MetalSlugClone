@@ -1,6 +1,7 @@
 #pragma once
 
 #include<string>
+#include<cassert>
 #include<SDL.h>
 #include<SDL_image.h>
 #include<SDL_ttf.h>
@@ -29,10 +30,10 @@ public:
     }
 
     MetalSlug::PlatformSpecificImage* loadImage(const std::string& filename) override {
-        // TODO: load image using SDL2 methods
         SDL2PlatformSpecificImage *image = new SDL2PlatformSpecificImage();
 
 		SDL_Texture* img = IMG_LoadTexture(renderer, filename.c_str());
+        assert(img != NULL);
 		int w, h;
 		SDL_QueryTexture(img, NULL, NULL, &w, &h); 
 		SDL_Rect texr; 

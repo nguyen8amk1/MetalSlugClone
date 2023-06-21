@@ -8,7 +8,6 @@
 #include "GameCode/MetalSlug.cpp"
 #include "SDL2PlatformMethodsCollection.cpp"
 
-// TODO: change the screen width and screen height to 320x224
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 224
 #define SCALE_FACTOR 3 
@@ -40,6 +39,12 @@ public:
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 			return -1;
 		}
+
+		if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) {
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL Image could not initialize! SDL_Error: %s\n", SDL_GetError());
+			return -1;
+		}
+
 
 		// Create a window
 		SDL_Window* window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,

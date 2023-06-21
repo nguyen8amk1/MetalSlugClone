@@ -43,7 +43,6 @@ struct SDL2GameText : public MetalSlug::GameText {
 	}
 
     void setText(const std::string& text) override {
-        // TODO: set the text right here 
         SDL_Surface* updatedTextSurface = TTF_RenderText_Blended(font, text.c_str(), textColor);
 
         // Free previous texture
