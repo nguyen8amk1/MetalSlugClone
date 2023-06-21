@@ -1,19 +1,9 @@
 TODO: 
-	HAVE A DATASTRUCTURE FOR ANIMATION (4h) []
-		-> load the animation using the data structure [X]
-		target: Load Marco Rossi character [X]
-			-> first loading the first half [X]
-			-> load the second half @Current 
-			-> attach both of them 
-
-	ATTACH THE ANIMATION WITH THE COLLIDER (4h) []
-		-> just attach animation pos with the collider, that will work [X]
+	REFACTOR THE PLAYER ANIMATION CODE INTO PLAYER CLASS (2h) []
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
 		(NOTE: test on the sdl2 backend)
-
-	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 	GRENADE (2h) []
 		BOUNCE: 
@@ -41,11 +31,23 @@ TODO:
 
 	PHAN HOACH KHONG GIAN (4h) []
 
+	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
+
 BUG: 
 	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
 	FLICKERING WHEN MOVING (2h) []
+	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	ATTACH THE ANIMATION WITH THE COLLIDER (4h) [X]
+		-> just attach animation pos with the collider, that will work [X]
+
+	HAVE A DATASTRUCTURE FOR ANIMATION (4h) []
+		-> load the animation using the data structure [X]
+		target: Load Marco Rossi character [X]
+			-> first loading the first half [X]
+			-> load the second half [X]
+			-> attach both of them [X]
 	COLLISION RESOLVER PROBLEM (4h) [X]
 		-> using SweptAABB should fix the problem 
 		-> look into the Separating Axis Theorem (SAT) or the Circle-Circle 

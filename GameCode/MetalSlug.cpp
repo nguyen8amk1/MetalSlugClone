@@ -14,8 +14,8 @@ private:
 	PlatformSpecficMethodsCollection *platformMethods; 
 
 	std::vector<std::string> frameFiles;
-	Animation *tempAnim;
-	PlatformSpecificImage* tempImg;
+	Animation *playerTopHalfAnim;
+	Animation *playerBottomHalfAnim;
 	PlatformSpecificImage* backgroundImg;
 
 	// debug 
@@ -61,14 +61,26 @@ public:
 
 	Vec2f cameraPos = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 	//Vec2f cameraPos = {0, 0};
-	Rect animRect;
+	Rect topHalfAnimRect;
+	Rect bottomHalfAnimRect;
+	float topHalfAnimOffsetX = 0;
+	float topHalfAnimOffsetY = .1f;
+	float bottomHalfAnimOffsetX = -.04f;
+	float bottomHalfAnimOffsetY = -.01f;
 
 	void setup() {
-		animRect = { 0, 0, .237f, .5f};
-		AnimationMetaData animMetaData;
-		animMetaData.animDelay = .1f;
-		animMetaData.animRect = animRect;
-		animMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_cut.png";
+		topHalfAnimRect = { topHalfAnimOffsetX, topHalfAnimOffsetY, .237f, .3f};
+		bottomHalfAnimRect = {bottomHalfAnimOffsetX, bottomHalfAnimOffsetY, .15f, .2f};
+
+		AnimationMetaData topHalfAnimMetaData;
+		topHalfAnimMetaData.animDelay = .1f;
+		topHalfAnimMetaData.animRect = topHalfAnimRect;
+		topHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+
+		AnimationMetaData bottomHalfAnimMetaData;
+		bottomHalfAnimMetaData.animDelay = .1f;
+		bottomHalfAnimMetaData.animRect = bottomHalfAnimRect;
+		bottomHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
 
 		/*
 		Rect pixelRect;
@@ -82,25 +94,35 @@ public:
 				pixelRect.x = (float)(j * pixelRect.width);
 				pixelRect.y = (float)(i * pixelRect.height);
 
-				animMetaData.framePixelRects.push_back(pixelRect);
+				topHalfAnimMetaData.framePixelRects.push_back(pixelRect);
 			}
 		}
 		*/
 
-		int width = 35;
-		int height = 40;
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(24, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(164, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(203, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(243, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, width, height));
-		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, width, height));
+		// Animation init 
+		int topHalfWidth = 35;
+		int topHalfHeight = 40;
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(24, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(164, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(203, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(243, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, topHalfWidth, topHalfHeight));
+		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, topHalfWidth, topHalfHeight));
+		playerTopHalfAnim = new Animation(topHalfAnimMetaData, platformMethods);
 
-		tempAnim = new Animation(animMetaData, platformMethods);
+		int bottomHalfWidth = 21;
+		int bottomHalfHeight = 16;
+		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(20, 463, bottomHalfWidth, bottomHalfHeight));
+		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(46, 463, bottomHalfWidth, bottomHalfHeight));
+		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(72, 463, bottomHalfWidth, bottomHalfHeight));
+		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(98, 463, bottomHalfWidth, bottomHalfHeight));
+		playerBottomHalfAnim = new Animation(bottomHalfAnimMetaData, platformMethods);
+
+
 		
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
@@ -273,13 +295,19 @@ public:
 		// @EndTest
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
-		platformMethods->drawRectangle(animRect, groundColor);
+		platformMethods->drawRectangle(topHalfAnimRect, groundColor);
+		platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
 		
-		animRect.x = player.x;
-		animRect.y = player.y;
-		tempAnim->changePos(animRect.x, animRect.y);
+		topHalfAnimRect.x = player.x + topHalfAnimOffsetX;
+		topHalfAnimRect.y = player.y + topHalfAnimOffsetY;
+		bottomHalfAnimRect.x = player.x + bottomHalfAnimOffsetX;
+		bottomHalfAnimRect.y = player.y + bottomHalfAnimOffsetY;
 
-		tempAnim->animate(dt);
+		playerTopHalfAnim->changePos(topHalfAnimRect.x, topHalfAnimRect.y);
+		playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
+
+		playerTopHalfAnim->animate(dt);
+		playerBottomHalfAnim->animate(dt);
 
 		// Debug info
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
@@ -307,7 +335,7 @@ public:
 	}
 	
 	~MetalSlug() {
-		delete tempAnim;
+		delete playerTopHalfAnim;
 
 		/*
 		frameMillis->clean();
