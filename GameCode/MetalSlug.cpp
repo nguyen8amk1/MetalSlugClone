@@ -22,17 +22,21 @@ private:
 	GameText *frameMillis = NULL;
 	GameText *fps = NULL;
 	GameText *playerXY = NULL;
+	GameText *groundPos = NULL;
 	GameText *playerPhysicState = NULL;
 	GameText *backgroundRectText = NULL;
 
 	// temp
-	Point planeStart = {-30, -.6f};
-	Point planeEnd = {30, -.6f};
+	/*
+	Point groundStart = {-30, -.6f};
+	Point groundEnd = {30, -.6f};
+	*/
 
 	Rect player = {-17, .3f, .2f, .2f};
+	Rect ground = {0, -1, 60, .5f};
 
 	Color collidedColor = {255, 0, 0, 255};
-	Color planeColor = {255, 255, 0, 255};
+	Color groundColor = {255, 255, 0, 255};
 	Color playerColor = {0, 0, 255, 255};
 
 	enum PhysicState {
@@ -71,8 +75,10 @@ public:
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
+
 		playerPhysicState  = platformMethods->createText(0, 45, 10);
 		backgroundRectText  = platformMethods->createText(0, 60, 10);
+		groundPos  = platformMethods->createText(0, 75, 10);
 
 		/*
 		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
@@ -88,10 +94,8 @@ public:
 		player.x -= cameraPos.x;
 		player.y -= cameraPos.y;
 
-		planeStart.x -= cameraPos.x;
-		planeStart.y -= cameraPos.y;
-		planeEnd.x -= cameraPos.x;
-		planeEnd.y -= cameraPos.y;
+		ground.x -= cameraPos.x;
+		ground.y -= cameraPos.y;
 
 		backgroundRect.x -= cameraPos.x;
 		backgroundRect.y -= cameraPos.y;
@@ -118,7 +122,7 @@ public:
 			cameraPos.x += d;
 
 			player.x -= d;
-			planeEnd.x -= d;
+			ground.x -= d;
 			backgroundRect.x -= d;
 		}
 		else if (input.pressLeftArrow) {
@@ -127,8 +131,7 @@ public:
 
 			player.x += d;
 
-			planeStart.x += d;
-			planeEnd.x += d;
+			ground.x += d;
 			backgroundRect.x += d;
 		}
 		if (input.pressUpArrow) {
@@ -137,8 +140,7 @@ public:
 
 			player.y -= d;
 
-			planeStart.y -= d;
-			planeEnd.y -= d;
+			ground.y -= d;
 			backgroundRect.y -= d;
 		}
 		else if (input.pressDownArrow) {
@@ -147,8 +149,7 @@ public:
 
 			player.y += d;
 
-			planeStart.y += d;
-			planeEnd.y += d;
+			ground.y += d;
 			backgroundRect.y += d;
 		}
 
@@ -179,16 +180,19 @@ public:
 		if (physicState == FALL) {
 			player.y -= (float)(gravity*dt); 
 
-			// event checking 
-			if (CollisionChecker::doesRectangleVsLineCollide(player, planeStart, planeEnd)) {
+			CollisionInfo colInfo;
+			CollisionChecker::doesRectangleVsRectangleCollide(player, ground, colInfo);
+			if (colInfo.count > 0) {
 				physicState = ONGROUND;
+				player.x -= colInfo.normal.x * colInfo.depths[0];
+				player.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
 		else if (physicState == ONGROUND) {
-			if (!CollisionChecker::doesRectangleVsLineCollide(player, planeStart, planeEnd)) {
+			if (!CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
 				physicState = FALL;
 			}
-			else if(CollisionChecker::doesRectangleVsLineCollide(player, planeStart, planeEnd) && 
+			else if(CollisionChecker::doesRectangleVsRectangleCollide(player, ground) && 
 					input.pressJump) {
 				physicState = JUMPUP;
 				jumpT = 0;
@@ -215,29 +219,37 @@ public:
 			jumpProgress = -pow(jumpT, 2) + 1;
 			player.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
-			// event checking 
-			if (CollisionChecker::doesRectangleVsLineCollide(player, planeStart, planeEnd)) {
+			CollisionInfo colInfo;
+			CollisionChecker::doesRectangleVsRectangleCollide(player, ground, colInfo);
+			if (colInfo.count > 0) {
 				physicState = ONGROUND;
+
+				// TODO: figure out how to subtract it back 
+				player.x -= colInfo.normal.x * colInfo.depths[0];
+				player.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
 
-		if (CollisionChecker::doesRectangleVsLineCollide(player, planeStart, planeEnd)) {
-			planeColor = collidedColor;
+		if (CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
+			groundColor = collidedColor;
 			playerColor = collidedColor;
 		}
 		else {
-			planeColor = {255, 255, 0, 255};
+			groundColor = {255, 255, 0, 255};
 			playerColor = {0, 0, 255, 255};
 		}
 
 		// Debug collision
 		// @EndTest
 		platformMethods->drawRectangle(player, playerColor);
-		platformMethods->drawLine(planeStart, planeEnd, planeColor);
+		platformMethods->drawRectangle(ground, groundColor);
 
 		// Debug info
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
 		platformMethods->drawText(playerXY);
+
+		groundPos->setText(Util::MessageFormater::print("Ground pos: ", ground.x, ", ", ground.y));
+		platformMethods->drawText(groundPos);
 
 		std::string physicStateStr;
 		if (physicState == FALL) {

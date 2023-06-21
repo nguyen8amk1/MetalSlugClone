@@ -147,6 +147,7 @@
     <ClCompile Include="GameCode\Animation.cpp" />
     <ClCompile Include="GameCode\CollisionChecker.cpp" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
+    <ClCompile Include="GameCode\Tinyc2CollisionChecker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SDL2BackEnd.cpp" />
     <ClCompile Include="SDL2Components.cpp" />

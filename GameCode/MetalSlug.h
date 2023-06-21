@@ -64,6 +64,16 @@ struct Capsule {
 	float r;
 };
 
+struct CollisionInfo {
+	int count;
+	float depths[2];
+	Vec2f contact_points[2];
+
+	// always points from shape A to shape B (first and second shapes passed into
+	// any of the c2***to***Manifold functions)
+	Vec2f normal;
+};
+
 // This is interface only  
 class PlatformSpecficMethodsCollection {
 public: 
