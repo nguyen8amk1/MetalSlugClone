@@ -85,6 +85,14 @@ struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
         SDL2Util::NormalizeCoordConverter::toMiddleOrigin(textureRect.x, textureRect.y, textureRect.w, textureRect.h);
     }
 
+    void fitRect(MetalSlug::Rect &rect) override {
+        // TODO: scale to which axis is smaller  
+        float minWidthOrHeight = fmin(rect.width, rect.height);
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(rect.x, rect.y, textureRect.x, textureRect.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(minWidthOrHeight, minWidthOrHeight, textureRect.w, textureRect.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(textureRect.x, textureRect.y, textureRect.w, textureRect.h);
+    }
+
     int getPixelWidth() override {
         return textureRect.w;
     }

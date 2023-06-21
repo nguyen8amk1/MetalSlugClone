@@ -1,5 +1,6 @@
 #pragma once 
 
+#include "GameCode/MetalSlug.h"
 #include<iostream>
 #include<sstream>
 #include<string>
@@ -27,4 +28,15 @@ const class MessageFormater {
 	}
 
 };
+
+const class Generator {
+public: 
+	static MetalSlug::Rect generatePixelRectFromCenter(float centerX, float centerY, float width, float height) {
+		int halfWidth = width / 2;
+		int halfHeight = height / 2;
+		MetalSlug::Rect rect = {centerX - halfWidth, centerY - halfHeight, width, height};
+		return rect;
+	}
+};
+
 }

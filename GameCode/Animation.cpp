@@ -81,7 +81,7 @@ public:
 
 		for(Rect &pixelRect : metaData.framePixelRects) {
 			PlatformSpecificImage* portion = img->getImagePortion(pixelRect);
-			portion->setRect(rect);
+			portion->fitRect(rect);
 			frames.push_back(portion);
 		}
 
@@ -93,12 +93,13 @@ public:
 		if (timeAccumulator >= animDelay) {
 			++currentFrameIndex %= frames.size();
 
-			frames[currentFrameIndex]->setRect(rect);
+		// FIXME: not use set rect anymore, use something else, something invole using the center
+		// what i actually want is just fit to the height or width (which ever is larger) of the rect, and fixed to center
+			frames[currentFrameIndex]->fitRect(rect); 
 
 			timeAccumulator -= animDelay;
 		}
 
-		// FIXME: the image get stretch to fit the rect, but i don't want it that way any more 
 		platformMethods->renderImage(frames[currentFrameIndex]);
 	}
 

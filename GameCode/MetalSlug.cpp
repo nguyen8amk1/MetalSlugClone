@@ -61,9 +61,10 @@ public:
 
 	Vec2f cameraPos = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 	//Vec2f cameraPos = {0, 0};
+	Rect animRect;
 
 	void setup() {
-		Rect animRect = { 0, 0, .5f, .8f};
+		animRect = { 0, 0, .237f, .5f};
 		AnimationMetaData animMetaData;
 		animMetaData.animDelay = .1f;
 		animMetaData.animRect = animRect;
@@ -86,16 +87,18 @@ public:
 		}
 		*/
 
-		animMetaData.framePixelRects.push_back({10, 297, 29, 40});
-		animMetaData.framePixelRects.push_back({44, 297, 29, 40});
-		animMetaData.framePixelRects.push_back({78, 297, 29, 40});
-		animMetaData.framePixelRects.push_back({112, 297, 32, 40});
-		animMetaData.framePixelRects.push_back({149, 297, 32, 40});
-		animMetaData.framePixelRects.push_back({186, 297, 35, 40});
-		animMetaData.framePixelRects.push_back({226, 297, 34, 40});
-		animMetaData.framePixelRects.push_back({261, 297, 34, 40});
-		animMetaData.framePixelRects.push_back({300, 297, 29, 40});
-		animMetaData.framePixelRects.push_back({334, 297, 29, 40});
+		int width = 35;
+		int height = 40;
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(24, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(164, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(203, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(243, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, width, height));
+		animMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, width, height));
 
 		tempAnim = new Animation(animMetaData, platformMethods);
 		
@@ -179,7 +182,6 @@ public:
 			ground.y += d;
 			backgroundRect.y += d;
 		}
-
 		backgroundImg->setRect(backgroundRect);
 		backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		platformMethods->renderImage(backgroundImg);
@@ -271,6 +273,11 @@ public:
 		// @EndTest
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
+		platformMethods->drawRectangle(animRect, groundColor);
+		
+		animRect.x = player.x;
+		animRect.y = player.y;
+		tempAnim->changePos(animRect.x, animRect.y);
 
 		tempAnim->animate(dt);
 
@@ -296,6 +303,7 @@ public:
 		}
 		playerPhysicState->setText(Util::MessageFormater::print("Physic state: ", physicStateStr));
 		platformMethods->drawText(playerPhysicState);
+
 	}
 	
 	~MetalSlug() {
