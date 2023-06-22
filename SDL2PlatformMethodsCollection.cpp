@@ -53,9 +53,16 @@ public:
         OutputDebugStringA(debugString.c_str());
     }
 
-    void renderImage(MetalSlug::PlatformSpecificImage *image) override {
+    void renderImage(MetalSlug::PlatformSpecificImage *image, bool flipX = false, bool flipY = false) override {
         SDL2PlatformSpecificImage *img = (SDL2PlatformSpecificImage*) image;
-        SDL_RenderCopy(renderer, img->texture, NULL, &img->textureRect);
+        SDL_RendererFlip flipFlags = SDL_FLIP_NONE;
+
+        if (flipX)
+            flipFlags = SDL_FLIP_HORIZONTAL;
+        if (flipY)
+            flipFlags = static_cast<SDL_RendererFlip>(flipFlags | SDL_FLIP_VERTICAL);
+
+        SDL_RenderCopyEx(renderer, img->texture, NULL, &img->textureRect, 0, NULL, flipFlags);
     }
 
     void fillRectangle(MetalSlug::Rect &normRect, MetalSlug::Color &color) override {

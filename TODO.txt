@@ -1,11 +1,11 @@
 TODO: 
-	DO THE PLAYER ANIMATION CHANGING (2h) []
-		-> Desc: animation states: IDLE, JUMP, FALL, WALK (with direction as well) > Each just a frame 
-		-> animation state changing now works (2h) [X]
-		-> do the animation changing (2h) [X] 
-		-> do the animation flip (1h) []
-
 	FIX: THERE ARE SOME FLICKERING WITH THE OLD POSITION WHEN CHANGING TO THE NEXT ANIMATION  
+
+	FIX: black background when having transparent background (2h) 
+		(normal rendering works, only the portion not working) []
+		(NOTE: test on the sdl2 backend)
+
+	DO THE ACTUAL GOOD LOOKING ANIMATION () []
 
 	THE ANIMATION FRAME CENTERING AND STUFF 
 		-> we can't just calculate the rect using center anymore 
@@ -20,11 +20,6 @@ TODO:
 
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
-
-	FIX: black background when having transparent background (2h) 
-		(normal rendering works, only the portion not working) []
-		(NOTE: test on the sdl2 backend)
-	FIX: FLICKERING WHEN MOVING (2h) []
 
 	GRENADE (2h) []
 		BOUNCE: 
@@ -59,6 +54,12 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	DO THE PLAYER ANIMATION CHANGING (2h) [X]
+		-> Desc: animation states: IDLE, JUMP, FALL, WALK (with direction as well) > Each just a frame 
+		-> animation state changing now works (2h) [X]
+		-> do the animation changing (2h) [X] 
+		-> do the animation flip (1h) [X] 
+	
 	ATTACH THE ANIMATION WITH THE COLLIDER (4h) [X]
 		-> just attach animation pos with the collider, that will work [X]
 

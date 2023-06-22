@@ -22,6 +22,8 @@ private:
 	int currentFrameIndex = 0;
 	float timeAccumulator = 0.0f;
 	float animDelay = 0.0f;
+	bool flipX = false;
+	bool flipY = false;
 
 	PlatformSpecficMethodsCollection* platformMethods;
 	
@@ -99,7 +101,7 @@ public:
 			timeAccumulator -= animDelay;
 		}
 
-		platformMethods->renderImage(frames[currentFrameIndex]);
+		platformMethods->renderImage(frames[currentFrameIndex], flipX, flipY);
 	}
 
 	void changePos(float x, float y) {
@@ -110,6 +112,22 @@ public:
 	void changeSize(float width, float height) {
 		rect.width = width;
 		rect.height = height;
+	}
+
+	void flip(int hDir, int vDir) {
+		if (hDir == -1) {
+			flipX = true;
+		}
+		else if (hDir == 1) {
+			flipX = false;
+		}
+
+		if (vDir == -1) {
+			flipY = true;
+		}
+		else if (vDir == 1) {
+			flipY = false;
+		}
 	}
 
 	~Animation() {

@@ -230,19 +230,13 @@ public:
 
 		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
 		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
+
 		/*
 		backgroundRectText  = platformMethods->createText(0, 60, 10);
 		groundPos  = platformMethods->createText(0, 75, 10);
 		*/
 
-		/*
-		tempImg = platformMethods->loadImage("Assets/Imgs/sprites_cat_running_trans.png");
-		Rect portionRect = {0, 0, 500, 200};
-		tempImg = tempImg->getImagePortion(portionRect);
-		*/
-
 		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
-		//backgroundRect = {25.1f, 0.357f, backgroundScale*backgroundImg->getGameWidth(), backgroundScale*backgroundImg->getGameHeight()};
 		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
 
 		// apply the camera 
@@ -264,6 +258,7 @@ public:
 	float jumpProgress = 0;
 	float playerOriginalGroundY = 0;
 	float jumpHeight = .8f;
+	float playerHorizontalFacingDirection = 1;
 
 	// Camera 
 	// NOTE: All the pos of entity in the game is in world space not camera space, 
@@ -326,9 +321,11 @@ public:
 		// @StartTest: 
 		if (input.pressLeft) {
 			player.x -= (float)(tempSpeed*dt); 
+			playerHorizontalFacingDirection = -1;
 		}
 		else if (input.pressRight) {
 			player.x += (float)(tempSpeed*dt); 
+			playerHorizontalFacingDirection = 1;
 		}
 
 		// Physics state machine
@@ -473,8 +470,9 @@ public:
 			playerColor = {0, 0, 255, 255};
 		}
 
-
 		// Debug collision
+
+
 		// @EndTest
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
@@ -488,6 +486,9 @@ public:
 
 		playerTopHalfAnim->changePos(topHalfAnimRect.x, topHalfAnimRect.y);
 		playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
+
+		playerTopHalfAnim->flip(playerHorizontalFacingDirection, 1);
+		playerBottomHalfAnim->flip(playerHorizontalFacingDirection, 1); 
 
 		playerTopHalfAnim->animate(dt);
 		playerBottomHalfAnim->animate(dt);
