@@ -1,5 +1,11 @@
 TODO: 
-	FIX: THERE ARE SOME FLICKERING WITH THE OLD POSITION WHEN CHANGING TO THE NEXT ANIMATION  
+	FIX THE SLOW UPDATING OF MOVING IMAGE FIRST THEN SOLVE THIS ONE LATER  @DOTHIS 
+
+	FIX: THERE ARE SOME FLICKERING WITH THE OLD POSITION WHEN CHANGING TO THE NEXT ANIMATION 
+		i notice that the flickering occur when i release the button 
+		and the next animation show it original position then shifted back to player position
+		this could be a foundational error when the image position just keep sliding when i'm moving 
+
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []

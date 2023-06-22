@@ -445,8 +445,6 @@ public:
 		} break;
 
 		case PlayerAnimationState::FALLING: {
-			// TODO: change the animation to fall
-
 			if (playerPhysicState == ONGROUND) {
 				playerAnimationState = IDLING;
 				playerTopHalfAnim = playerTopIdlingAnimation;
