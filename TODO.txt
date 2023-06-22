@@ -4,11 +4,23 @@ TODO:
 		-> animation state changing now works (2h) [X]
 		-> do the animation changing (2h) [] @Current 
 
+	THE ANIMATION FRAME CENTERING AND STUFF 
+		-> we can't just calculate the rect using center anymore 
+			since it's not looking good 
+				and sprites don't space equally 
+				-> use the pixel rect 
+				-> @Dothis Idea: may be have a relative width and height to compare (the largest width or height in the all the frames)
+					-> if the frames as big as the relative width or height -> stretch to the full rect
+					-> else if not as big -> stretch relatively 
+
 	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
+
+	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
 		(NOTE: test on the sdl2 backend)
+	FIX: FLICKERING WHEN MOVING (2h) []
 
 	GRENADE (2h) []
 		BOUNCE: 
@@ -40,7 +52,6 @@ TODO:
 
 BUG: 
 	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
-	FLICKERING WHEN MOVING (2h) []
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 

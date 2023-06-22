@@ -71,19 +71,131 @@ public:
 	float bottomHalfAnimOffsetX = -.04f;
 	float bottomHalfAnimOffsetY = -.01f;
 
+	// Player Animations 
+	AnimationMetaData idlingTopAnimationMetaData;
+	AnimationMetaData jumpingTopAnimationMetaData;
+	AnimationMetaData fallingTopAnimationMetaData;
+	AnimationMetaData walkingTopAnimationMetaData;
+
+	Animation *playerTopIdlingAnimation;
+	Animation *playerTopJumpingAnimation;
+	Animation *playerTopFallingAnimation;
+	Animation *playerTopWalkingAnimation;
+
+	AnimationMetaData idlingBottomAnimationMetaData;
+	AnimationMetaData jumpingBottomAnimationMetaData;
+	AnimationMetaData fallingBottomAnimationMetaData;
+	AnimationMetaData walkingBottomAnimationMetaData;
+
+	Animation *playerBottomIdlingAnimation;
+	Animation *playerBottomJumpingAnimation;
+	Animation *playerBottomFallingAnimation;
+	Animation *playerBottomWalkingAnimation;
+
+
 	void setup() {
+
+		// NOTE: all of this will be loaded from a file, so no worries  
 		topHalfAnimRect = { topHalfAnimOffsetX, topHalfAnimOffsetY, .237f, .3f};
 		bottomHalfAnimRect = {bottomHalfAnimOffsetX, bottomHalfAnimOffsetY, .15f, .2f};
 
+		// Top half  
+
+		int idlingWidth = 35;
+		int idlingHeight = 40;
+		idlingTopAnimationMetaData;
+		idlingTopAnimationMetaData.animDelay = .1f;
+		idlingTopAnimationMetaData.animRect = topHalfAnimRect;
+		idlingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, idlingWidth, idlingHeight));
+		playerTopIdlingAnimation = new Animation(idlingTopAnimationMetaData, platformMethods);
+
+		int walkingWidth = 31;
+		int walkingHeight = 27;
+		walkingTopAnimationMetaData;
+		walkingTopAnimationMetaData.animDelay = .1f;
+		walkingTopAnimationMetaData.animRect = topHalfAnimRect;
+		walkingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		walkingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(343, 490,  walkingWidth, walkingHeight));
+		playerTopWalkingAnimation = new Animation(walkingTopAnimationMetaData, platformMethods);
+
+#if 0 
+		int jumpingWidth = ;
+		int jumpingHeight = ;
+		jumpingTopAnimationMetaData;
+		jumpingTopAnimationMetaData.animDelay = .1f;
+		jumpingTopAnimationMetaData.animRect = topHalfAnimRect;
+		jumpingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		jumpingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(x, y, jumpingWidth, jumpingHeight));
+
+		int fallingWidth = ;
+		int fallingHeight = ;
+		fallingTopAnimationMetaData;
+		fallingTopAnimationMetaData.animDelay = .1f;
+		fallingTopAnimationMetaData.animRect = topHalfAnimRect;
+		fallingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		fallingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(x, y, fallingWidth, fallingHeight));
+
+		playerTopFallingAnimation = new Animation(fallingTopAnimationMetaData, platformMethods);
+		playerTopJumpingAnimation = new Animation(jumpingTopAnimationMetaData, platformMethods);
+#endif 
+
+		// Bottom half 
+		idlingWidth = 21;
+		idlingHeight = 16;
+		idlingBottomAnimationMetaData.animDelay = .1f;
+		idlingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
+		idlingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		idlingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(20, 463, idlingWidth, idlingHeight));
+		playerBottomIdlingAnimation = new Animation(idlingBottomAnimationMetaData, platformMethods);
+
+		walkingWidth = 31;
+		walkingHeight = 20;
+		walkingBottomAnimationMetaData;
+		walkingBottomAnimationMetaData.animDelay = .1f;
+		walkingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
+		walkingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		walkingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(114, 546, walkingWidth, walkingHeight));
+		playerBottomWalkingAnimation = new Animation(walkingBottomAnimationMetaData, platformMethods);
+
+#if 0 
+		jumpingWidth = ;
+		jumpingHeight = ;
+		jumpingBottomAnimationMetaData;
+		jumpingBottomAnimationMetaData.animDelay = .1f;
+		jumpingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
+		jumpingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		jumpingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(x, y, jumpingWidth, jumpingHeight));
+
+		fallingWidth = ;
+		fallingHeight = ;
+		fallingBottomAnimationMetaData;
+		fallingBottomAnimationMetaData.animDelay = .1f;
+		fallingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
+		fallingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		fallingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(x, y, fallingWidth, fallingHeight));
+
+		playerBottomFallingAnimation = new Animation(fallingBottomAnimationMetaData, platformMethods);
+		playerBottomJumpingAnimation = new Animation(jumpingBottomAnimationMetaData, platformMethods);
+#endif 
+
+		playerTopHalfAnim = playerTopIdlingAnimation; 
+		playerBottomHalfAnim = playerBottomIdlingAnimation;
+
+#if 0 
 		AnimationMetaData topHalfAnimMetaData;
+		AnimationMetaData bottomHalfAnimMetaData;
+		/*
 		topHalfAnimMetaData.animDelay = .1f;
 		topHalfAnimMetaData.animRect = topHalfAnimRect;
 		topHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		*/
 
-		AnimationMetaData bottomHalfAnimMetaData;
+		/*
 		bottomHalfAnimMetaData.animDelay = .1f;
 		bottomHalfAnimMetaData.animRect = bottomHalfAnimRect;
 		bottomHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		*/
 
 		// TODO: load all the sample frame for each state 
 		// Animation init 
@@ -112,6 +224,7 @@ public:
 		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(98, 463, bottomHalfWidth, bottomHalfHeight));
 		*/
 		playerBottomHalfAnim = new Animation(bottomHalfAnimMetaData, platformMethods);
+#endif 
 
 		
 		frameMillis = platformMethods->createText(0, 0, 10);
@@ -275,7 +388,8 @@ public:
 			}
 		}
 
-		// TODO: animation state machine (sometimes the animation state based on the physics state)
+		// FIXME: There are some flickering with the old position when changing to the next animation  
+		// animation state machine (sometimes the animation state based on the physics state)
 		switch (playerAnimationState) {
 		case IDLING: {
 			// TODO: change the animation to IDLING 
@@ -283,9 +397,13 @@ public:
 			bool onGround = playerPhysicState == ONGROUND;
 			if (input.pressLeft) {
 				playerAnimationState = WALKING;
+				playerTopHalfAnim = playerTopWalkingAnimation;
+				playerBottomHalfAnim = playerBottomWalkingAnimation;
 			}
 			else if (input.pressRight) {
 				playerAnimationState = WALKING;
+				playerTopHalfAnim = playerTopWalkingAnimation;
+				playerBottomHalfAnim = playerBottomWalkingAnimation;
 			}
 
 			if (input.pressJump) {
@@ -306,6 +424,8 @@ public:
 				playerPhysicState != PlayerPhysicState::FALL) {
 
 				playerAnimationState = IDLING;
+				playerTopHalfAnim = playerTopIdlingAnimation;
+				playerBottomHalfAnim = playerBottomIdlingAnimation;
 			}
 			else if (playerPhysicState == JUMPUP) {
 				playerAnimationState = JUMPING;
