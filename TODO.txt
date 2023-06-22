@@ -2,7 +2,10 @@ TODO:
 	DO THE PLAYER ANIMATION CHANGING (2h) []
 		-> Desc: animation states: IDLE, JUMP, FALL, WALK (with direction as well) > Each just a frame 
 		-> animation state changing now works (2h) [X]
-		-> do the animation changing (2h) [] @Current 
+		-> do the animation changing (2h) [X] 
+		-> do the animation flip (1h) []
+
+	FIX: THERE ARE SOME FLICKERING WITH THE OLD POSITION WHEN CHANGING TO THE NEXT ANIMATION  
 
 	THE ANIMATION FRAME CENTERING AND STUFF 
 		-> we can't just calculate the rect using center anymore 
@@ -14,6 +17,7 @@ TODO:
 					-> else if not as big -> stretch relatively 
 
 	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
+
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
