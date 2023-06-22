@@ -152,6 +152,7 @@
     <ClCompile Include="SDL2BackEnd.cpp" />
     <ClCompile Include="SDL2Components.cpp" />
     <ClCompile Include="SDL2PlatformMethodsCollection.cpp" />
+    <ClCompile Include="SDL2SandBox.cpp" />
     <ClCompile Include="SDL2Util.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>

@@ -198,6 +198,7 @@ public:
 			SDL_SetRenderDrawColor(renderer, 255, 0, 255, 0);
 			SDL_RenderClear(renderer);
 
+
 			game.updateAndRender(gameInput, secondsPerframe);
 
 			SDL_SetRenderTarget(renderer, NULL);

@@ -1,17 +1,10 @@
 TODO: 
-	FIX THE SLOW UPDATING OF MOVING IMAGE FIRST THEN SOLVE THIS ONE LATER  @DOTHIS 
-
-	FIX: THERE ARE SOME FLICKERING WITH THE OLD POSITION WHEN CHANGING TO THE NEXT ANIMATION 
-		i notice that the flickering occur when i release the button 
-		and the next animation show it original position then shifted back to player position
-		this could be a foundational error when the image position just keep sliding when i'm moving 
-
-
+#endif
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) []
 		(NOTE: test on the sdl2 backend)
 
-	DO THE ACTUAL GOOD LOOKING ANIMATION () []
+	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
 
 	THE ANIMATION FRAME CENTERING AND STUFF 
 		-> we can't just calculate the rect using center anymore 
@@ -60,6 +53,13 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	FIX THE SLOW UPDATING OF MOVING IMAGE FIRST THEN SOLVE THIS ONE LATER  [X]
+
+	FIX: THERE ARE SOME FLICKERING WITH THE OLD POSITION WHEN CHANGING TO THE NEXT ANIMATION [X]
+		i notice that the flickering occur when i release the button 
+		and the next animation show it original position then shifted back to player position
+		this could be a foundational error when the image position just keep sliding when i'm moving 
+
 	DO THE PLAYER ANIMATION CHANGING (2h) [X]
 		-> Desc: animation states: IDLE, JUMP, FALL, WALK (with direction as well) > Each just a frame 
 		-> animation state changing now works (2h) [X]

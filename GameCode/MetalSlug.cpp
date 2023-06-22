@@ -94,7 +94,6 @@ public:
 
 
 	void setup() {
-
 		// NOTE: all of this will be loaded from a file, so no worries  
 		topHalfAnimRect = { topHalfAnimOffsetX, topHalfAnimOffsetY, .237f, .3f};
 		bottomHalfAnimRect = {bottomHalfAnimOffsetX, bottomHalfAnimOffsetY, .2f, .3f};
@@ -458,7 +457,6 @@ public:
 		}
 
 
-
 		if (CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
 			groundColor = collidedColor;
 			playerColor = collidedColor;
@@ -474,13 +472,14 @@ public:
 		// @EndTest
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
-		platformMethods->drawRectangle(topHalfAnimRect, groundColor);
-		platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
 		
 		topHalfAnimRect.x = player.x + topHalfAnimOffsetX;
 		topHalfAnimRect.y = player.y + topHalfAnimOffsetY;
 		bottomHalfAnimRect.x = player.x + bottomHalfAnimOffsetX;
 		bottomHalfAnimRect.y = player.y + bottomHalfAnimOffsetY;
+
+		platformMethods->drawRectangle(topHalfAnimRect, groundColor);
+		platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
 
 		playerTopHalfAnim->changePos(topHalfAnimRect.x, topHalfAnimRect.y);
 		playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
@@ -531,7 +530,6 @@ public:
 
 		playerAnimationStateText->setText(Util::MessageFormater::print("Animation state: ", animationStateStr));
 		platformMethods->drawText(playerAnimationStateText);
-
 	}
 	
 	~MetalSlug() {

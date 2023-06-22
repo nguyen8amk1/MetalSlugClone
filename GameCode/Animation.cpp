@@ -92,14 +92,13 @@ public:
 
 		timeAccumulator += dt;
 		if (timeAccumulator >= animDelay) {
-			++currentFrameIndex %= frames.size();
-
-		// FIXME: not use set rect anymore, use something else, something invole using the center
-		// what i actually want is just fit to the height or width (which ever is larger) of the rect, and fixed to center
-			frames[currentFrameIndex]->fitRect(rect); 
+			++currentFrameIndex;
+			currentFrameIndex %= frames.size();
 
 			timeAccumulator -= animDelay;
 		}
+
+		frames[currentFrameIndex]->fitRect(rect); 
 
 		platformMethods->renderImage(frames[currentFrameIndex], flipX, flipY);
 	}
