@@ -65,6 +65,33 @@ public:
         SDL_RenderCopyEx(renderer, img->texture, NULL, &img->textureRect, 0, NULL, flipFlags);
     }
 
+    void renderImagePortionAt(MetalSlug::PlatformSpecificImage* image, MetalSlug::Rect& pixelRects, MetalSlug::Rect& fittedNormalizedRects, bool flipX = false, bool flipY = false) override {
+        // TODO:
+        // it suppose to take the porition of the big image with the normrect of the frame 
+        // and render it right where it suppose to
+
+        SDL2PlatformSpecificImage *img = (SDL2PlatformSpecificImage*) image;
+        SDL_RendererFlip flipFlags = SDL_FLIP_NONE;
+        if (flipX)
+            flipFlags = SDL_FLIP_HORIZONTAL;
+        if (flipY)
+            flipFlags = static_cast<SDL_RendererFlip>(flipFlags | SDL_FLIP_VERTICAL);
+
+        SDL_Rect srcRect;
+        srcRect.x = pixelRects.x;
+        srcRect.y = pixelRects.y;
+        srcRect.w = pixelRects.width;
+        srcRect.h = pixelRects.height;
+
+        SDL_Rect destRect;
+        SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(fittedNormalizedRects.x, fittedNormalizedRects.y, destRect.x, destRect.y);
+        SDL2Util::NormalizeCoordConverter::normalizedSizeToPixelSize(fittedNormalizedRects.width, fittedNormalizedRects.height, destRect.w, destRect.h);
+        SDL2Util::NormalizeCoordConverter::toMiddleOrigin(destRect.x, destRect.y, destRect.w, destRect.h);
+
+        // TODO: now we can run the portion of this 
+        SDL_RenderCopyEx(renderer, img->texture, &srcRect, &destRect, 0, NULL, flipFlags);  
+    }
+
     void fillRectangle(MetalSlug::Rect &normRect, MetalSlug::Color &color) override {
         SDL_Rect rect;
         SDL2Util::NormalizeCoordConverter::normalizedCoordToPixelCoord(normRect.x, normRect.y, rect.x, rect.y);

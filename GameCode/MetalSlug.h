@@ -80,6 +80,7 @@ class PlatformSpecficMethodsCollection {
 public: 
 	virtual PlatformSpecificImage* loadImage(const std::string& filename) = 0;
 	virtual void renderImage(PlatformSpecificImage *image, bool flipX=false, bool flipY=false) = 0;
+	virtual void renderImagePortionAt(PlatformSpecificImage* image, Rect &pixelRects, Rect &fittedNormalizedRects, bool flipX = false, bool flipY = false) = 0;
 	virtual void fillRectangle(Rect &rect, Color &color) = 0;
 	virtual void drawRectangle(Rect &rect, Color &color) = 0;
 	virtual void fillCircle(Circle &circle , Color &color) = 0;

@@ -92,8 +92,18 @@ public:
 	Animation *playerBottomFallingAnimation;
 	Animation *playerBottomWalkingAnimation;
 
+	PlatformSpecificImage *testImage;
+	Rect testRect;
 
+//#define TEST 
 	void setup() {
+#ifdef TEST 
+		testRect = {0, 0, 512, 256};
+
+		testImage = platformMethods->loadImage("D:/Programming/Workspace/MetalSlugClone_DirectX/Assets/Imgs/sprites_cat_running_trans.png");
+		//testImage = testImage->getImagePortion(testRect);
+		//testImage->setRect(testImgRect);
+#else
 		// NOTE: all of this will be loaded from a file, so no worries  
 		topHalfAnimRect = { topHalfAnimOffsetX, topHalfAnimOffsetY, .237f, .3f};
 		bottomHalfAnimRect = {bottomHalfAnimOffsetX, bottomHalfAnimOffsetY, .2f, .3f};
@@ -106,6 +116,14 @@ public:
 		idlingTopAnimationMetaData.animDelay = .1f;
 		idlingTopAnimationMetaData.animRect = topHalfAnimRect;
 		idlingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(164, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(203, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(243, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, idlingWidth, idlingHeight));
+		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, idlingWidth, idlingHeight));
 		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, idlingWidth, idlingHeight));
 		playerTopIdlingAnimation = new Animation(idlingTopAnimationMetaData, platformMethods);
 
@@ -249,6 +267,7 @@ public:
 		backgroundRect.y -= cameraPos.y;
 
 		backgroundImg->setRect(backgroundRect);
+#endif 
 	}
 
 	float tempSpeed = 1;
@@ -265,6 +284,13 @@ public:
 	// NOTE: text not involve with the camera 
 
 	void updateAndRender(GameInputContext &input, double dt) {
+#ifdef TEST 
+		// TODO: try to draw a transparent image 
+		// @Bug: the bug could be in this function 
+		//platformMethods->renderImage(testImage);
+		Rect testImgRect = {0, 0, .8f, .4f};
+		platformMethods->renderImagePortionAt(testImage, testRect, testImgRect);
+#else 
 		// @StartTest: Camera
 		if (input.pressRightArrow) {
 			float d = tempSpeed * dt;
@@ -466,20 +492,12 @@ public:
 			playerColor = {0, 0, 255, 255};
 		}
 
-		// Debug collision
-
-
 		// @EndTest
-		platformMethods->drawRectangle(player, playerColor);
-		platformMethods->drawRectangle(ground, groundColor);
-		
+
 		topHalfAnimRect.x = player.x + topHalfAnimOffsetX;
 		topHalfAnimRect.y = player.y + topHalfAnimOffsetY;
 		bottomHalfAnimRect.x = player.x + bottomHalfAnimOffsetX;
 		bottomHalfAnimRect.y = player.y + bottomHalfAnimOffsetY;
-
-		platformMethods->drawRectangle(topHalfAnimRect, groundColor);
-		platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
 
 		playerTopHalfAnim->changePos(topHalfAnimRect.x, topHalfAnimRect.y);
 		playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
@@ -491,6 +509,12 @@ public:
 		playerBottomHalfAnim->animate(dt);
 
 		// Debug info
+		platformMethods->drawRectangle(player, playerColor);
+		platformMethods->drawRectangle(ground, groundColor);
+		
+		platformMethods->drawRectangle(topHalfAnimRect, groundColor);
+		platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
+
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
 		platformMethods->drawText(playerXY);
 
@@ -530,10 +554,11 @@ public:
 
 		playerAnimationStateText->setText(Util::MessageFormater::print("Animation state: ", animationStateStr));
 		platformMethods->drawText(playerAnimationStateText);
+#endif 
 	}
 	
 	~MetalSlug() {
-		delete playerTopHalfAnim;
+		//delete playerTopHalfAnim;
 
 		/*
 		frameMillis->clean();
