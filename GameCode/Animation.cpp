@@ -9,9 +9,11 @@ namespace MetalSlug {
 
 struct AnimationMetaData {
 	float animDelay;
-	std::vector<Rect> framePixelRects;
-	std::string spriteSheetFileName;
-	Rect animRect;
+	std::string tiledSheetFileName;
+	Rect rect; 
+	Vec2f relativeCorner;
+	Vec2f framePixelSize;
+	int rows, columns;
 };
 
 class Animation {
@@ -26,10 +28,11 @@ private:
 	PlatformSpecficMethodsCollection* platformMethods;
 	PlatformSpecificImage *spriteSheet = NULL;
 	std::vector<Rect> pixelRects;
-	std::vector<Rect> fittedNormalizedRects;
+	//std::vector<Rect> fittedNormalizedRects;
 
 	
 public: 
+	/*
 	Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;
 		this->animDelay = metaData.animDelay;
@@ -56,6 +59,33 @@ public:
 			fittedNormalizedRects.push_back(fittedRect);
 		}
 	}
+	*/
+
+	Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollection *platformMethods) {
+		this->platformMethods = platformMethods;
+		this->animDelay = metaData.animDelay;
+		this->rect = metaData.rect;
+
+		spriteSheet = this->platformMethods->loadImage(metaData.tiledSheetFileName);
+
+		for (int i = 0; i < metaData.rows; i++) {
+			for (int j = 0; j < metaData.columns; j++) {
+				Rect pixelRect;
+				pixelRect.width = (float)metaData.framePixelSize.x;
+				pixelRect.height = (float)metaData.framePixelSize.y;
+				pixelRect.x = metaData.relativeCorner.x + (float)(j * pixelRect.width);
+				pixelRect.y = metaData.relativeCorner.y + (float)(i * pixelRect.height);
+
+				pixelRects.push_back(pixelRect);
+
+				/*
+				Rect fittedRect = {}; 
+				fittingRect(pixelRect, fittedRect, rect);
+				fittedNormalizedRects.push_back(fittedRect);
+				*/
+			}
+		}
+	}
 
 	void animate(double dt) {
 
@@ -79,9 +109,13 @@ public:
 
 		// TODO: the name should realy be renderImagePortionAtRect
 
+		/*
 		fittedNormalizedRects[currentFrameIndex].x = rect.x;
 		fittedNormalizedRects[currentFrameIndex].y = rect.y;
 		platformMethods->renderImagePortionAt(spriteSheet, pixelRects[currentFrameIndex], fittedNormalizedRects[currentFrameIndex], flipX, flipY);
+		*/
+
+		platformMethods->renderImagePortionAt(spriteSheet, pixelRects[currentFrameIndex], rect, flipX, flipY);
 	}
 
 	void changePos(float x, float y) {
@@ -110,21 +144,6 @@ public:
 		}
 	}
 private: 
-	void fittingRect(const Rect &pixelRect, Rect &fittedRect, const Rect &rect) {
-		// TODO: using this->rect as a guide to center and resize the frame's width and height 
-		// how should it works ?? 
-		// given this->rect at {0, 0, .4f, .2f} // fit to anyone that is 
-		// and the pixelRect is {0, 0, 512, 256}
-		// what should the fittedRect be ?? 
-
-		fittedRect.x = rect.x;
-		fittedRect.y = rect.y;
-
-		// TODO: fitted the image in the middle of the rect 
-		fittedRect.width = pixelRect.width/111.888f;  
-		fittedRect.height = pixelRect.height/112.0f;  
-	}
-
 	/*
 	Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {
 		this->platformMethods = platformMethods;

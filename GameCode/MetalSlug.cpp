@@ -15,8 +15,6 @@ private:
 	Rect backgroundRect;
 
 	std::vector<std::string> frameFiles;
-	Animation *playerTopHalfAnim;
-	Animation *playerBottomHalfAnim;
 	PlatformSpecificImage* backgroundImg;
 
 	// debug 
@@ -64,183 +62,72 @@ public:
 	// no zoom, no scale -> fixed view port is 320 by 224
 	Vec2f cameraPos = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 
-	Rect topHalfAnimRect;
-	Rect bottomHalfAnimRect;
-	float topHalfAnimOffsetX = 0;
-	float topHalfAnimOffsetY = .1f;
-	float bottomHalfAnimOffsetX = -.04f;
-	float bottomHalfAnimOffsetY = -.05f;
-
 	// Player Animations 
-	AnimationMetaData idlingTopAnimationMetaData;
-	AnimationMetaData jumpingTopAnimationMetaData;
-	AnimationMetaData fallingTopAnimationMetaData;
-	AnimationMetaData walkingTopAnimationMetaData;
+	AnimationMetaData playerIdlingAnimationMetaData;
+	AnimationMetaData playerJumpingAnimationMetaData;
+	AnimationMetaData playerFallingAnimationMetaData;
+	AnimationMetaData playerWalkingAnimationMetaData;
 
-	Animation *playerTopIdlingAnimation;
-	Animation *playerTopJumpingAnimation;
-	Animation *playerTopFallingAnimation;
-	Animation *playerTopWalkingAnimation;
+	Animation *playerIdlingAnimation;
+	Animation *playerJumpingAnimation;
+	Animation *playerFallingAnimation;
+	Animation *playerWalkingAnimation;
 
-	AnimationMetaData idlingBottomAnimationMetaData;
-	AnimationMetaData jumpingBottomAnimationMetaData;
-	AnimationMetaData fallingBottomAnimationMetaData;
-	AnimationMetaData walkingBottomAnimationMetaData;
+	Animation *playerCurrentAnimation;
 
-	Animation *playerBottomIdlingAnimation;
-	Animation *playerBottomJumpingAnimation;
-	Animation *playerBottomFallingAnimation;
-	Animation *playerBottomWalkingAnimation;
-
-	PlatformSpecificImage *testImage;
-	Rect testRect;
-
-//#define TEST 
+	Rect animRect;
 	void setup() {
-#ifdef TEST 
-		testRect = {0, 0, 512, 256};
+		// TODO: init all the animation here  
+		// first need to have the editied sprite sheet first  @Current 
+		playerIdlingAnimationMetaData.animDelay = .1f;
+		playerIdlingAnimationMetaData.tiledSheetFileName = "C:/Users/cutch/Downloads/marco_messi_small.png";
+		playerIdlingAnimationMetaData.rows = 1;
+		playerIdlingAnimationMetaData.columns = 4;
+		playerIdlingAnimationMetaData.framePixelSize = {31,29};
 
-		testImage = platformMethods->loadImage("D:/Programming/Workspace/MetalSlugClone_DirectX/Assets/Imgs/sprites_cat_running_trans.png");
-		//testImage = testImage->getImagePortion(testRect);
-		//testImage->setRect(testImgRect);
-#else
-		// NOTE: all of this will be loaded from a file, so no worries  
-		topHalfAnimRect = { topHalfAnimOffsetX, topHalfAnimOffsetY, .237f, .3f};
-		bottomHalfAnimRect = {bottomHalfAnimOffsetX, bottomHalfAnimOffsetY, .2f, .3f};
+		float h = (playerIdlingAnimationMetaData.framePixelSize.y/224.0f)*2;
+		float w = h*(31.0f/29.0f); 
 
-		// Top half  
+		animRect = {0, 0, w, h};
+		playerIdlingAnimationMetaData.rect = animRect;
+		playerIdlingAnimationMetaData.relativeCorner = {0,0};
+		playerIdlingAnimation = new Animation(playerIdlingAnimationMetaData,platformMethods);
 
-		int idlingWidth = 35;
-		int idlingHeight = 40;
-		idlingTopAnimationMetaData;
-		idlingTopAnimationMetaData.animDelay = .1f;
-		idlingTopAnimationMetaData.animRect = topHalfAnimRect;
-		idlingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(164, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(203, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(243, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, idlingWidth, idlingHeight));
-		idlingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, idlingWidth, idlingHeight));
-		playerTopIdlingAnimation = new Animation(idlingTopAnimationMetaData, platformMethods);
-
-		int walkingWidth = 31;
-		int walkingHeight = 27;
-		walkingTopAnimationMetaData;
-		walkingTopAnimationMetaData.animDelay = .1f;
-		walkingTopAnimationMetaData.animRect = topHalfAnimRect;
-		walkingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		walkingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(343, 490,  walkingWidth, walkingHeight));
-		playerTopWalkingAnimation = new Animation(walkingTopAnimationMetaData, platformMethods);
-
-		// @Continue: Keep find the center and size of jumping and falling
-		int jumpingWidth = 29;
-		int jumpingHeight = 28;
-		jumpingTopAnimationMetaData;
-		jumpingTopAnimationMetaData.animDelay = .1f;
-		jumpingTopAnimationMetaData.animRect = topHalfAnimRect;
-		jumpingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		jumpingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(257, 396, jumpingWidth, jumpingHeight));
-
-		int fallingWidth = 26;
-		int fallingHeight = 34;
-		fallingTopAnimationMetaData;
-		fallingTopAnimationMetaData.animDelay = .1f;
-		fallingTopAnimationMetaData.animRect = topHalfAnimRect;
-		fallingTopAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		fallingTopAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(120, 360, fallingWidth, fallingHeight));
-
-		playerTopFallingAnimation = new Animation(fallingTopAnimationMetaData, platformMethods);
-		playerTopJumpingAnimation = new Animation(jumpingTopAnimationMetaData, platformMethods);
-
-		// Bottom half 
-		idlingWidth = 21;
-		idlingHeight = 16;
-		idlingBottomAnimationMetaData.animDelay = .1f;
-		idlingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
-		idlingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		idlingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(20, 463, idlingWidth, idlingHeight));
-		playerBottomIdlingAnimation = new Animation(idlingBottomAnimationMetaData, platformMethods);
-
-		walkingWidth = 31;
-		walkingHeight = 20;
-		walkingBottomAnimationMetaData;
-		walkingBottomAnimationMetaData.animDelay = .1f;
-		walkingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
-		walkingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		walkingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(114, 546, walkingWidth, walkingHeight));
-		playerBottomWalkingAnimation = new Animation(walkingBottomAnimationMetaData, platformMethods);
-
-		jumpingWidth = 31;
-		jumpingHeight = 20;
-		jumpingBottomAnimationMetaData;
-		jumpingBottomAnimationMetaData.animDelay = .1f;
-		jumpingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
-		jumpingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		jumpingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(242, 545, jumpingWidth, jumpingHeight));
-
-		fallingWidth = 28;
-		fallingHeight = 20;
-		fallingBottomAnimationMetaData;
-		fallingBottomAnimationMetaData.animDelay = .1f;
-		fallingBottomAnimationMetaData.animRect = bottomHalfAnimRect;
-		fallingBottomAnimationMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
-		fallingBottomAnimationMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(49, 545, fallingWidth, fallingHeight));
-
-		playerBottomFallingAnimation = new Animation(fallingBottomAnimationMetaData, platformMethods);
-		playerBottomJumpingAnimation = new Animation(jumpingBottomAnimationMetaData, platformMethods);
-
-		playerTopHalfAnim = playerTopIdlingAnimation; 
-		playerBottomHalfAnim = playerBottomIdlingAnimation;
-
-#if 0 
-		AnimationMetaData topHalfAnimMetaData;
-		AnimationMetaData bottomHalfAnimMetaData;
 		/*
-		topHalfAnimMetaData.animDelay = .1f;
-		topHalfAnimMetaData.animRect = topHalfAnimRect;
-		topHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		playerWalkingAnimationMetaData.animDelay = .1f;
+		playerWalkingAnimationMetaData.tiledSheetFileName = "";
+		playerWalkingAnimationMetaData.rows = 1;
+		playerWalkingAnimationMetaData.columns = 4;
+		playerWalkingAnimationMetaData.rect = animRect;
+		playerWalkingAnimationMetaData.relativeCorner = {,};
+		playerWalkingAnimationMetaData.framePixelSize = {,};
+
+		playerJumpingAnimationMetaData.animDelay = .1f;
+		playerJumpingAnimationMetaData.tiledSheetFileName = "";
+		playerJumpingAnimationMetaData.rows = 1;
+		playerJumpingAnimationMetaData.columns = 4;
+		playerJumpingAnimationMetaData.rect = animRect;
+		playerJumpingAnimationMetaData.relativeCorner = {,};
+		playerJumpingAnimationMetaData.framePixelSize = {,};
+
+		playerFallingAnimationMetaData.animDelay = .1f;
+		playerFallingAnimationMetaData.tiledSheetFileName = "";
+		playerFallingAnimationMetaData.rows = 1;
+		playerFallingAnimationMetaData.columns = 4;
+		playerFallingAnimationMetaData.rect = animRect;
+		playerFallingAnimationMetaData.relativeCorner = {,};
+		playerFallingAnimationMetaData.framePixelSize = {,};
 		*/
 
 		/*
-		bottomHalfAnimMetaData.animDelay = .1f;
-		bottomHalfAnimMetaData.animRect = bottomHalfAnimRect;
-		bottomHalfAnimMetaData.spriteSheetFileName = "Assets/Imgs/Characters/Marco_Rossi_1.png";
+		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
+		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
+		playerFallingAnimation = new Animation(playerFallingAnimationMetaData, platformMethods);
 		*/
 
-		// TODO: load all the sample frame for each state 
-		// Animation init 
-		int topHalfWidth = 35;
-		int topHalfHeight = 40;
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(24, 317, topHalfWidth, topHalfHeight));
-		/*
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(58, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(92, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(127, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(164, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(203, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(243, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(279, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(314, 317, topHalfWidth, topHalfHeight));
-		topHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(348, 317, topHalfWidth, topHalfHeight));
-		*/
-		playerTopHalfAnim = new Animation(topHalfAnimMetaData, platformMethods);
+		playerCurrentAnimation = playerIdlingAnimation;
 
-		int bottomHalfWidth = 21;
-		int bottomHalfHeight = 16;
-		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(20, 463, bottomHalfWidth, bottomHalfHeight));
-		/*
-		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(46, 463, bottomHalfWidth, bottomHalfHeight));
-		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(72, 463, bottomHalfWidth, bottomHalfHeight));
-		bottomHalfAnimMetaData.framePixelRects.push_back(Util::Generator::generatePixelRectFromCenter(98, 463, bottomHalfWidth, bottomHalfHeight));
-		*/
-		playerBottomHalfAnim = new Animation(bottomHalfAnimMetaData, platformMethods);
-#endif 
 
-		
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
@@ -267,7 +154,6 @@ public:
 		backgroundRect.y -= cameraPos.y;
 
 		backgroundImg->setRect(backgroundRect);
-#endif 
 	}
 
 	float tempSpeed = 1;
@@ -284,13 +170,6 @@ public:
 	// NOTE: text not involve with the camera 
 
 	void updateAndRender(GameInputContext &input, double dt) {
-#ifdef TEST 
-		// TODO: try to draw a transparent image 
-		// @Bug: the bug could be in this function 
-		//platformMethods->renderImage(testImage);
-		Rect testImgRect = {0, 0, .8f, .4f};
-		platformMethods->renderImagePortionAt(testImage, testRect, testImgRect);
-#else 
 		// @StartTest: Camera
 		if (input.pressRightArrow) {
 			float d = tempSpeed * dt;
@@ -413,24 +292,20 @@ public:
 			bool onGround = playerPhysicState == ONGROUND;
 			if (input.pressLeft) {
 				playerAnimationState = WALKING;
-				playerTopHalfAnim = playerTopWalkingAnimation;
-				playerBottomHalfAnim = playerBottomWalkingAnimation;
+				//playerCurrentAnimation = playerWalkingAnimation;
 			}
 			else if (input.pressRight) {
 				playerAnimationState = WALKING;
-				playerTopHalfAnim = playerTopWalkingAnimation;
-				playerBottomHalfAnim = playerBottomWalkingAnimation;
+				//playerCurrentAnimation = playerWalkingAnimation;
 			}
 
 			if (input.pressJump) {
 				playerAnimationState = JUMPING;
-				playerTopHalfAnim = playerTopJumpingAnimation;
-				playerBottomHalfAnim = playerBottomJumpingAnimation;
+				//playerCurrentAnimation = playerJumpingAnimation;
 			}
 			else if (!onGround) {
 				playerAnimationState = PlayerAnimationState::FALLING;
-				playerTopHalfAnim = playerTopFallingAnimation;
-				playerBottomHalfAnim = playerBottomFallingAnimation;
+				//playerCurrentAnimation = playerFallingAnimation;
 			}
 		}break;
 
@@ -443,18 +318,15 @@ public:
 				playerPhysicState != PlayerPhysicState::FALL) {
 
 				playerAnimationState = IDLING;
-				playerTopHalfAnim = playerTopIdlingAnimation;
-				playerBottomHalfAnim = playerBottomIdlingAnimation;
+				//playerCurrentAnimation = playerIdlingAnimation;
 			}
 			else if (playerPhysicState == JUMPUP) {
 				playerAnimationState = JUMPING;
-				playerTopHalfAnim = playerTopJumpingAnimation;
-				playerBottomHalfAnim = playerBottomJumpingAnimation;
+				//playerCurrentAnimation = playerJumpingAnimation;
 			}
 			else if (playerPhysicState == PlayerPhysicState::FALL) {
 				playerAnimationState = PlayerAnimationState::FALLING;
-				playerTopHalfAnim = playerTopFallingAnimation;
-				playerBottomHalfAnim = playerBottomFallingAnimation;
+				//playerCurrentAnimation = playerFallingAnimation;
 			}
 		} break;
 
@@ -463,8 +335,7 @@ public:
 				playerPhysicState == PlayerPhysicState::FALL) {
 
 				playerAnimationState = PlayerAnimationState::FALLING;
-				playerTopHalfAnim = playerTopFallingAnimation;
-				playerBottomHalfAnim = playerBottomFallingAnimation;
+				//playerCurrentAnimation = playerFallingAnimation;
 			}
 
 		} break;
@@ -472,8 +343,7 @@ public:
 		case PlayerAnimationState::FALLING: {
 			if (playerPhysicState == ONGROUND) {
 				playerAnimationState = IDLING;
-				playerTopHalfAnim = playerTopIdlingAnimation;
-				playerBottomHalfAnim = playerBottomIdlingAnimation;
+				//playerCurrentAnimation = playerIdlingAnimation;
 			}
 		} break;
 
@@ -494,26 +364,21 @@ public:
 
 		// @EndTest
 
-		topHalfAnimRect.x = player.x + topHalfAnimOffsetX;
-		topHalfAnimRect.y = player.y + topHalfAnimOffsetY;
-		bottomHalfAnimRect.x = player.x + bottomHalfAnimOffsetX;
-		bottomHalfAnimRect.y = player.y + bottomHalfAnimOffsetY;
+		playerCurrentAnimation->changePos(player.x, player.y);
+		//playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
 
-		playerTopHalfAnim->changePos(topHalfAnimRect.x, topHalfAnimRect.y);
-		playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
+		playerCurrentAnimation->flip(playerHorizontalFacingDirection, 1);
 
-		playerTopHalfAnim->flip(playerHorizontalFacingDirection, 1);
-		playerBottomHalfAnim->flip(playerHorizontalFacingDirection, 1); 
-
-		playerTopHalfAnim->animate(dt);
-		playerBottomHalfAnim->animate(dt);
+		playerCurrentAnimation->animate(dt);
 
 		// Debug info
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
 		
-		platformMethods->drawRectangle(topHalfAnimRect, groundColor);
-		platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
+		animRect.x = player.x;
+		animRect.y = player.y;
+		platformMethods->drawRectangle(animRect, groundColor);
+		//platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
 
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
 		platformMethods->drawText(playerXY);
@@ -554,11 +419,10 @@ public:
 
 		playerAnimationStateText->setText(Util::MessageFormater::print("Animation state: ", animationStateStr));
 		platformMethods->drawText(playerAnimationStateText);
-#endif 
 	}
 	
 	~MetalSlug() {
-		//delete playerTopHalfAnim;
+		//delete playerHalfAnim;
 
 		/*
 		frameMillis->clean();

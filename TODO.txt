@@ -1,20 +1,20 @@
 TODO: 
-	THE ANIMATION FRAME CENTERING AND STUFF 
-		-> we can't just calculate the rect using center anymore 
-			since it's not looking good 
-				and sprites don't space equally 
-				-> use the pixel rect 
-				-> @Dothis Idea: may be have a relative width and height to compare (the largest width or height in the all the frames)
-					-> if the frames as big as the relative width or height -> stretch to the full rect
-					-> else if not as big -> stretch relatively 
-		Problems: 
-			+ The size of each frames is different from each other, matching the center of all of them together don't work 
-			+ The position of each frames is also different  
-
+	ANIMATION SPRITESHEET PROBLEM: 
 		@Use this 
 		-> the way to solve this problem is: take all the burden to photoshop and solve it there :)) 
 		just edit the image into usable tiledsprite with rows and columns
 		have a whole animation coordinate rect and rows and columns (3 info, whole animation rect, rows, columns)  
+
+		Problems: if we just plainly stiched all of them together then there will be so so much animation for the main character
+		-> we stiched each part of him and attached them in the game ?? 
+		-> but it will be kinda hard since it's not enterly precise :)) -> fun little weekend project ?? 
+		-> Brief calculation: 
+			the legs have 4 state 
+			the body have: 
+				4 shooting state
+				n emotional state 
+			-> 4 *4n = mot dong animation can phai lam 
+		-> the legs and the uppor should be different 
 
 	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
 
