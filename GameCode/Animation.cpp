@@ -71,10 +71,12 @@ public:
 		for (int i = 0; i < metaData.rows; i++) {
 			for (int j = 0; j < metaData.columns; j++) {
 				Rect pixelRect;
-				pixelRect.width = (float)metaData.framePixelSize.x;
-				pixelRect.height = (float)metaData.framePixelSize.y;
+				pixelRect.width = (float)(metaData.framePixelSize.x);
+				pixelRect.height = (float)(metaData.framePixelSize.y);
 				pixelRect.x = metaData.relativeCorner.x + (float)(j * pixelRect.width);
 				pixelRect.y = metaData.relativeCorner.y + (float)(i * pixelRect.height);
+				pixelRect.width = (float)fabs(metaData.framePixelSize.x);
+				pixelRect.height = (float)fabs(metaData.framePixelSize.y);
 
 				pixelRects.push_back(pixelRect);
 

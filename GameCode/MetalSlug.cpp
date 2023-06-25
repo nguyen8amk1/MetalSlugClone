@@ -26,7 +26,7 @@ private:
 	GameText *playerAnimationStateText = NULL;
 	//GameText *backgroundRectText = NULL;
 
-	Rect player = {-17, .3f, .2f, .2f};
+	Rect player = {-17, .3f, .2f, .4f};
 	Rect ground = {0, -1.12f, 60, .488f};
 
 	Color collidedColor = {255, 0, 0, 255};
@@ -73,59 +73,146 @@ public:
 	Animation *playerFallingAnimation;
 	Animation *playerWalkingAnimation;
 
+	AnimationMetaData playerWalkingLegAnimationMetaData; 
+	Animation *playerWalkingLegAnimation;
+
+	AnimationMetaData playerIdlingLegAnimationMetaData; 
+	Animation *playerIdlingLegAnimation;
+
+	AnimationMetaData playerJumpingLegAnimationMetaData; 
+	Animation *playerJumpingLegAnimation;
+
+	AnimationMetaData playerFallingLegAnimationMetaData; 
+	Animation *playerFallingLegAnimation;
+
 	Animation *playerCurrentAnimation;
+	Animation *playerCurrentLegAnimation;
 
 	Rect animRect;
+
+
+	// NOTE: Player State Machine
+	// Player or dynamic entity in the game have 2 state machine: 
+	// Physic state machine
+	// Animation state machine 
+	// The animation state machine will sometimes based on the state of the physics state machine 
+
 	void setup() {
+		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
 		// TODO: init all the animation here  
-		// first need to have the editied sprite sheet first  @Current 
-		playerIdlingAnimationMetaData.animDelay = .1f;
-		playerIdlingAnimationMetaData.tiledSheetFileName = "C:/Users/cutch/Downloads/marco_messi_small.png";
+		playerIdlingAnimationMetaData.animDelay = .15f;
+		playerIdlingAnimationMetaData.tiledSheetFileName = filename;
 		playerIdlingAnimationMetaData.rows = 1;
 		playerIdlingAnimationMetaData.columns = 4;
+		playerIdlingAnimationMetaData.relativeCorner = {0,0};
 		playerIdlingAnimationMetaData.framePixelSize = {31,29};
 
 		float h = (playerIdlingAnimationMetaData.framePixelSize.y/224.0f)*2;
 		float w = h*(31.0f/29.0f); 
-
 		animRect = {0, 0, w, h};
 		playerIdlingAnimationMetaData.rect = animRect;
 		playerIdlingAnimationMetaData.relativeCorner = {0,0};
-		playerIdlingAnimation = new Animation(playerIdlingAnimationMetaData,platformMethods);
+		playerIdlingAnimation  = new Animation(playerIdlingAnimationMetaData,platformMethods);
 
-		/*
-		playerWalkingAnimationMetaData.animDelay = .1f;
-		playerWalkingAnimationMetaData.tiledSheetFileName = "";
+		playerWalkingAnimationMetaData.animDelay = .15f;
+		playerWalkingAnimationMetaData.tiledSheetFileName = filename;
 		playerWalkingAnimationMetaData.rows = 1;
-		playerWalkingAnimationMetaData.columns = 4;
+		playerWalkingAnimationMetaData.columns = 12;
+		playerWalkingAnimationMetaData.relativeCorner = {0, 29};
+		playerWalkingAnimationMetaData.framePixelSize = {34, 29};
+
+		h = (playerWalkingAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerWalkingAnimationMetaData.framePixelSize.x/playerWalkingAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, w, h};
+
 		playerWalkingAnimationMetaData.rect = animRect;
-		playerWalkingAnimationMetaData.relativeCorner = {,};
-		playerWalkingAnimationMetaData.framePixelSize = {,};
+		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
 
 		playerJumpingAnimationMetaData.animDelay = .1f;
-		playerJumpingAnimationMetaData.tiledSheetFileName = "";
+		playerJumpingAnimationMetaData.tiledSheetFileName = filename;
 		playerJumpingAnimationMetaData.rows = 1;
-		playerJumpingAnimationMetaData.columns = 4;
+		playerJumpingAnimationMetaData.columns = 6; 
+		playerJumpingAnimationMetaData.relativeCorner = {0, 64};
+		playerJumpingAnimationMetaData.framePixelSize = {29,26};
+
+		h = (playerJumpingAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerJumpingAnimationMetaData.framePixelSize.x/playerJumpingAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, w, h};
+
 		playerJumpingAnimationMetaData.rect = animRect;
-		playerJumpingAnimationMetaData.relativeCorner = {,};
-		playerJumpingAnimationMetaData.framePixelSize = {,};
+		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
 
 		playerFallingAnimationMetaData.animDelay = .1f;
-		playerFallingAnimationMetaData.tiledSheetFileName = "";
+		playerFallingAnimationMetaData.tiledSheetFileName = filename;
 		playerFallingAnimationMetaData.rows = 1;
-		playerFallingAnimationMetaData.columns = 4;
-		playerFallingAnimationMetaData.rect = animRect;
-		playerFallingAnimationMetaData.relativeCorner = {,};
-		playerFallingAnimationMetaData.framePixelSize = {,};
-		*/
+		playerFallingAnimationMetaData.columns = 6;
+		playerFallingAnimationMetaData.relativeCorner = {145, 64};
+		playerFallingAnimationMetaData.framePixelSize = {-29,26};
 
-		/*
-		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
-		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
+		h = (playerFallingAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerFallingAnimationMetaData.framePixelSize.x/playerFallingAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, fabs(w), fabs(h)};
+
+		playerFallingAnimationMetaData.rect = animRect;
 		playerFallingAnimation = new Animation(playerFallingAnimationMetaData, platformMethods);
-		*/
+
+
+		// Player's Leg animation
+		playerWalkingLegAnimationMetaData.animDelay = .1f;
+		playerWalkingLegAnimationMetaData.tiledSheetFileName = filename;
+		playerWalkingLegAnimationMetaData.rows = 1;
+		playerWalkingLegAnimationMetaData.columns = 12;
+		playerWalkingLegAnimationMetaData.framePixelSize = {32, 20};
+		playerWalkingLegAnimationMetaData.relativeCorner = {405, 44};
+
+		h = (playerWalkingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerWalkingLegAnimationMetaData.framePixelSize.x/playerWalkingLegAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, w, h};
+		playerWalkingLegAnimationMetaData.rect = animRect;
+		playerWalkingLegAnimation  = new Animation(playerWalkingLegAnimationMetaData,platformMethods);
+
+		playerIdlingLegAnimationMetaData.animDelay = .1f;
+		playerIdlingLegAnimationMetaData.tiledSheetFileName = filename;
+		playerIdlingLegAnimationMetaData.rows = 1;
+		playerIdlingLegAnimationMetaData.columns = 1;
+		playerIdlingLegAnimationMetaData.framePixelSize = {21, 16};
+		playerIdlingLegAnimationMetaData.relativeCorner = {124, 13};
+
+		h = (playerIdlingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerIdlingLegAnimationMetaData.framePixelSize.x/playerIdlingLegAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, w, h};
+		playerIdlingLegAnimationMetaData.rect = animRect;
+		playerIdlingLegAnimation  = new Animation(playerIdlingLegAnimationMetaData,platformMethods);
+
+		playerJumpingLegAnimationMetaData.animDelay = .1f;
+		playerJumpingLegAnimationMetaData.tiledSheetFileName = filename;
+		playerJumpingLegAnimationMetaData.rows = 1;
+		playerJumpingLegAnimationMetaData.columns = 6;
+		playerJumpingLegAnimationMetaData.framePixelSize = {21, 25};
+		playerJumpingLegAnimationMetaData.relativeCorner = {174,64};
+
+		h = (playerJumpingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerJumpingLegAnimationMetaData.framePixelSize.x/playerJumpingLegAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, w, h};
+		playerJumpingLegAnimationMetaData.rect = animRect;
+		playerJumpingLegAnimation  = new Animation(playerJumpingLegAnimationMetaData,platformMethods);
+
+		playerFallingLegAnimationMetaData.animDelay = .1f;
+		playerFallingLegAnimationMetaData.tiledSheetFileName = filename;
+		playerFallingLegAnimationMetaData.rows = 1;
+		playerFallingLegAnimationMetaData.columns = 6;
+		playerFallingLegAnimationMetaData.framePixelSize = {-21, 25};
+		playerFallingLegAnimationMetaData.relativeCorner = {279, 64};
+
+		h = (playerFallingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
+		w = h*(playerFallingLegAnimationMetaData.framePixelSize.x/playerFallingLegAnimationMetaData.framePixelSize.y); 
+		animRect = {0, 0, fabs(w), fabs(h)};
+
+		playerFallingLegAnimationMetaData.rect = animRect;
+		playerFallingLegAnimation = new Animation(playerFallingLegAnimationMetaData, platformMethods);
 
 		playerCurrentAnimation = playerIdlingAnimation;
+		playerCurrentLegAnimation = playerIdlingLegAnimation;
 
 
 		frameMillis = platformMethods->createText(0, 0, 10);
@@ -161,7 +248,7 @@ public:
 	float jumpT = 0;
 	float jumpProgress = 0;
 	float playerOriginalGroundY = 0;
-	float jumpHeight = .8f;
+	float jumpHeight = .5777f;
 	float playerHorizontalFacingDirection = 1;
 
 	// Camera 
@@ -225,11 +312,9 @@ public:
 		// @StartTest: 
 		if (input.pressLeft) {
 			player.x -= (float)(tempSpeed*dt); 
-			playerHorizontalFacingDirection = -1;
 		}
 		else if (input.pressRight) {
 			player.x += (float)(tempSpeed*dt); 
-			playerHorizontalFacingDirection = 1;
 		}
 
 		// Physics state machine
@@ -292,20 +377,26 @@ public:
 			bool onGround = playerPhysicState == ONGROUND;
 			if (input.pressLeft) {
 				playerAnimationState = WALKING;
-				//playerCurrentAnimation = playerWalkingAnimation;
+				playerHorizontalFacingDirection = -1;
+				playerCurrentAnimation = playerWalkingAnimation;
+				playerCurrentLegAnimation = playerWalkingLegAnimation;
 			}
 			else if (input.pressRight) {
 				playerAnimationState = WALKING;
-				//playerCurrentAnimation = playerWalkingAnimation;
+				playerHorizontalFacingDirection = 1;
+				playerCurrentAnimation = playerWalkingAnimation;
+				playerCurrentLegAnimation = playerWalkingLegAnimation;
 			}
 
 			if (input.pressJump) {
 				playerAnimationState = JUMPING;
-				//playerCurrentAnimation = playerJumpingAnimation;
+				playerCurrentAnimation = playerJumpingAnimation;
+				playerCurrentLegAnimation = playerJumpingLegAnimation;
 			}
 			else if (!onGround) {
 				playerAnimationState = PlayerAnimationState::FALLING;
-				//playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentLegAnimation = playerFallingLegAnimation;
 			}
 		}break;
 
@@ -318,15 +409,18 @@ public:
 				playerPhysicState != PlayerPhysicState::FALL) {
 
 				playerAnimationState = IDLING;
-				//playerCurrentAnimation = playerIdlingAnimation;
+				playerCurrentAnimation = playerIdlingAnimation;
+				playerCurrentLegAnimation = playerIdlingLegAnimation;
 			}
 			else if (playerPhysicState == JUMPUP) {
 				playerAnimationState = JUMPING;
-				//playerCurrentAnimation = playerJumpingAnimation;
+				playerCurrentAnimation = playerJumpingAnimation;
+				playerCurrentLegAnimation = playerJumpingLegAnimation;
 			}
 			else if (playerPhysicState == PlayerPhysicState::FALL) {
 				playerAnimationState = PlayerAnimationState::FALLING;
-				//playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentLegAnimation = playerFallingLegAnimation;
 			}
 		} break;
 
@@ -335,7 +429,8 @@ public:
 				playerPhysicState == PlayerPhysicState::FALL) {
 
 				playerAnimationState = PlayerAnimationState::FALLING;
-				//playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentLegAnimation = playerFallingLegAnimation;
 			}
 
 		} break;
@@ -343,7 +438,8 @@ public:
 		case PlayerAnimationState::FALLING: {
 			if (playerPhysicState == ONGROUND) {
 				playerAnimationState = IDLING;
-				//playerCurrentAnimation = playerIdlingAnimation;
+				playerCurrentAnimation = playerIdlingAnimation;
+				playerCurrentLegAnimation = playerIdlingLegAnimation;
 			}
 		} break;
 
@@ -363,22 +459,20 @@ public:
 		}
 
 		// @EndTest
+		float legX = player.x;
+		float legY = player.y - .15f;
+		playerCurrentLegAnimation->changePos(legX, legY);
+		playerCurrentLegAnimation->flip(playerHorizontalFacingDirection, 1);
+		playerCurrentLegAnimation->animate(dt);
 
 		playerCurrentAnimation->changePos(player.x, player.y);
-		//playerBottomHalfAnim->changePos(bottomHalfAnimRect.x, bottomHalfAnimRect.y);
-
 		playerCurrentAnimation->flip(playerHorizontalFacingDirection, 1);
-
 		playerCurrentAnimation->animate(dt);
+
 
 		// Debug info
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
-		
-		animRect.x = player.x;
-		animRect.y = player.y;
-		platformMethods->drawRectangle(animRect, groundColor);
-		//platformMethods->drawRectangle(bottomHalfAnimRect, groundColor);
 
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
 		platformMethods->drawText(playerXY);
