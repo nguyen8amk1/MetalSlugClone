@@ -97,7 +97,6 @@ public:
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
 
-	// TODO: let's just clean the player code a little bit 
 	void initAnimationMetaData(AnimationMetaData &metaData, const std::string &spriteSheetFilename, float animDelay, int rows, int columns, const Vec2f &relativeCorner, const Vec2f &framePixelSize) {
 		metaData.animDelay = animDelay;
 		metaData.tiledSheetFileName = spriteSheetFilename;
@@ -141,107 +140,7 @@ public:
 
 	}
 
-	void setup() {
-		playerInit();
-
-		playerCurrentAnimation = playerIdlingAnimation;
-		playerCurrentLegAnimation = playerIdlingLegAnimation;
-
-
-		frameMillis = platformMethods->createText(0, 0, 10);
-		fps  = platformMethods->createText(0, 15, 10);
-		playerXY  = platformMethods->createText(0, 30, 10);
-
-		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
-		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
-
-		/*
-		backgroundRectText  = platformMethods->createText(0, 60, 10);
-		groundPos  = platformMethods->createText(0, 75, 10);
-		*/
-
-		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
-		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
-
-		// apply the camera 
-		player.x -= cameraPos.x;
-		player.y -= cameraPos.y;
-
-		ground.x -= cameraPos.x;
-		ground.y -= cameraPos.y;
-
-		backgroundRect.x -= cameraPos.x;
-		backgroundRect.y -= cameraPos.y;
-
-		backgroundImg->setRect(backgroundRect);
-	}
-
-	float tempSpeed = 1;
-	float gravity = 2.2f;
-	float jumpT = 0;
-	float jumpProgress = 0;
-	float playerOriginalGroundY = 0;
-	float jumpHeight = .5777f;
-	float playerHorizontalFacingDirection = 1;
-
-	// Camera 
-	// NOTE: All the pos of entity in the game is in world space not camera space, 
-	// the camera calculation is just for rendering   
-	// NOTE: text not involve with the camera 
-
-	void updateAndRender(GameInputContext &input, double dt) {
-		// @StartTest: Camera
-		if (input.pressRightArrow) {
-			float d = tempSpeed * dt;
-			cameraPos.x += d;
-
-			player.x -= d;
-			ground.x -= d;
-			backgroundRect.x -= d;
-		}
-		else if (input.pressLeftArrow) {
-			float d = tempSpeed * dt;
-			cameraPos.x -= d;
-
-			player.x += d;
-
-			ground.x += d;
-			backgroundRect.x += d;
-		}
-		if (input.pressUpArrow) {
-			float d = tempSpeed * dt;
-			cameraPos.y += d;
-
-			player.y -= d;
-
-			ground.y -= d;
-			backgroundRect.y -= d;
-		}
-		else if (input.pressDownArrow) {
-			float d = tempSpeed * dt;
-			cameraPos.y -= d;
-
-			player.y += d;
-
-			ground.y += d;
-			backgroundRect.y += d;
-		}
-
-		backgroundImg->setRect(backgroundRect);
-		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
-		platformMethods->renderImage(backgroundImg);
-		//platformMethods->drawText(backgroundRectText);
-
-		// @EndTest
-
-		if (platformDebugInfo) {
-			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
-			fps->setText(Util::MessageFormater::print("FPS: ", platformDebugInfo->fps));
-
-			platformMethods->drawText(frameMillis);
-			platformMethods->drawText(fps);
-		}
-
+	void playerUpdate(const GameInputContext &input, double dt) {
 		// @StartTest: 
 		if (input.pressLeft) {
 			player.x -= (float)(tempSpeed*dt); 
@@ -401,6 +300,117 @@ public:
 		playerCurrentAnimation->changePos(player.x, player.y);
 		playerCurrentAnimation->flip(playerHorizontalFacingDirection, 1);
 		playerCurrentAnimation->animate(dt);
+
+
+	}
+
+	void setup() {
+		playerInit();
+
+		playerCurrentAnimation = playerIdlingAnimation;
+		playerCurrentLegAnimation = playerIdlingLegAnimation;
+
+
+		frameMillis = platformMethods->createText(0, 0, 10);
+		fps  = platformMethods->createText(0, 15, 10);
+		playerXY  = platformMethods->createText(0, 30, 10);
+
+		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
+		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
+
+		/*
+		backgroundRectText  = platformMethods->createText(0, 60, 10);
+		groundPos  = platformMethods->createText(0, 75, 10);
+		*/
+
+		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
+		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
+
+		// apply the camera 
+		player.x -= cameraPos.x;
+		player.y -= cameraPos.y;
+
+		ground.x -= cameraPos.x;
+		ground.y -= cameraPos.y;
+
+		backgroundRect.x -= cameraPos.x;
+		backgroundRect.y -= cameraPos.y;
+
+		backgroundImg->setRect(backgroundRect);
+	}
+
+	float tempSpeed = 1;
+	float gravity = 2.2f;
+	float jumpT = 0;
+	float jumpProgress = 0;
+	float playerOriginalGroundY = 0;
+	float jumpHeight = .5777f;
+	float playerHorizontalFacingDirection = 1;
+
+	// Camera 
+	// NOTE: All the pos of entity in the game is in world space not camera space, 
+	// the camera calculation is just for rendering   
+	// NOTE: text not involve with the camera 
+
+	void updateAndRender(GameInputContext &input, double dt) {
+		// @StartTest: Camera
+		if (input.pressRightArrow) {
+			float d = tempSpeed * dt;
+			cameraPos.x += d;
+
+			player.x -= d;
+			ground.x -= d;
+			backgroundRect.x -= d;
+		}
+		else if (input.pressLeftArrow) {
+			float d = tempSpeed * dt;
+			cameraPos.x -= d;
+
+			player.x += d;
+
+			ground.x += d;
+			backgroundRect.x += d;
+		}
+		if (input.pressUpArrow) {
+			float d = tempSpeed * dt;
+			cameraPos.y += d;
+
+			player.y -= d;
+
+			ground.y -= d;
+			backgroundRect.y -= d;
+		}
+		else if (input.pressDownArrow) {
+			float d = tempSpeed * dt;
+			cameraPos.y -= d;
+
+			player.y += d;
+
+			ground.y += d;
+			backgroundRect.y += d;
+		}
+
+		backgroundImg->setRect(backgroundRect);
+		platformMethods->renderImage(backgroundImg);
+		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
+		//platformMethods->drawText(backgroundRectText);
+
+		// @EndTest
+
+		if (platformDebugInfo) {
+			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
+			fps->setText(Util::MessageFormater::print("FPS: ", platformDebugInfo->fps));
+
+			platformMethods->drawText(frameMillis);
+			platformMethods->drawText(fps);
+		}
+
+		// TODO: have some level code in here 
+		// ...
+
+		playerUpdate(input, dt);
+
+
 
 
 		// Debug info
