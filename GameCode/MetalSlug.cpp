@@ -26,29 +26,29 @@ private:
 	GameText *playerAnimationStateText = NULL;
 	//GameText *backgroundRectText = NULL;
 
-	Rect player = {-17, .3f, .2f, .4f};
+	Rect playerColliderRect = {-17, .3f, .2f, .4f};
 	Rect ground = {0, -1.12f, 60, .488f};
 
 	Color collidedColor = {255, 0, 0, 255};
 	Color groundColor = {255, 255, 0, 255};
 	Color playerColor = {0, 0, 255, 255};
 
-	enum PlayerPhysicState {
+	enum class PlayerPhysicState {
 		ONGROUND, 
 		JUMPUP, 
 		JUMPDOWN, 
 		FALL
 	};
 
-	enum PlayerAnimationState {
+	enum class PlayerAnimationState {
 		IDLING, 
 		JUMPING, 
 		FALLING, 
 		WALKING
 	};
 
-	PlayerPhysicState playerPhysicState = ONGROUND;
-	PlayerAnimationState playerAnimationState = IDLING;
+	PlayerPhysicState playerPhysicState = PlayerPhysicState::ONGROUND;
+	PlayerAnimationState playerAnimationState = PlayerAnimationState::IDLING;
 
 	// NOTE: the only feature we have with the camera is move up, down, left, right 
 	// no zoom, no scale -> fixed view port is 320 by 224
@@ -87,8 +87,21 @@ private:
 	float cameraMovePointX = -.47666f;
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
 
-	// TODO: place hostages into the scene  
-	Rect hostageRect = {0, 0, .2f, .4f};
+	// TODO: place 1 hostage into the scene  
+	Rect hostageColliderRect = {0, 0, .2f, .4f};
+
+	enum class HostagePhysicState {
+		ONGROUND,
+		FALL 
+	};
+
+	enum class HostageAnimationState {
+		TIED, 
+		UNTIED 
+	};
+
+	HostagePhysicState hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
+	HostageAnimationState hostageCurrentAnimationState = HostageAnimationState::TIED;
 
 public:
 
@@ -152,85 +165,85 @@ public:
 	void playerUpdate(const GameInputContext &input, double dt) {
 		// @StartTest: 
 		if (input.pressLeft) {
-			player.x -= (float)(tempSpeed*dt); 
+			playerColliderRect.x -= (float)(tempSpeed*dt); 
 		}
 		else if (input.pressRight) {
-			player.x += (float)(tempSpeed*dt); 
+			playerColliderRect.x += (float)(tempSpeed*dt); 
 		}
 
 		// Physics state machine
-		if (playerPhysicState == FALL) {
-			player.y -= (float)(gravity*dt); 
+		if (playerPhysicState == PlayerPhysicState::FALL) {
+			playerColliderRect.y -= (float)(gravity*dt); 
 
 			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(player, ground, colInfo);
+			CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
 			if (colInfo.count > 0) {
-				playerPhysicState = ONGROUND;
-				player.x -= colInfo.normal.x * colInfo.depths[0];
-				player.y -= colInfo.normal.y * colInfo.depths[0];
+				playerPhysicState = PlayerPhysicState::ONGROUND;
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
-		else if (playerPhysicState == ONGROUND) {
-			if (!CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
-				playerPhysicState = FALL;
+		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
+			if (!CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
+				playerPhysicState = PlayerPhysicState::FALL;
 			}
-			else if(CollisionChecker::doesRectangleVsRectangleCollide(player, ground) && 
+			else if(CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground) && 
 					input.pressJump) {
-				playerPhysicState = JUMPUP;
+				playerPhysicState = PlayerPhysicState::JUMPUP;
 				jumpT = 0;
-				playerOriginalGroundY = player.y; 
+				playerOriginalGroundY = playerColliderRect.y; 
 			}
 		}
-		else if (playerPhysicState == JUMPUP) {
+		else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
 			jumpT += gravity*dt;
 			jumpProgress = -pow((jumpT-1), 2) + 1;
-			player.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
+			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
 			// TODO: handle if sudden hit another object on the head -> physicState = FALL
 			bool suddenHitPlatform = false;
 
 			if (jumpT >= 1) {
 				jumpT -= 1;
-				playerPhysicState = JUMPDOWN;
+				playerPhysicState = PlayerPhysicState::JUMPDOWN;
 			}
 			else if (suddenHitPlatform) {
-				playerPhysicState = FALL;
+				playerPhysicState = PlayerPhysicState::FALL;
 			}
 		}
-		else if (playerPhysicState == JUMPDOWN) {
+		else if (playerPhysicState == PlayerPhysicState::JUMPDOWN) {
 			jumpT += gravity*dt;
 			jumpProgress = -pow(jumpT, 2) + 1;
-			player.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
+			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
 			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(player, ground, colInfo);
+			CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
 			if (colInfo.count > 0) {
-				playerPhysicState = ONGROUND;
+				playerPhysicState = PlayerPhysicState::ONGROUND;
 
-				player.x -= colInfo.normal.x * colInfo.depths[0];
-				player.y -= colInfo.normal.y * colInfo.depths[0];
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
 
 		// animation state machine (sometimes the animation state based on the physics state)
 		switch (playerAnimationState) {
-		case IDLING: {
-			bool onGround = playerPhysicState == ONGROUND;
+		case PlayerAnimationState::IDLING: {
+			bool onGround = playerPhysicState == PlayerPhysicState::ONGROUND;
 			if (input.pressLeft) {
-				playerAnimationState = WALKING;
+				playerAnimationState = PlayerAnimationState::WALKING;
 				playerHorizontalFacingDirection = -1;
 				playerCurrentAnimation = playerWalkingAnimation;
 				playerCurrentLegAnimation = playerWalkingLegAnimation;
 			}
 			else if (input.pressRight) {
-				playerAnimationState = WALKING;
+				playerAnimationState = PlayerAnimationState::WALKING;
 				playerHorizontalFacingDirection = 1;
 				playerCurrentAnimation = playerWalkingAnimation;
 				playerCurrentLegAnimation = playerWalkingLegAnimation;
 			}
 
 			if (input.pressJump) {
-				playerAnimationState = JUMPING;
+				playerAnimationState = PlayerAnimationState::JUMPING;
 				playerCurrentAnimation = playerJumpingAnimation;
 				playerCurrentLegAnimation = playerJumpingLegAnimation;
 			}
@@ -241,20 +254,20 @@ public:
 			}
 		}break;
 
-		case WALKING: {
+		case PlayerAnimationState::WALKING: {
 
 			bool isPressingMove = input.pressLeft || input.pressRight;
 			if (!isPressingMove && 
-				playerPhysicState != JUMPUP && 
-				playerPhysicState != JUMPDOWN && 
+				playerPhysicState != PlayerPhysicState::JUMPUP && 
+				playerPhysicState != PlayerPhysicState::JUMPDOWN && 
 				playerPhysicState != PlayerPhysicState::FALL) {
 
-				playerAnimationState = IDLING;
+				playerAnimationState = PlayerAnimationState::IDLING;
 				playerCurrentAnimation = playerIdlingAnimation;
 				playerCurrentLegAnimation = playerIdlingLegAnimation;
 			}
-			else if (playerPhysicState == JUMPUP) {
-				playerAnimationState = JUMPING;
+			else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
+				playerAnimationState = PlayerAnimationState::JUMPING;
 				playerCurrentAnimation = playerJumpingAnimation;
 				playerCurrentLegAnimation = playerJumpingLegAnimation;
 			}
@@ -265,8 +278,8 @@ public:
 			}
 		} break;
 
-		case JUMPING: {
-			if (playerPhysicState == JUMPDOWN ||
+		case PlayerAnimationState::JUMPING: {
+			if (playerPhysicState == PlayerPhysicState::JUMPDOWN ||
 				playerPhysicState == PlayerPhysicState::FALL) {
 
 				playerAnimationState = PlayerAnimationState::FALLING;
@@ -277,8 +290,8 @@ public:
 		} break;
 
 		case PlayerAnimationState::FALLING: {
-			if (playerPhysicState == ONGROUND) {
-				playerAnimationState = IDLING;
+			if (playerPhysicState == PlayerPhysicState::ONGROUND) {
+				playerAnimationState = PlayerAnimationState::IDLING;
 				playerCurrentAnimation = playerIdlingAnimation;
 				playerCurrentLegAnimation = playerIdlingLegAnimation;
 			}
@@ -290,7 +303,7 @@ public:
 		}
 
 
-		if (CollisionChecker::doesRectangleVsRectangleCollide(player, ground)) {
+		if (CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
 			groundColor = collidedColor;
 			playerColor = collidedColor;
 		}
@@ -300,18 +313,27 @@ public:
 		}
 
 		// @EndTest
-		float legX = player.x;
-		float legY = player.y - .15f;
+		float legX = playerColliderRect.x;
+		float legY = playerColliderRect.y - .15f;
 		playerCurrentLegAnimation->changePos(legX, legY);
 		playerCurrentLegAnimation->flip(playerHorizontalFacingDirection, 1);
 		playerCurrentLegAnimation->animate(dt);
 
-		playerCurrentAnimation->changePos(player.x, player.y);
+		playerCurrentAnimation->changePos(playerColliderRect.x, playerColliderRect.y);
 		playerCurrentAnimation->flip(playerHorizontalFacingDirection, 1);
 		playerCurrentAnimation->animate(dt);
 
+	}
+
+	void hostageUpdate(const GameInputContext& input, double dt) {
+		// NOTE: State machine update in here 
+		// TODO: draw the physic state machine first 
+		// TODO: implement the physic state machine 
+		// TODO: have the image in the sprite 
+		// TODO: draw the animation state machine
 
 	}
+
 
 	void setup() {
 		playerInit();
@@ -336,8 +358,8 @@ public:
 		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
 
 		// apply the camera 
-		player.x -= cameraPos.x;
-		player.y -= cameraPos.y;
+		playerColliderRect.x -= cameraPos.x;
+		playerColliderRect.y -= cameraPos.y;
 
 		ground.x -= cameraPos.x;
 		ground.y -= cameraPos.y;
@@ -416,28 +438,32 @@ public:
 		}
 
 		playerUpdate(input, dt);
+		hostageUpdate(input, dt);
 
 		// @StartTest: Level 
-		if (player.x >= cameraMovePointX) {
+
+
+		 
+		if (playerColliderRect.x >= cameraMovePointX) {
 			float d = tempSpeed * dt;
 			cameraPos.x += d;
 
-			player.x -= d;
+			playerColliderRect.x -= d;
 			ground.x -= d;
 			backgroundRect.x -= d;
 		}
 
 		CollisionInfo colInfo;
-		CollisionChecker::doesRectangleVsRectangleCollide(player, preventGoingBackBlock, colInfo);
+		CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, preventGoingBackBlock, colInfo);
 		if (colInfo.count > 0) {
-			player.x -= colInfo.normal.x * colInfo.depths[0];
-			player.y -= colInfo.normal.y * colInfo.depths[0];
+			playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+			playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 		}
 		// @EndTest 
 
 
 		// Debug info
-		platformMethods->drawRectangle(player, playerColor);
+		platformMethods->drawRectangle(playerColliderRect, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
 
 		/*
@@ -447,23 +473,23 @@ public:
 		platformMethods->drawLine(cameraMoveLineStart, cameraMoveLineEnd, groundColor);
 		*/
 
-		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
+		playerXY->setText(Util::MessageFormater::print("Player pos: ", playerColliderRect.x, ", ", playerColliderRect.y));
 		platformMethods->drawText(playerXY);
 
 		//groundPos->setText(Util::MessageFormater::print("Ground pos: ", ground.x, ", ", ground.y));
 		//platformMethods->drawText(groundPos);
 
 		std::string physicStateStr;
-		if (playerPhysicState == FALL) {
+		if (playerPhysicState == PlayerPhysicState::FALL) {
 			physicStateStr = "FALL";
 		}
-		else if (playerPhysicState == ONGROUND) {
+		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
 			physicStateStr = "ONGROUND";
 		}
-		else if (playerPhysicState == JUMPUP) {
+		else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
 			physicStateStr = "JUMPUP";
 		}
-		else if (playerPhysicState == JUMPDOWN) {
+		else if (playerPhysicState == PlayerPhysicState::JUMPDOWN) {
 			physicStateStr = "JUMPDOWN";
 		}
 
@@ -471,13 +497,13 @@ public:
 		if (playerAnimationState == PlayerAnimationState::FALLING) {
 			animationStateStr = "FALL";
 		}
-		else if (playerAnimationState == IDLING) {
+		else if (playerAnimationState == PlayerAnimationState::IDLING) {
 			animationStateStr = "IDLING";
 		}
-		else if (playerAnimationState == JUMPING) {
+		else if (playerAnimationState == PlayerAnimationState::JUMPING) {
 			animationStateStr = "JUMP";
 		}
-		else if (playerAnimationState == WALKING) {
+		else if (playerAnimationState == PlayerAnimationState::WALKING) {
 			animationStateStr = "WALKING";
 		}
 
