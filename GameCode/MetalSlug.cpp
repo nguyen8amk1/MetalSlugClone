@@ -50,14 +50,6 @@ private:
 	PlayerPhysicState playerPhysicState = ONGROUND;
 	PlayerAnimationState playerAnimationState = IDLING;
 
-public:
-
-	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
-		this->platformMethods = platformMethods;
-	}
-
-	PlatformDebugInfo *platformDebugInfo = NULL;
-
 	// NOTE: the only feature we have with the camera is move up, down, left, right 
 	// no zoom, no scale -> fixed view port is 320 by 224
 	Vec2f cameraPos = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
@@ -91,11 +83,28 @@ public:
 	Rect animRect;
 
 
+	// Level code
+	float cameraMovePointX = -.47666f;
+	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
+
+	// TODO: place hostages into the scene  
+	Rect hostageRect = {0, 0, .2f, .4f};
+
+public:
+
+	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
+		this->platformMethods = platformMethods;
+	}
+
+	PlatformDebugInfo *platformDebugInfo = NULL;
+
+
 	// NOTE: Player State Machine
 	// Player or dynamic entity in the game have 2 state machine: 
 	// Physic state machine
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
+
 
 	void initAnimationMetaData(AnimationMetaData &metaData, const std::string &spriteSheetFilename, float animDelay, int rows, int columns, const Vec2f &relativeCorner, const Vec2f &framePixelSize) {
 		metaData.animDelay = animDelay;
@@ -353,7 +362,7 @@ public:
 	// NOTE: text not involve with the camera 
 
 	void updateAndRender(GameInputContext &input, double dt) {
-		// @StartTest: Camera
+		/*
 		if (input.pressRightArrow) {
 			float d = tempSpeed * dt;
 			cameraPos.x += d;
@@ -389,6 +398,7 @@ public:
 			ground.y += d;
 			backgroundRect.y += d;
 		}
+		*/
 
 		backgroundImg->setRect(backgroundRect);
 		platformMethods->renderImage(backgroundImg);
@@ -405,17 +415,37 @@ public:
 			platformMethods->drawText(fps);
 		}
 
-		// TODO: have some level code in here 
-		// ...
-
 		playerUpdate(input, dt);
 
+		// @StartTest: Level 
+		if (player.x >= cameraMovePointX) {
+			float d = tempSpeed * dt;
+			cameraPos.x += d;
 
+			player.x -= d;
+			ground.x -= d;
+			backgroundRect.x -= d;
+		}
+
+		CollisionInfo colInfo;
+		CollisionChecker::doesRectangleVsRectangleCollide(player, preventGoingBackBlock, colInfo);
+		if (colInfo.count > 0) {
+			player.x -= colInfo.normal.x * colInfo.depths[0];
+			player.y -= colInfo.normal.y * colInfo.depths[0];
+		}
+		// @EndTest 
 
 
 		// Debug info
 		platformMethods->drawRectangle(player, playerColor);
 		platformMethods->drawRectangle(ground, groundColor);
+
+		/*
+		platformMethods->drawRectangle(preventGoingBackBlock, groundColor);
+		Point cameraMoveLineStart = {cameraMovePointX, -1};
+		Point cameraMoveLineEnd = {cameraMovePointX, 1};
+		platformMethods->drawLine(cameraMoveLineStart, cameraMoveLineEnd, groundColor);
+		*/
 
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", player.x, ", ", player.y));
 		platformMethods->drawText(playerXY);

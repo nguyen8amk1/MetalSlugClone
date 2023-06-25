@@ -1,10 +1,17 @@
 TODO: 
+	HAVE ONE GOOD HOSTAGES (4h) []
+		need animations  (1 frame)
+		need state machine (physics, animation)
+		need interactions with player 
+	-> wrap them up and place them all over the map 
+
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
-		have the camera working 
-		place hostages into places
-		place the sceneries into place as well 
-		including the boss fight
-		-> just the entities, the interaction could wait 
+		have the camera working [X]
+			the camera will move with the player when the player go about 1/3 of the width 
+
+		place hostages into places, with animation []
+
+		place the sceneries into place as well, with animation []
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
 
