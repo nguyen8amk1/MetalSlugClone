@@ -97,119 +97,52 @@ public:
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
 
-	void setup() {
-		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
-		// TODO: init all the animation here  
-		playerIdlingAnimationMetaData.animDelay = .15f;
-		playerIdlingAnimationMetaData.tiledSheetFileName = filename;
-		playerIdlingAnimationMetaData.rows = 1;
-		playerIdlingAnimationMetaData.columns = 4;
-		playerIdlingAnimationMetaData.relativeCorner = {0,0};
-		playerIdlingAnimationMetaData.framePixelSize = {31,29};
+	// TODO: let's just clean the player code a little bit 
+	void initAnimationMetaData(AnimationMetaData &metaData, const std::string &spriteSheetFilename, float animDelay, int rows, int columns, const Vec2f &relativeCorner, const Vec2f &framePixelSize) {
+		metaData.animDelay = animDelay;
+		metaData.tiledSheetFileName = spriteSheetFilename;
+		metaData.rows = rows;
+		metaData.columns = columns;
+		metaData.relativeCorner = relativeCorner;
+		metaData.framePixelSize = framePixelSize;
 
-		float h = (playerIdlingAnimationMetaData.framePixelSize.y/224.0f)*2;
-		float w = h*(31.0f/29.0f); 
-		animRect = {0, 0, w, h};
-		playerIdlingAnimationMetaData.rect = animRect;
-		playerIdlingAnimationMetaData.relativeCorner = {0,0};
+		float h = (metaData.framePixelSize.y/224.0f)*2;
+		float w = h*(metaData.framePixelSize.y/metaData.framePixelSize.y); 
+		animRect = {0, 0, fabs(w), fabs(h)};
+		metaData.rect = animRect;
+	}
+
+	void playerInit() {
+		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
+		initAnimationMetaData(playerIdlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
 		playerIdlingAnimation  = new Animation(playerIdlingAnimationMetaData,platformMethods);
 
-		playerWalkingAnimationMetaData.animDelay = .15f;
-		playerWalkingAnimationMetaData.tiledSheetFileName = filename;
-		playerWalkingAnimationMetaData.rows = 1;
-		playerWalkingAnimationMetaData.columns = 12;
-		playerWalkingAnimationMetaData.relativeCorner = {0, 29};
-		playerWalkingAnimationMetaData.framePixelSize = {34, 29};
-
-		h = (playerWalkingAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerWalkingAnimationMetaData.framePixelSize.x/playerWalkingAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, w, h};
-
-		playerWalkingAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerWalkingAnimationMetaData, filename, .15f, 1, 12, { 0, 29 }, {34, 29});
 		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
 
-		playerJumpingAnimationMetaData.animDelay = .1f;
-		playerJumpingAnimationMetaData.tiledSheetFileName = filename;
-		playerJumpingAnimationMetaData.rows = 1;
-		playerJumpingAnimationMetaData.columns = 6; 
-		playerJumpingAnimationMetaData.relativeCorner = {0, 64};
-		playerJumpingAnimationMetaData.framePixelSize = {29,26};
-
-		h = (playerJumpingAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerJumpingAnimationMetaData.framePixelSize.x/playerJumpingAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, w, h};
-
-		playerJumpingAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerJumpingAnimationMetaData, filename, .1f, 1, 6, {0, 64}, {29, 26});
 		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
 
-		playerFallingAnimationMetaData.animDelay = .1f;
-		playerFallingAnimationMetaData.tiledSheetFileName = filename;
-		playerFallingAnimationMetaData.rows = 1;
-		playerFallingAnimationMetaData.columns = 6;
-		playerFallingAnimationMetaData.relativeCorner = {145, 64};
-		playerFallingAnimationMetaData.framePixelSize = {-29,26};
-
-		h = (playerFallingAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerFallingAnimationMetaData.framePixelSize.x/playerFallingAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, fabs(w), fabs(h)};
-
-		playerFallingAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerFallingAnimationMetaData, filename, .1f, 1, 6, {145, 64}, {-29, 26});
 		playerFallingAnimation = new Animation(playerFallingAnimationMetaData, platformMethods);
 
-
 		// Player's Leg animation
-		playerWalkingLegAnimationMetaData.animDelay = .1f;
-		playerWalkingLegAnimationMetaData.tiledSheetFileName = filename;
-		playerWalkingLegAnimationMetaData.rows = 1;
-		playerWalkingLegAnimationMetaData.columns = 12;
-		playerWalkingLegAnimationMetaData.framePixelSize = {32, 20};
-		playerWalkingLegAnimationMetaData.relativeCorner = {405, 44};
-
-		h = (playerWalkingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerWalkingLegAnimationMetaData.framePixelSize.x/playerWalkingLegAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, w, h};
-		playerWalkingLegAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerWalkingLegAnimationMetaData, filename, .1f, 1, 12, {405, 44}, {32, 20} );
 		playerWalkingLegAnimation  = new Animation(playerWalkingLegAnimationMetaData,platformMethods);
 
-		playerIdlingLegAnimationMetaData.animDelay = .1f;
-		playerIdlingLegAnimationMetaData.tiledSheetFileName = filename;
-		playerIdlingLegAnimationMetaData.rows = 1;
-		playerIdlingLegAnimationMetaData.columns = 1;
-		playerIdlingLegAnimationMetaData.framePixelSize = {21, 16};
-		playerIdlingLegAnimationMetaData.relativeCorner = {124, 13};
-
-		h = (playerIdlingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerIdlingLegAnimationMetaData.framePixelSize.x/playerIdlingLegAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, w, h};
-		playerIdlingLegAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerIdlingLegAnimationMetaData, filename, .1f, 1, 1, {124, 13}, {21, 16});
 		playerIdlingLegAnimation  = new Animation(playerIdlingLegAnimationMetaData,platformMethods);
 
-		playerJumpingLegAnimationMetaData.animDelay = .1f;
-		playerJumpingLegAnimationMetaData.tiledSheetFileName = filename;
-		playerJumpingLegAnimationMetaData.rows = 1;
-		playerJumpingLegAnimationMetaData.columns = 6;
-		playerJumpingLegAnimationMetaData.framePixelSize = {21, 25};
-		playerJumpingLegAnimationMetaData.relativeCorner = {174,64};
-
-		h = (playerJumpingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerJumpingLegAnimationMetaData.framePixelSize.x/playerJumpingLegAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, w, h};
-		playerJumpingLegAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerJumpingLegAnimationMetaData, filename, .1f, 1, 6, {174, 64}, {21, 25});
 		playerJumpingLegAnimation  = new Animation(playerJumpingLegAnimationMetaData,platformMethods);
 
-		playerFallingLegAnimationMetaData.animDelay = .1f;
-		playerFallingLegAnimationMetaData.tiledSheetFileName = filename;
-		playerFallingLegAnimationMetaData.rows = 1;
-		playerFallingLegAnimationMetaData.columns = 6;
-		playerFallingLegAnimationMetaData.framePixelSize = {-21, 25};
-		playerFallingLegAnimationMetaData.relativeCorner = {279, 64};
-
-		h = (playerFallingLegAnimationMetaData.framePixelSize.y/224.0f)*2;
-		w = h*(playerFallingLegAnimationMetaData.framePixelSize.x/playerFallingLegAnimationMetaData.framePixelSize.y); 
-		animRect = {0, 0, fabs(w), fabs(h)};
-
-		playerFallingLegAnimationMetaData.rect = animRect;
+		initAnimationMetaData(playerFallingLegAnimationMetaData, filename, .1f, 1, 6, {279, 64}, {-21, 25});
 		playerFallingLegAnimation = new Animation(playerFallingLegAnimationMetaData, platformMethods);
+
+	}
+
+	void setup() {
+		playerInit();
 
 		playerCurrentAnimation = playerIdlingAnimation;
 		playerCurrentLegAnimation = playerIdlingLegAnimation;
