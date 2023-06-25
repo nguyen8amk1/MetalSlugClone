@@ -1,9 +1,11 @@
-DEADLINE: 
-	Animation work til the end of this week (26/7/2023)
-	The next week we will work on the actual level1: map, camera, enemies placement  
-
 TODO: 
-	FINISH THE BASIC SPRITESHEET ANIMATION FOR THE PLAYER IN PTS (2h) [] @Current - the leg is still not done 
+	PLACE ALL THE STUFF ON THE LEVEL (4h) [] -  by all the stuff i mean the enemy solders and hostages, 
+												the boss fight and houses and things could wait 
+
+	ENEMY (2h) []
+
+	ENEMY INTERACTION WITH PLAYER (2h) []
+
 
 	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
 
@@ -14,13 +16,6 @@ TODO:
 	GRENADE (2h) []
 		BOUNCE: 
 		-> a bounce is jumps with reduce height every time hit the ground 
-
-	ENEMY (2h) []
-
-	ENEMY INTERACTION WITH PLAYER (2h) []
-
-	PLACE ALL THE STUFF ON THE LEVEL (4h) [] -  by all the stuff i mean the enemy solders and hostages, 
-												the boss fight and houses and things could wait 
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 
@@ -45,6 +40,8 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	FINISH THE BASIC SPRITESHEET ANIMATION FOR THE PLAYER IN PTS (2h) [X] @Current - the leg is still not done 
+
 	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
 	FIX: black background when having transparent background (2h) 
 		(normal rendering works, only the portion not working) [X]
