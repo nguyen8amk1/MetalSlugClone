@@ -1,17 +1,22 @@
 TODO: 
-	PLACE ALL THE STUFF ON THE LEVEL (4h) [] -  by all the stuff i mean the enemy solders and hostages, 
-												the boss fight and houses and things could wait 
+	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
+		have the camera working 
+		place hostages into places
+		place the sceneries into place as well 
+		including the boss fight
+		-> just the entities, the interaction could wait 
 
-	ENEMY (2h) []
+	ENEMY PLACEMENT AND GENERATION (2h) []
 
 	ENEMY INTERACTION WITH PLAYER (2h) []
 
-
-	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
-
 	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
 
+	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
+
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
+
+	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
 
 	GRENADE (2h) []
 		BOUNCE: 
@@ -20,7 +25,6 @@ TODO:
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 
 	CLEAN THE PROJECT STRUCTOR: EACH BACKEND IN IT'S OWN FOLDER (1h) []
-
 
 	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
 		-> when level1 done, have proper structure for a level, a separate file for level 
