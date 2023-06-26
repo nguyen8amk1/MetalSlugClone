@@ -126,11 +126,6 @@ public:
 	// Physic state machine
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
-
-	// TODO: 
-	// let's make a simple map editor for now, 
-	// just have a mouse and click and record the position in world space
-
 	void setup() {
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;

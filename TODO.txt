@@ -1,22 +1,18 @@
 TODO: 
-	FIXME: collision on the hortizontal side not working ?? 
-		-> this happens because the game only checking a single collision at a time  
-
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
+		have all the colliders in place as well [X] 
+			-> first figure out all the collider rects in PTS first [X]
+			-> then write it out in a datastructure then load into the map  [X]
 
-		have all the colliders in place as well [] @Current 
-			-> first figure out all the collider rects in PTS first []
-			-> then write it out in a datastructure then load into the map  []
-			-> NEED ONE WAY PLATFORM (2h) []
+		place hostages into RIGHT places, with animation (2h) [] @Current 
 
-		place hostages into places, with animation []
-
-		place the sceneries into place as well, with animation []
+		place the sceneries into RIGHT place as well, with animation (4h) []
 
 	PUT THE PLAYER CODE IN OTHER FILE (1h) []
 
+	ENEMY (2h) []
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
 
@@ -24,11 +20,14 @@ TODO:
 
 	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
 
+
 	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
+
+	NEED ONE WAY PLATFORM (2h) []
 
 	GRENADE (2h) []
 		BOUNCE: 
@@ -53,6 +52,11 @@ TODO:
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 BUG: 
+	FIXME: collision on the hortizontal side not working ?? 
+		-> this happens because the game only checking a single collision at a time  
+
+	FIXME: glitching happens again when on level collider
+
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
