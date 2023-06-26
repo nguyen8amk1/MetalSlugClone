@@ -146,6 +146,7 @@
     <ClCompile Include="DirectX9BackEnd.cpp" />
     <ClCompile Include="GameCode\Animation.cpp" />
     <ClCompile Include="GameCode\CollisionChecker.cpp" />
+    <ClCompile Include="GameCode\Hostage.cpp" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="GameCode\Tinyc2CollisionChecker.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,6 +164,8 @@
     <Image Include="assets\imgs\anhgaixinh.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameCode\Animation.h" />
+    <ClInclude Include="GameCode\CollisionChecker.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

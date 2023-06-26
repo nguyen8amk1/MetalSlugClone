@@ -5,7 +5,9 @@
 #include "../Util.cpp"
 #include "../SDL2PlatformMethodsCollection.cpp"
 #include "Animation.cpp"
-#include "CollisionChecker.cpp"
+#include "CollisionChecker.h"
+
+#include "Hostage.cpp"
 
 namespace MetalSlug {
 
@@ -87,30 +89,10 @@ private:
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
 
 	// TODO: place 1 hostage into the scene  
-	Rect hostageColliderRect = {.4f, 0, .2f, .4f};
-
-	enum class HostagePhysicState {
-		ONGROUND,
-		FALL 
-	};
-
-	enum class HostageAnimationState {
-		TIED, 
-		UNTIED 
-	};
-
-	HostagePhysicState hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
-	HostageAnimationState hostageCurrentAnimationState = HostageAnimationState::TIED;
-
-	// Hostage animation 
-	AnimationMetaData hostageTiedAnimationMetaData; 
-	Animation *hostageTiedAnimation;
-
-	AnimationMetaData hostageUntiedAnimationMetaData; 
-	Animation *hostageUntiedAnimation;
-
-	Animation *hostageCurrentAnimation;
-
+	Rect hostageColliderRect;
+	Hostage *hostage;
+	Hostage *hostage1;
+	Hostage *hostage2;
 
 public:
 
@@ -128,45 +110,31 @@ public:
 	// The animation state machine will sometimes based on the state of the physics state machine 
 
 
-	void initAnimationMetaData(AnimationMetaData &metaData, const std::string &spriteSheetFilename, float animDelay, int rows, int columns, const Vec2f &relativeCorner, const Vec2f &framePixelSize) {
-		metaData.animDelay = animDelay;
-		metaData.tiledSheetFileName = spriteSheetFilename;
-		metaData.rows = rows;
-		metaData.columns = columns;
-		metaData.relativeCorner = relativeCorner;
-		metaData.framePixelSize = framePixelSize;
-
-		float h = (metaData.framePixelSize.y/224.0f)*2;
-		float w = h*(metaData.framePixelSize.y/metaData.framePixelSize.y); 
-		Rect animRect = {0, 0, fabs(w), fabs(h)};
-		metaData.rect = animRect;
-	}
-
 	void playerInit() {
 		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
-		initAnimationMetaData(playerIdlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
+		Util::AnimationUtil::initAnimationMetaData(playerIdlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
 		playerIdlingAnimation  = new Animation(playerIdlingAnimationMetaData,platformMethods);
 
-		initAnimationMetaData(playerWalkingAnimationMetaData, filename, .15f, 1, 12, { 0, 29 }, {34, 29});
+		Util::AnimationUtil::initAnimationMetaData(playerWalkingAnimationMetaData, filename, .15f, 1, 12, { 0, 29 }, {34, 29});
 		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
 
-		initAnimationMetaData(playerJumpingAnimationMetaData, filename, .1f, 1, 6, {0, 64}, {29, 26});
+		Util::AnimationUtil::initAnimationMetaData(playerJumpingAnimationMetaData, filename, .1f, 1, 6, {0, 64}, {29, 26});
 		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
 
-		initAnimationMetaData(playerFallingAnimationMetaData, filename, .1f, 1, 6, {145, 64}, {-29, 26});
+		Util::AnimationUtil::initAnimationMetaData(playerFallingAnimationMetaData, filename, .1f, 1, 6, {145, 64}, {-29, 26});
 		playerFallingAnimation = new Animation(playerFallingAnimationMetaData, platformMethods);
 
 		// Player's Leg animation
-		initAnimationMetaData(playerWalkingLegAnimationMetaData, filename, .1f, 1, 12, {405, 44}, {32, 20} );
+		Util::AnimationUtil::initAnimationMetaData(playerWalkingLegAnimationMetaData, filename, .1f, 1, 12, {405, 44}, {32, 20} );
 		playerWalkingLegAnimation  = new Animation(playerWalkingLegAnimationMetaData,platformMethods);
 
-		initAnimationMetaData(playerIdlingLegAnimationMetaData, filename, .1f, 1, 1, {124, 13}, {21, 16});
+		Util::AnimationUtil::initAnimationMetaData(playerIdlingLegAnimationMetaData, filename, .1f, 1, 1, {124, 13}, {21, 16});
 		playerIdlingLegAnimation  = new Animation(playerIdlingLegAnimationMetaData,platformMethods);
 
-		initAnimationMetaData(playerJumpingLegAnimationMetaData, filename, .1f, 1, 6, {174, 64}, {21, 25});
+		Util::AnimationUtil::initAnimationMetaData(playerJumpingLegAnimationMetaData, filename, .1f, 1, 6, {174, 64}, {21, 25});
 		playerJumpingLegAnimation  = new Animation(playerJumpingLegAnimationMetaData,platformMethods);
 
-		initAnimationMetaData(playerFallingLegAnimationMetaData, filename, .1f, 1, 6, {279, 64}, {-21, 25});
+		Util::AnimationUtil::initAnimationMetaData(playerFallingLegAnimationMetaData, filename, .1f, 1, 6, {279, 64}, {-21, 25});
 		playerFallingLegAnimation = new Animation(playerFallingLegAnimationMetaData, platformMethods);
 
 	}
@@ -335,76 +303,22 @@ public:
 
 	}
 
-	void hostageInit() {
-		std::string filename = "Assets/Imgs/Characters/hostage.png";
-		initAnimationMetaData(hostageTiedAnimationMetaData, filename, .1f, 1, 1, {6, 26}, {30, 27});
-		hostageTiedAnimation = new Animation(hostageTiedAnimationMetaData, platformMethods);
-
-		initAnimationMetaData(hostageUntiedAnimationMetaData, filename, .1f, 1, 1, {6, 248}, {33, 38});
-		hostageUntiedAnimation  = new Animation(hostageUntiedAnimationMetaData, platformMethods);
-	}
-
-	void hostageUpdate(const GameInputContext& input, double dt) {
-		// Physic state machine 
-		switch (hostageCurrentPhysicState) {
-		case HostagePhysicState::ONGROUND: {
-			if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, ground)) {
-				hostageCurrentPhysicState = HostagePhysicState::FALL;
-			}
-			break;
-		}
-		case HostagePhysicState::FALL: {
-			hostageColliderRect.y -= (float)(gravity*dt); 
-
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, ground, colInfo);
-			if (colInfo.count > 0) {
-				hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
-				hostageColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				hostageColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-			}
-			break;
-		}
-		}
-
-		// Animation state machine 
-		switch (hostageCurrentAnimationState) {
-		case HostageAnimationState::TIED: {
-			// TODO: 
-			bool touchPlayer = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, playerColliderRect);
-			if (touchPlayer) {
-				hostageCurrentAnimationState = HostageAnimationState::UNTIED;
-				hostageCurrentAnimation = hostageUntiedAnimation;
-			}
-			break;
-		}
-		case HostageAnimationState::UNTIED: {
-			// TODO: 
-			hostageColliderRect.x -= tempSpeed*.5f*dt;
-
-			bool outOfScreen = hostageColliderRect.x < -1.45f;
-			if (outOfScreen) {
-				// TODO: handle hostage out of screen 
-			}
-			break;
-		}
-		}
-
-		// Rendering 
-		hostageCurrentAnimation->changePos(hostageColliderRect.x, hostageColliderRect.y);
-		hostageCurrentAnimation->animate(dt);
-		platformMethods->drawRectangle(hostageColliderRect, playerColor);
-	}
-
 
 	void setup() {
+		hostageColliderRect = { .4f, 0, .2f, .4f };
+		hostage = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
+
+		hostageColliderRect = { 1, 0, .2f, .4f };
+		hostage1 = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
+
+		hostageColliderRect = { 2, 0, .2f, .4f };
+		hostage2 = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
+
 		playerInit();
-		hostageInit();
 
 		playerCurrentAnimation = playerIdlingAnimation;
 		playerCurrentLegAnimation = playerIdlingLegAnimation;
 
-		hostageCurrentAnimation = hostageTiedAnimation;
 
 
 		frameMillis = platformMethods->createText(0, 0, 10);
@@ -448,6 +362,7 @@ public:
 	// the camera calculation is just for rendering   
 	// NOTE: text not involve with the camera 
 
+	LevelData levelData;
 	void updateAndRender(GameInputContext &input, double dt) {
 		/*
 		if (input.pressRightArrow) {
@@ -503,7 +418,13 @@ public:
 		}
 
 		playerUpdate(input, dt);
-		hostageUpdate(input, dt);
+
+		levelData.groundCollider = ground;
+		levelData.playerColliderRect = playerColliderRect;
+
+		hostage->update(input, levelData, dt);
+		hostage1->update(input, levelData, dt);
+		hostage2->update(input, levelData, dt);
 
 		// @StartTest: Level 
 		if (levelStarted) {
@@ -514,7 +435,10 @@ public:
 				playerColliderRect.x -= d;
 				ground.x -= d;
 				backgroundRect.x -= d;
-				hostageColliderRect.x -= d;
+
+				hostage->moveXBy(-d);
+				hostage1->moveXBy(-d);
+				hostage2->moveXBy(-d);
 			}
 
 			CollisionInfo colInfo;

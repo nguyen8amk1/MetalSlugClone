@@ -2,20 +2,10 @@
 #include<vector>
 #include<cassert>
 #include<string>
-#include "MetalSlug.h"
 #include "../SDL2PlatformMethodsCollection.cpp"
+#include "Animation.h"
 
 namespace MetalSlug {
-
-struct AnimationMetaData {
-	float animDelay;
-	std::string tiledSheetFileName;
-	Rect rect; 
-	Vec2f relativeCorner;
-	Vec2f framePixelSize;
-	int rows, columns;
-};
-
 class Animation {
 private:
 	Rect rect; 

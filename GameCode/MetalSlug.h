@@ -95,5 +95,10 @@ public:
 	virtual void debugLog(const std::string& debugString) = 0;
 };
 
+struct LevelData {
+	Rect groundCollider;
+	Rect playerColliderRect;
+};
+
 class MetalSlug;
 }

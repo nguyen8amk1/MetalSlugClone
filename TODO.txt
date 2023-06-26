@@ -1,20 +1,14 @@
 TODO: 
-	HAVE ONE GOOD HOSTAGES (4h) []
-		need animations  (1 frame) [X]
-		need state machine (physics, animation) [X]
-		need interactions with player [X]
-		
-	-> wrap them up and place them all over the map @Current 
-
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
+
+		have all the colliders in place as well []
 
 		place hostages into places, with animation []
 
 		place the sceneries into place as well, with animation []
 
-		have all the colliders in place as well 
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
 
@@ -54,6 +48,13 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	HAVE ONE GOOD HOSTAGES (4h) [X]
+		need animations  (1 frame) [X]
+		need state machine (physics, animation) [X]
+		need interactions with player [X]
+		
+	-> wrap them up and place them all over the map [X] 
+
 	FINISH THE BASIC SPRITESHEET ANIMATION FOR THE PLAYER IN PTS (2h) [X] @Current - the leg is still not done 
 
 	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
