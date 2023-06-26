@@ -53,24 +53,30 @@ public:
 		hostageCurrentAnimation = hostageTiedAnimation;
 	}
 
-	void update(const GameInputContext& input, const LevelData &levelData, double dt) {
+	void update(const GameInputContext& input, LevelData &levelData, double dt) {
 		// Physic state machine 
 		switch (hostageCurrentPhysicState) {
 		case HostagePhysicState::ONGROUND: {
-			if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, levelData.groundCollider)) {
-				hostageCurrentPhysicState = HostagePhysicState::FALL;
+			for (Rect &groundCollider: levelData.groundColliders) {
+				if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider)) {
+					hostageCurrentPhysicState = HostagePhysicState::FALL;
+					break;
+				}
 			}
 			break;
 		}
 		case HostagePhysicState::FALL: {
 			hostageColliderRect.y -= (float)(gravity*dt); 
 
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, levelData.groundCollider, colInfo);
-			if (colInfo.count > 0) {
-				hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
-				hostageColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				hostageColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			for (Rect& groundCollider : levelData.groundColliders) {
+				CollisionInfo colInfo;
+				CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider, colInfo);
+				if (colInfo.count > 0) {
+					hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
+					hostageColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+					hostageColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+					break;
+				}
 			}
 			break;
 		}

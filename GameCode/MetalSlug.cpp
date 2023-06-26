@@ -29,7 +29,13 @@ private:
 	//GameText *backgroundRectText = NULL;
 
 	Rect playerColliderRect = {-17.5f, .3f, .2f, .4f};
-	Rect ground = {0, -1.12f, 60, .488f};
+	/*
+	Rect ground  = {0, 252, 672, 52};
+	Rect ground1 = {660, 282, 1156, 22};
+	Rect ground2 = {1702, 287, 65, 50};
+	*/
+
+	std::vector<Rect> groundColliders;
 
 	Color collidedColor = {255, 0, 0, 255};
 	Color groundColor = {255, 255, 0, 255};
@@ -94,6 +100,17 @@ private:
 	Hostage *hostage1;
 	Hostage *hostage2;
 
+private: 
+
+	// FIXME: there are still something kinda wrong with this function
+	Rect convertPixelRectToGameRect(const Rect &pixelRect) {
+		float x = ((pixelRect.x + pixelRect.width/2.0f)/111.888f) - 1.43f;
+		float y = (((pixelRect.y)- 224)/-112.0f) - 1;
+		float w = pixelRect.width/111.888f;
+		float h = pixelRect.height/112.0f;
+		return {x, y + h, w, h};
+	}
+
 public:
 
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -148,28 +165,41 @@ public:
 			playerColliderRect.x += (float)(tempSpeed*dt); 
 		}
 
+		// FIXME: Currently having problem with checking collision between different grounds,  
+		// the collision check is good but the state machine is bugging somehow 
+		// maybe have to change the checking loop or something 
+		// with only 1 groundCollider everything works just fine  
+		// But with too many than the state toggle since it found that there are block that's it collide and other block not 
+
 		// Physics state machine
 		if (playerPhysicState == PlayerPhysicState::FALL) {
 			playerColliderRect.y -= (float)(gravity*dt); 
 
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
-			if (colInfo.count > 0) {
-				playerPhysicState = PlayerPhysicState::ONGROUND;
-				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			for (Rect& ground : groundColliders) {
+				CollisionInfo colInfo;
+				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
+				if (colInfo.count > 0) {
+					playerPhysicState = PlayerPhysicState::ONGROUND;
+					playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+					playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+					break;
+				}
 			}
 		}
 		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
 			levelStarted = true;
-			if (!CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
-				playerPhysicState = PlayerPhysicState::FALL;
-			}
-			else if(CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground) && 
-					input.pressJump) {
-				playerPhysicState = PlayerPhysicState::JUMPUP;
-				jumpT = 0;
-				playerOriginalGroundY = playerColliderRect.y; 
+			for (Rect &ground : groundColliders) {
+				if (!CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
+					playerPhysicState = PlayerPhysicState::FALL;
+					break;
+				}
+				else if(CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground) && 
+						input.pressJump) {
+					playerPhysicState = PlayerPhysicState::JUMPUP;
+					jumpT = 0;
+					playerOriginalGroundY = playerColliderRect.y; 
+					break;
+				}
 			}
 		}
 		else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
@@ -193,13 +223,16 @@ public:
 			jumpProgress = -pow(jumpT, 2) + 1;
 			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
-			if (colInfo.count > 0) {
-				playerPhysicState = PlayerPhysicState::ONGROUND;
+			for (Rect &ground: groundColliders) {
+				CollisionInfo colInfo;
+				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
+				if (colInfo.count > 0) {
+					playerPhysicState = PlayerPhysicState::ONGROUND;
 
-				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+					playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+					playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+					break;
+				}
 			}
 		}
 
@@ -280,14 +313,17 @@ public:
 			break;
 		}
 
-
-		if (CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
-			groundColor = collidedColor;
-			playerColor = collidedColor;
-		}
-		else {
-			groundColor = {255, 255, 0, 255};
-			playerColor = {0, 0, 255, 255};
+		for (Rect &ground: groundColliders) {
+			if (CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
+				groundColor = collidedColor;
+				playerColor = collidedColor;
+				break;
+			}
+			else {
+				groundColor = {255, 255, 0, 255};
+				playerColor = {0, 0, 255, 255};
+				break;
+			}
 		}
 
 		// @EndTest
@@ -305,6 +341,10 @@ public:
 
 
 	void setup() {
+		groundColliders.push_back(convertPixelRectToGameRect({0, 252, 672, 52}));
+		//groundColliders.push_back(convertPixelRectToGameRect({660, 282, 1156, 22}));
+		//groundColliders.push_back(convertPixelRectToGameRect({1702, 287, 65, 50}));
+
 		hostageColliderRect = { .4f, 0, .2f, .4f };
 		hostage = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
 
@@ -340,8 +380,6 @@ public:
 		playerColliderRect.x -= cameraPos.x;
 		playerColliderRect.y -= cameraPos.y;
 
-		ground.x -= cameraPos.x;
-		ground.y -= cameraPos.y;
 
 		backgroundRect.x -= cameraPos.x;
 		backgroundRect.y -= cameraPos.y;
@@ -419,7 +457,7 @@ public:
 
 		playerUpdate(input, dt);
 
-		levelData.groundCollider = ground;
+		levelData.groundColliders = groundColliders;
 		levelData.playerColliderRect = playerColliderRect;
 
 		hostage->update(input, levelData, dt);
@@ -433,7 +471,11 @@ public:
 				cameraPos.x += d;
 
 				playerColliderRect.x -= d;
-				ground.x -= d;
+
+				for (Rect &ground : groundColliders) {
+					ground.x -= d;
+				}
+
 				backgroundRect.x -= d;
 
 				hostage->moveXBy(-d);
@@ -453,7 +495,10 @@ public:
 
 		// Debug info
 		platformMethods->drawRectangle(playerColliderRect, playerColor);
-		platformMethods->drawRectangle(ground, groundColor);
+
+		for (Rect &ground : groundColliders) {
+			platformMethods->drawRectangle(ground, groundColor);
+		}
 
 		/*
 		platformMethods->drawRectangle(preventGoingBackBlock, groundColor);

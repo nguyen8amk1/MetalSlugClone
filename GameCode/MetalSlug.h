@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include<vector>
 
 
 namespace MetalSlug {
@@ -96,7 +97,7 @@ public:
 };
 
 struct LevelData {
-	Rect groundCollider;
+	std::vector<Rect> groundColliders;
 	Rect playerColliderRect;
 };
 
