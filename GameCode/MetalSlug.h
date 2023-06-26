@@ -38,6 +38,9 @@ struct GameInputContext {
 		pressDebugZoomInBackground,
 		pressDebugZoomOutBackground,
 		pressEnter;
+
+	bool mouseRightClick, 
+		mouseLeftClick;
 };
 
 struct GameText {

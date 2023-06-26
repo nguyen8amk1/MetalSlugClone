@@ -19,7 +19,7 @@ public:
 	}
 
 	static void normalizedSizeToPixelSize(float normWidth, float normHeight, int &pixelWidth, int &pixelHeight) {
-		pixelWidth = (int)(111.888*normWidth);  // FIXME: still have something wrong with the size conversion 
+		pixelWidth = (int)(111.888*normWidth);  
 		pixelHeight = (int)(112*normHeight); 
 	}
 

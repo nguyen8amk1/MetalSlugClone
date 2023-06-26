@@ -89,7 +89,6 @@ private:
 	Animation *playerCurrentLegAnimation;
 
 
-
 	// Level code
 	bool levelStarted = false;
 	float cameraMovePointX = -.42f;
@@ -101,21 +100,19 @@ private:
 	Hostage *hostage1;
 	Hostage *hostage2;
 
-private: 
-
 	// FIXME: there are still something kinda wrong with this function
-	Rect convertPixelRectToGameRect(const Rect &pixelRect) {
-		float newPixelX = pixelRect.x + pixelRect.width/2.0f;
-		float newPixelY = pixelRect.y; // @FixHere: some minor problem with the conversion   
-		// TODO: Let's go from norm to pixel then reverse back from pixel to norm  
+	// The only problem now is the y position
+	Rect convertPixelRectToGameRect(const Rect& pixelRect) {
+		float tx = 12.975f;
 
-		float x = ((newPixelX)/111.888f) - 1.43f;
-		float y = (((newPixelY)- 224)/-112.0f) - 1; 
 		float w = pixelRect.width/111.888f;
 		float h = pixelRect.height/112.0f;
-		return {x, y + h, w, h}; // NOTE: y + h is just a test for now 
-	}
 
+		float x = (pixelRect.x/111.888f) - 1.43*tx + w/2.0f;
+		float y = -1.1235f; // NOTE: Just for testing 
+
+		return { x, y, w, h };
+	}
 public:
 
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -131,234 +128,14 @@ public:
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
 
-
-	void playerInit() {
-		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
-		Util::AnimationUtil::initAnimationMetaData(playerIdlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
-		playerIdlingAnimation  = new Animation(playerIdlingAnimationMetaData,platformMethods);
-
-		Util::AnimationUtil::initAnimationMetaData(playerWalkingAnimationMetaData, filename, .15f, 1, 12, { 0, 29 }, {34, 29});
-		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
-
-		Util::AnimationUtil::initAnimationMetaData(playerJumpingAnimationMetaData, filename, .1f, 1, 6, {0, 64}, {29, 26});
-		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
-
-		Util::AnimationUtil::initAnimationMetaData(playerFallingAnimationMetaData, filename, .1f, 1, 6, {145, 64}, {-29, 26});
-		playerFallingAnimation = new Animation(playerFallingAnimationMetaData, platformMethods);
-
-		// Player's Leg animation
-		Util::AnimationUtil::initAnimationMetaData(playerWalkingLegAnimationMetaData, filename, .1f, 1, 12, {405, 44}, {32, 20} );
-		playerWalkingLegAnimation  = new Animation(playerWalkingLegAnimationMetaData,platformMethods);
-
-		Util::AnimationUtil::initAnimationMetaData(playerIdlingLegAnimationMetaData, filename, .1f, 1, 1, {124, 13}, {21, 16});
-		playerIdlingLegAnimation  = new Animation(playerIdlingLegAnimationMetaData,platformMethods);
-
-		Util::AnimationUtil::initAnimationMetaData(playerJumpingLegAnimationMetaData, filename, .1f, 1, 6, {174, 64}, {21, 25});
-		playerJumpingLegAnimation  = new Animation(playerJumpingLegAnimationMetaData,platformMethods);
-
-		Util::AnimationUtil::initAnimationMetaData(playerFallingLegAnimationMetaData, filename, .1f, 1, 6, {279, 64}, {-21, 25});
-		playerFallingLegAnimation = new Animation(playerFallingLegAnimationMetaData, platformMethods);
-
-	}
-
-	void playerUpdate(const GameInputContext &input, double dt) {
-		// @StartTest: 
-		if (input.pressLeft) {
-			playerColliderRect.x -= (float)(tempSpeed*dt); 
-		}
-		else if (input.pressRight) {
-			playerColliderRect.x += (float)(tempSpeed*dt); 
-		}
-
-		// FIXME: Currently having problem with checking collision between different grounds,  
-		// the collision check is good but the state machine is bugging somehow 
-		// maybe have to change the checking loop or something 
-		// with only 1 groundCollider everything works just fine  
-		// But with too many than the state toggle since it found that there are block that's it collide and other block not 
-
-		// Physics state machine
-		if (playerPhysicState == PlayerPhysicState::FALL) {
-			playerColliderRect.y -= (float)(gravity*dt); 
-
-			CollisionInfo colInfo;
-			for (Rect& ground : groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
-				if (colInfo.count > 0) {
-					break;
-				}
-			}
-
-			if (colInfo.count > 0) {
-				playerPhysicState = PlayerPhysicState::ONGROUND;
-				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-			}
-		}
-		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
-			levelStarted = true;
-			bool collided = false;
-			for (Rect &ground : groundColliders) {
-				collided = CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground);
-				if (collided) {
-					break;
-				}
-			}
-
-			if (!collided) {
-				playerPhysicState = PlayerPhysicState::FALL;
-			}
-			else if(collided && 
-					input.pressJump) {
-				playerPhysicState = PlayerPhysicState::JUMPUP;
-				jumpT = 0;
-				playerOriginalGroundY = playerColliderRect.y; 
-			}
-		}
-		else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
-			jumpT += gravity*dt;
-			jumpProgress = -pow((jumpT-1), 2) + 1;
-			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
-
-			// TODO: handle if sudden hit another object on the head -> physicState = FALL
-			bool suddenHitPlatform = false;
-
-			if (jumpT >= 1) {
-				jumpT -= 1;
-				playerPhysicState = PlayerPhysicState::JUMPDOWN;
-			}
-			else if (suddenHitPlatform) {
-				playerPhysicState = PlayerPhysicState::FALL;
-			}
-		}
-		else if (playerPhysicState == PlayerPhysicState::JUMPDOWN) {
-			jumpT += gravity*dt;
-			jumpProgress = -pow(jumpT, 2) + 1;
-			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
-
-			CollisionInfo colInfo;
-			for (Rect &ground: groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
-				if (colInfo.count > 0) break;
-			}
-
-			if (colInfo.count > 0) {
-				playerPhysicState = PlayerPhysicState::ONGROUND;
-
-				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-			}
-		}
-
-		// animation state machine (sometimes the animation state based on the physics state)
-		switch (playerAnimationState) {
-		case PlayerAnimationState::IDLING: {
-			bool onGround = playerPhysicState == PlayerPhysicState::ONGROUND;
-			if (input.pressLeft) {
-				playerAnimationState = PlayerAnimationState::WALKING;
-				playerHorizontalFacingDirection = -1;
-				playerCurrentAnimation = playerWalkingAnimation;
-				playerCurrentLegAnimation = playerWalkingLegAnimation;
-			}
-			else if (input.pressRight) {
-				playerAnimationState = PlayerAnimationState::WALKING;
-				playerHorizontalFacingDirection = 1;
-				playerCurrentAnimation = playerWalkingAnimation;
-				playerCurrentLegAnimation = playerWalkingLegAnimation;
-			}
-
-			if (input.pressJump) {
-				playerAnimationState = PlayerAnimationState::JUMPING;
-				playerCurrentAnimation = playerJumpingAnimation;
-				playerCurrentLegAnimation = playerJumpingLegAnimation;
-			}
-			else if (!onGround) {
-				playerAnimationState = PlayerAnimationState::FALLING;
-				playerCurrentAnimation = playerFallingAnimation;
-				playerCurrentLegAnimation = playerFallingLegAnimation;
-			}
-		}break;
-
-		case PlayerAnimationState::WALKING: {
-
-			bool isPressingMove = input.pressLeft || input.pressRight;
-			if (!isPressingMove && 
-				playerPhysicState != PlayerPhysicState::JUMPUP && 
-				playerPhysicState != PlayerPhysicState::JUMPDOWN && 
-				playerPhysicState != PlayerPhysicState::FALL) {
-
-				playerAnimationState = PlayerAnimationState::IDLING;
-				playerCurrentAnimation = playerIdlingAnimation;
-				playerCurrentLegAnimation = playerIdlingLegAnimation;
-			}
-			else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
-				playerAnimationState = PlayerAnimationState::JUMPING;
-				playerCurrentAnimation = playerJumpingAnimation;
-				playerCurrentLegAnimation = playerJumpingLegAnimation;
-			}
-			else if (playerPhysicState == PlayerPhysicState::FALL) {
-				playerAnimationState = PlayerAnimationState::FALLING;
-				playerCurrentAnimation = playerFallingAnimation;
-				playerCurrentLegAnimation = playerFallingLegAnimation;
-			}
-		} break;
-
-		case PlayerAnimationState::JUMPING: {
-			if (playerPhysicState == PlayerPhysicState::JUMPDOWN ||
-				playerPhysicState == PlayerPhysicState::FALL) {
-
-				playerAnimationState = PlayerAnimationState::FALLING;
-				playerCurrentAnimation = playerFallingAnimation;
-				playerCurrentLegAnimation = playerFallingLegAnimation;
-			}
-
-		} break;
-
-		case PlayerAnimationState::FALLING: {
-			if (playerPhysicState == PlayerPhysicState::ONGROUND) {
-				playerAnimationState = PlayerAnimationState::IDLING;
-				playerCurrentAnimation = playerIdlingAnimation;
-				playerCurrentLegAnimation = playerIdlingLegAnimation;
-			}
-		} break;
-
-		default: 
-			// TODO: handle error "Animation state not recoginize"
-			break;
-		}
-
-		bool collided = false;
-		for (Rect &ground: groundColliders) {
-			collided = CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground);
-			if (collided) break;
-		}
-
-		if (collided) {
-			groundColor = collidedColor;
-			playerColor = collidedColor;
-		}
-		else {
-			groundColor = {255, 255, 0, 255};
-			playerColor = {0, 0, 255, 255};
-		}
-
-		// @EndTest
-		float legX = playerColliderRect.x;
-		float legY = playerColliderRect.y - .15f;
-		playerCurrentLegAnimation->changePos(legX, legY);
-		playerCurrentLegAnimation->flip(playerHorizontalFacingDirection, 1);
-		playerCurrentLegAnimation->animate(dt);
-
-		playerCurrentAnimation->changePos(playerColliderRect.x, playerColliderRect.y);
-		playerCurrentAnimation->flip(playerHorizontalFacingDirection, 1);
-		playerCurrentAnimation->animate(dt);
-
-	}
-
+	// TODO: 
+	// let's make a simple map editor for now, 
+	// just have a mouse and click and record the position in world space
 
 	void setup() {
-		groundColliders.push_back(convertPixelRectToGameRect({0, 252, 672, 52}));
-		groundColliders.push_back(convertPixelRectToGameRect({660, 282, 1156, 22}));
-		groundColliders.push_back(convertPixelRectToGameRect({1702, 287, 65, 50}));
+		groundColliders.push_back(convertPixelRectToGameRect({ 0, 252, 672, 52 }));
+		groundColliders.push_back(convertPixelRectToGameRect({ 660, 282, 1156, 22}));
+		groundColliders.push_back(convertPixelRectToGameRect({1815, 287, 65, 50}));
 
 		hostageColliderRect = { .4f, 0, .2f, .4f };
 		hostage = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
@@ -394,6 +171,11 @@ public:
 		// apply the camera 
 		playerColliderRect.x -= cameraPos.x;
 		playerColliderRect.y -= cameraPos.y;
+
+		for (Rect &ground : groundColliders) {
+			ground.x -= cameraPos.x;
+			ground.y -= cameraPos.y;
+		}
 
 
 		backgroundRect.x -= cameraPos.x;
@@ -574,7 +356,224 @@ public:
 		delete frameMillis;
 		delete fps;
 	}
-	
+
+private: 	
+	void playerInit() {
+		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
+		Util::AnimationUtil::initAnimationMetaData(playerIdlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
+		playerIdlingAnimation  = new Animation(playerIdlingAnimationMetaData,platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(playerWalkingAnimationMetaData, filename, .15f, 1, 12, { 0, 29 }, {34, 29});
+		playerWalkingAnimation = new Animation(playerWalkingAnimationMetaData, platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(playerJumpingAnimationMetaData, filename, .1f, 1, 6, {0, 64}, {29, 26});
+		playerJumpingAnimation = new Animation(playerJumpingAnimationMetaData,platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(playerFallingAnimationMetaData, filename, .1f, 1, 6, {145, 64}, {-29, 26});
+		playerFallingAnimation = new Animation(playerFallingAnimationMetaData, platformMethods);
+
+		// Player's Leg animation
+		Util::AnimationUtil::initAnimationMetaData(playerWalkingLegAnimationMetaData, filename, .1f, 1, 12, {405, 44}, {32, 20} );
+		playerWalkingLegAnimation  = new Animation(playerWalkingLegAnimationMetaData,platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(playerIdlingLegAnimationMetaData, filename, .1f, 1, 1, {124, 13}, {21, 16});
+		playerIdlingLegAnimation  = new Animation(playerIdlingLegAnimationMetaData,platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(playerJumpingLegAnimationMetaData, filename, .1f, 1, 6, {174, 64}, {21, 25});
+		playerJumpingLegAnimation  = new Animation(playerJumpingLegAnimationMetaData,platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(playerFallingLegAnimationMetaData, filename, .1f, 1, 6, {279, 64}, {-21, 25});
+		playerFallingLegAnimation = new Animation(playerFallingLegAnimationMetaData, platformMethods);
+
+	}
+
+	void playerUpdate(const GameInputContext &input, double dt) {
+		// @StartTest: 
+		if (input.pressLeft) {
+			playerColliderRect.x -= (float)(tempSpeed*dt); 
+		}
+		else if (input.pressRight) {
+			playerColliderRect.x += (float)(tempSpeed*dt); 
+		}
+
+		// Physics state machine
+		if (playerPhysicState == PlayerPhysicState::FALL) {
+			playerColliderRect.y -= (float)(gravity*dt); 
+
+			CollisionInfo colInfo;
+			for (Rect& ground : groundColliders) {
+				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
+				if (colInfo.count > 0) {
+					break;
+				}
+			}
+
+			if (colInfo.count > 0) {
+				playerPhysicState = PlayerPhysicState::ONGROUND;
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			}
+		}
+		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
+			levelStarted = true;
+			bool collided = false;
+			for (Rect &ground : groundColliders) {
+				collided = CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground);
+				if (collided) {
+					break;
+				}
+			}
+
+			if (!collided) {
+				playerPhysicState = PlayerPhysicState::FALL;
+			}
+			else if(collided && 
+					input.pressJump) {
+				playerPhysicState = PlayerPhysicState::JUMPUP;
+				jumpT = 0;
+				playerOriginalGroundY = playerColliderRect.y; 
+			}
+		}
+		else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
+			jumpT += gravity*dt;
+			jumpProgress = -pow((jumpT-1), 2) + 1;
+			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
+
+			// TODO: handle if sudden hit another object on the head -> physicState = FALL
+			bool suddenHitPlatform = false;
+
+			if (jumpT >= 1) {
+				jumpT -= 1;
+				playerPhysicState = PlayerPhysicState::JUMPDOWN;
+			}
+			else if (suddenHitPlatform) {
+				playerPhysicState = PlayerPhysicState::FALL;
+			}
+		}
+		else if (playerPhysicState == PlayerPhysicState::JUMPDOWN) {
+			jumpT += gravity*dt;
+			jumpProgress = -pow(jumpT, 2) + 1;
+			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
+
+			CollisionInfo colInfo;
+			for (Rect &ground: groundColliders) {
+				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
+				if (colInfo.count > 0) break;
+			}
+
+			if (colInfo.count > 0) {
+				playerPhysicState = PlayerPhysicState::ONGROUND;
+
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			}
+		}
+
+		// animation state machine (sometimes the animation state based on the physics state)
+		switch (playerAnimationState) {
+		case PlayerAnimationState::IDLING: {
+			bool onGround = playerPhysicState == PlayerPhysicState::ONGROUND;
+			if (input.pressLeft) {
+				playerAnimationState = PlayerAnimationState::WALKING;
+				playerHorizontalFacingDirection = -1;
+				playerCurrentAnimation = playerWalkingAnimation;
+				playerCurrentLegAnimation = playerWalkingLegAnimation;
+			}
+			else if (input.pressRight) {
+				playerAnimationState = PlayerAnimationState::WALKING;
+				playerHorizontalFacingDirection = 1;
+				playerCurrentAnimation = playerWalkingAnimation;
+				playerCurrentLegAnimation = playerWalkingLegAnimation;
+			}
+
+			if (input.pressJump) {
+				playerAnimationState = PlayerAnimationState::JUMPING;
+				playerCurrentAnimation = playerJumpingAnimation;
+				playerCurrentLegAnimation = playerJumpingLegAnimation;
+			}
+			else if (!onGround) {
+				playerAnimationState = PlayerAnimationState::FALLING;
+				playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentLegAnimation = playerFallingLegAnimation;
+			}
+		}break;
+
+		case PlayerAnimationState::WALKING: {
+
+			bool isPressingMove = input.pressLeft || input.pressRight;
+			if (!isPressingMove && 
+				playerPhysicState != PlayerPhysicState::JUMPUP && 
+				playerPhysicState != PlayerPhysicState::JUMPDOWN && 
+				playerPhysicState != PlayerPhysicState::FALL) {
+
+				playerAnimationState = PlayerAnimationState::IDLING;
+				playerCurrentAnimation = playerIdlingAnimation;
+				playerCurrentLegAnimation = playerIdlingLegAnimation;
+			}
+			else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
+				playerAnimationState = PlayerAnimationState::JUMPING;
+				playerCurrentAnimation = playerJumpingAnimation;
+				playerCurrentLegAnimation = playerJumpingLegAnimation;
+			}
+			else if (playerPhysicState == PlayerPhysicState::FALL) {
+				playerAnimationState = PlayerAnimationState::FALLING;
+				playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentLegAnimation = playerFallingLegAnimation;
+			}
+		} break;
+
+		case PlayerAnimationState::JUMPING: {
+			if (playerPhysicState == PlayerPhysicState::JUMPDOWN ||
+				playerPhysicState == PlayerPhysicState::FALL) {
+
+				playerAnimationState = PlayerAnimationState::FALLING;
+				playerCurrentAnimation = playerFallingAnimation;
+				playerCurrentLegAnimation = playerFallingLegAnimation;
+			}
+
+		} break;
+
+		case PlayerAnimationState::FALLING: {
+			if (playerPhysicState == PlayerPhysicState::ONGROUND) {
+				playerAnimationState = PlayerAnimationState::IDLING;
+				playerCurrentAnimation = playerIdlingAnimation;
+				playerCurrentLegAnimation = playerIdlingLegAnimation;
+			}
+		} break;
+
+		default: 
+			// TODO: handle error "Animation state not recoginize"
+			break;
+		}
+
+		bool collided = false;
+		for (Rect &ground: groundColliders) {
+			collided = CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground);
+			if (collided) break;
+		}
+
+		if (collided) {
+			groundColor = collidedColor;
+			playerColor = collidedColor;
+		}
+		else {
+			groundColor = {255, 255, 0, 255};
+			playerColor = {0, 0, 255, 255};
+		}
+
+		// @EndTest
+		float legX = playerColliderRect.x;
+		float legY = playerColliderRect.y - .15f;
+		playerCurrentLegAnimation->changePos(legX, legY);
+		playerCurrentLegAnimation->flip(playerHorizontalFacingDirection, 1);
+		playerCurrentLegAnimation->animate(dt);
+
+		playerCurrentAnimation->changePos(playerColliderRect.x, playerColliderRect.y);
+		playerCurrentAnimation->flip(playerHorizontalFacingDirection, 1);
+		playerCurrentAnimation->animate(dt);
+
+	}
+
 };
 
 }

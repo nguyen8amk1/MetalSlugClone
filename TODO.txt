@@ -1,4 +1,6 @@
 TODO: 
+	FIXME: collision on the hortizontal side not working ?? 
+
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
