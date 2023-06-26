@@ -1,9 +1,10 @@
 TODO: 
 	HAVE ONE GOOD HOSTAGES (4h) []
-		need animations  (1 frame)
-		need state machine (physics, animation)
-		need interactions with player 
-	-> wrap them up and place them all over the map 
+		need animations  (1 frame) [X]
+		need state machine (physics, animation) [X]
+		need interactions with player [X]
+		
+	-> wrap them up and place them all over the map @Current 
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
@@ -12,6 +13,8 @@ TODO:
 		place hostages into places, with animation []
 
 		place the sceneries into place as well, with animation []
+
+		have all the colliders in place as well 
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
 

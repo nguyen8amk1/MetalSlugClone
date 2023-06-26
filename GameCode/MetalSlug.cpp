@@ -26,7 +26,7 @@ private:
 	GameText *playerAnimationStateText = NULL;
 	//GameText *backgroundRectText = NULL;
 
-	Rect playerColliderRect = {-17, .3f, .2f, .4f};
+	Rect playerColliderRect = {-17.5f, .3f, .2f, .4f};
 	Rect ground = {0, -1.12f, 60, .488f};
 
 	Color collidedColor = {255, 0, 0, 255};
@@ -80,15 +80,14 @@ private:
 	Animation *playerCurrentAnimation;
 	Animation *playerCurrentLegAnimation;
 
-	Rect animRect;
-
 
 	// Level code
-	float cameraMovePointX = -.47666f;
+	bool levelStarted = false;
+	float cameraMovePointX = -.42f;
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
 
 	// TODO: place 1 hostage into the scene  
-	Rect hostageColliderRect = {0, 0, .2f, .4f};
+	Rect hostageColliderRect = {.4f, 0, .2f, .4f};
 
 	enum class HostagePhysicState {
 		ONGROUND,
@@ -102,6 +101,16 @@ private:
 
 	HostagePhysicState hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
 	HostageAnimationState hostageCurrentAnimationState = HostageAnimationState::TIED;
+
+	// Hostage animation 
+	AnimationMetaData hostageTiedAnimationMetaData; 
+	Animation *hostageTiedAnimation;
+
+	AnimationMetaData hostageUntiedAnimationMetaData; 
+	Animation *hostageUntiedAnimation;
+
+	Animation *hostageCurrentAnimation;
+
 
 public:
 
@@ -129,7 +138,7 @@ public:
 
 		float h = (metaData.framePixelSize.y/224.0f)*2;
 		float w = h*(metaData.framePixelSize.y/metaData.framePixelSize.y); 
-		animRect = {0, 0, fabs(w), fabs(h)};
+		Rect animRect = {0, 0, fabs(w), fabs(h)};
 		metaData.rect = animRect;
 	}
 
@@ -184,6 +193,7 @@ public:
 			}
 		}
 		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
+			levelStarted = true;
 			if (!CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
 				playerPhysicState = PlayerPhysicState::FALL;
 			}
@@ -325,21 +335,76 @@ public:
 
 	}
 
-	void hostageUpdate(const GameInputContext& input, double dt) {
-		// NOTE: State machine update in here 
-		// TODO: draw the physic state machine first 
-		// TODO: implement the physic state machine 
-		// TODO: have the image in the sprite 
-		// TODO: draw the animation state machine
+	void hostageInit() {
+		std::string filename = "Assets/Imgs/Characters/hostage.png";
+		initAnimationMetaData(hostageTiedAnimationMetaData, filename, .1f, 1, 1, {6, 26}, {30, 27});
+		hostageTiedAnimation = new Animation(hostageTiedAnimationMetaData, platformMethods);
 
+		initAnimationMetaData(hostageUntiedAnimationMetaData, filename, .1f, 1, 1, {6, 248}, {33, 38});
+		hostageUntiedAnimation  = new Animation(hostageUntiedAnimationMetaData, platformMethods);
+	}
+
+	void hostageUpdate(const GameInputContext& input, double dt) {
+		// Physic state machine 
+		switch (hostageCurrentPhysicState) {
+		case HostagePhysicState::ONGROUND: {
+			if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, ground)) {
+				hostageCurrentPhysicState = HostagePhysicState::FALL;
+			}
+			break;
+		}
+		case HostagePhysicState::FALL: {
+			hostageColliderRect.y -= (float)(gravity*dt); 
+
+			CollisionInfo colInfo;
+			CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, ground, colInfo);
+			if (colInfo.count > 0) {
+				hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
+				hostageColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				hostageColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			}
+			break;
+		}
+		}
+
+		// Animation state machine 
+		switch (hostageCurrentAnimationState) {
+		case HostageAnimationState::TIED: {
+			// TODO: 
+			bool touchPlayer = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, playerColliderRect);
+			if (touchPlayer) {
+				hostageCurrentAnimationState = HostageAnimationState::UNTIED;
+				hostageCurrentAnimation = hostageUntiedAnimation;
+			}
+			break;
+		}
+		case HostageAnimationState::UNTIED: {
+			// TODO: 
+			hostageColliderRect.x -= tempSpeed*.5f*dt;
+
+			bool outOfScreen = hostageColliderRect.x < -1.45f;
+			if (outOfScreen) {
+				// TODO: handle hostage out of screen 
+			}
+			break;
+		}
+		}
+
+		// Rendering 
+		hostageCurrentAnimation->changePos(hostageColliderRect.x, hostageColliderRect.y);
+		hostageCurrentAnimation->animate(dt);
+		platformMethods->drawRectangle(hostageColliderRect, playerColor);
 	}
 
 
 	void setup() {
 		playerInit();
+		hostageInit();
 
 		playerCurrentAnimation = playerIdlingAnimation;
 		playerCurrentLegAnimation = playerIdlingLegAnimation;
+
+		hostageCurrentAnimation = hostageTiedAnimation;
 
 
 		frameMillis = platformMethods->createText(0, 0, 10);
@@ -441,23 +506,23 @@ public:
 		hostageUpdate(input, dt);
 
 		// @StartTest: Level 
+		if (levelStarted) {
+			if (playerColliderRect.x >= cameraMovePointX) {
+				float d = tempSpeed * dt;
+				cameraPos.x += d;
 
+				playerColliderRect.x -= d;
+				ground.x -= d;
+				backgroundRect.x -= d;
+				hostageColliderRect.x -= d;
+			}
 
-		 
-		if (playerColliderRect.x >= cameraMovePointX) {
-			float d = tempSpeed * dt;
-			cameraPos.x += d;
-
-			playerColliderRect.x -= d;
-			ground.x -= d;
-			backgroundRect.x -= d;
-		}
-
-		CollisionInfo colInfo;
-		CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, preventGoingBackBlock, colInfo);
-		if (colInfo.count > 0) {
-			playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-			playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			CollisionInfo colInfo;
+			CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, preventGoingBackBlock, colInfo);
+			if (colInfo.count > 0) {
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+			}
 		}
 		// @EndTest 
 
