@@ -89,6 +89,7 @@ private:
 	Animation *playerCurrentLegAnimation;
 
 
+
 	// Level code
 	bool levelStarted = false;
 	float cameraMovePointX = -.42f;
@@ -104,11 +105,15 @@ private:
 
 	// FIXME: there are still something kinda wrong with this function
 	Rect convertPixelRectToGameRect(const Rect &pixelRect) {
-		float x = ((pixelRect.x + pixelRect.width/2.0f)/111.888f) - 1.43f;
-		float y = (((pixelRect.y)- 224)/-112.0f) - 1;
+		float newPixelX = pixelRect.x + pixelRect.width/2.0f;
+		float newPixelY = pixelRect.y; // @FixHere: some minor problem with the conversion   
+		// TODO: Let's go from norm to pixel then reverse back from pixel to norm  
+
+		float x = ((newPixelX)/111.888f) - 1.43f;
+		float y = (((newPixelY)- 224)/-112.0f) - 1; 
 		float w = pixelRect.width/111.888f;
 		float h = pixelRect.height/112.0f;
-		return {x, y + h, w, h};
+		return {x, y + h, w, h}; // NOTE: y + h is just a test for now 
 	}
 
 public:
@@ -175,31 +180,38 @@ public:
 		if (playerPhysicState == PlayerPhysicState::FALL) {
 			playerColliderRect.y -= (float)(gravity*dt); 
 
+			CollisionInfo colInfo;
 			for (Rect& ground : groundColliders) {
-				CollisionInfo colInfo;
 				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
 				if (colInfo.count > 0) {
-					playerPhysicState = PlayerPhysicState::ONGROUND;
-					playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-					playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 					break;
 				}
+			}
+
+			if (colInfo.count > 0) {
+				playerPhysicState = PlayerPhysicState::ONGROUND;
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
 		else if (playerPhysicState == PlayerPhysicState::ONGROUND) {
 			levelStarted = true;
+			bool collided = false;
 			for (Rect &ground : groundColliders) {
-				if (!CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
-					playerPhysicState = PlayerPhysicState::FALL;
+				collided = CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground);
+				if (collided) {
 					break;
 				}
-				else if(CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground) && 
-						input.pressJump) {
-					playerPhysicState = PlayerPhysicState::JUMPUP;
-					jumpT = 0;
-					playerOriginalGroundY = playerColliderRect.y; 
-					break;
-				}
+			}
+
+			if (!collided) {
+				playerPhysicState = PlayerPhysicState::FALL;
+			}
+			else if(collided && 
+					input.pressJump) {
+				playerPhysicState = PlayerPhysicState::JUMPUP;
+				jumpT = 0;
+				playerOriginalGroundY = playerColliderRect.y; 
 			}
 		}
 		else if (playerPhysicState == PlayerPhysicState::JUMPUP) {
@@ -223,16 +235,17 @@ public:
 			jumpProgress = -pow(jumpT, 2) + 1;
 			playerColliderRect.y = playerOriginalGroundY + (jumpHeight)*jumpProgress; 
 
+			CollisionInfo colInfo;
 			for (Rect &ground: groundColliders) {
-				CollisionInfo colInfo;
 				CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground, colInfo);
-				if (colInfo.count > 0) {
-					playerPhysicState = PlayerPhysicState::ONGROUND;
+				if (colInfo.count > 0) break;
+			}
 
-					playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-					playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-					break;
-				}
+			if (colInfo.count > 0) {
+				playerPhysicState = PlayerPhysicState::ONGROUND;
+
+				playerColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+				playerColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 			}
 		}
 
@@ -313,17 +326,19 @@ public:
 			break;
 		}
 
+		bool collided = false;
 		for (Rect &ground: groundColliders) {
-			if (CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground)) {
-				groundColor = collidedColor;
-				playerColor = collidedColor;
-				break;
-			}
-			else {
-				groundColor = {255, 255, 0, 255};
-				playerColor = {0, 0, 255, 255};
-				break;
-			}
+			collided = CollisionChecker::doesRectangleVsRectangleCollide(playerColliderRect, ground);
+			if (collided) break;
+		}
+
+		if (collided) {
+			groundColor = collidedColor;
+			playerColor = collidedColor;
+		}
+		else {
+			groundColor = {255, 255, 0, 255};
+			playerColor = {0, 0, 255, 255};
 		}
 
 		// @EndTest
@@ -342,8 +357,8 @@ public:
 
 	void setup() {
 		groundColliders.push_back(convertPixelRectToGameRect({0, 252, 672, 52}));
-		//groundColliders.push_back(convertPixelRectToGameRect({660, 282, 1156, 22}));
-		//groundColliders.push_back(convertPixelRectToGameRect({1702, 287, 65, 50}));
+		groundColliders.push_back(convertPixelRectToGameRect({660, 282, 1156, 22}));
+		groundColliders.push_back(convertPixelRectToGameRect({1702, 287, 65, 50}));
 
 		hostageColliderRect = { .4f, 0, .2f, .4f };
 		hostage = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
