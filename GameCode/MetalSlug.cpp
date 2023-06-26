@@ -100,16 +100,15 @@ private:
 	Hostage *hostage1;
 	Hostage *hostage2;
 
-	// FIXME: there are still something kinda wrong with this function
-	// The only problem now is the y position
-	Rect convertPixelRectToGameRect(const Rect& pixelRect) {
-		float tx = 12.975f;
+	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
+		float tx = backgroundPixelWidth/320.0f; 
+		float ty = backgroundPixelHeight/224.0f; 
 
 		float w = pixelRect.width/111.888f;
 		float h = pixelRect.height/112.0f;
 
 		float x = (pixelRect.x/111.888f) - 1.43*tx + w/2.0f;
-		float y = -1.1235f; // NOTE: Just for testing 
+		float y = ty - (2*ty*pixelRect.y/304.0f) - h/2.0f;
 
 		return { x, y, w, h };
 	}
@@ -133,9 +132,17 @@ public:
 	// just have a mouse and click and record the position in world space
 
 	void setup() {
-		groundColliders.push_back(convertPixelRectToGameRect({ 0, 252, 672, 52 }));
-		groundColliders.push_back(convertPixelRectToGameRect({ 660, 282, 1156, 22}));
-		groundColliders.push_back(convertPixelRectToGameRect({1815, 287, 65, 50}));
+		int backgroundPixelWidth = 4152;
+		int backgroundPixelHeight = 304;
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({851, 236, 71, 19}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight));
 
 		hostageColliderRect = { .4f, 0, .2f, .4f };
 		hostage = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);

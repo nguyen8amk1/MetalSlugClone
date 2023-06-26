@@ -1,5 +1,6 @@
 TODO: 
 	FIXME: collision on the hortizontal side not working ?? 
+		-> this happens because the game only checking a single collision at a time  
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
@@ -13,6 +14,8 @@ TODO:
 		place hostages into places, with animation []
 
 		place the sceneries into place as well, with animation []
+
+	PUT THE PLAYER CODE IN OTHER FILE (1h) []
 
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
