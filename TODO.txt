@@ -1,10 +1,9 @@
 TODO: 
-	FIXME: collider have some jittery when the background sliding, maybe because it's the updating order Entity  
-	WORK ON THE CAMERA APPLY CODE (2h) [] @Current 
-		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
-		Another Idea: 
-			have a camera class with an apply method which takes an interface 
-			and apply camera transformation on it @UseThis 
+	PLACE ALL THE COLLIDER IN LEVEL1 (1h) [] @Current 
+
+	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) []
+
+	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
@@ -28,13 +27,17 @@ TODO:
 				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
 
+	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity  
+		-> pretty everything seems jittery
+
 	Reminder: 
 		i feel like we're having a huge spagetti when using levelData that can be modified in player body   
 		since i have no idea where the data is modified so it's really hard to track   
 		for example: right now the player collider rect is set inside the player update method 
 					 and the that collider rect we track it outside of the player body 
 					 Idea: may be we should have a get collider method on the player 
-
+	
+	
 	ENEMY (2h) []
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
@@ -43,8 +46,6 @@ TODO:
 
 	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
 
-
-	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -84,6 +85,12 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	WORK ON THE CAMERA APPLY CODE (2h) [X] 
+		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
+		Another Idea: 
+			have a camera class with an apply method which takes an interface 
+			and apply camera transformation on it @UseThis 
+
 	PUT THE PLAYER CODE IN OTHER FILE (1h) [X] 
 	HAVE ONE GOOD HOSTAGES (4h) [X]
 		need animations  (1 frame) [X]

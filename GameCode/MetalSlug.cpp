@@ -20,11 +20,6 @@ private:
 	AnimationMetaData backgroundMetaData;
 	Animation *background;
 
-	/*
-	Rect backgroundRect;
-	PlatformSpecificImage* backgroundImg;
-	*/
-
 	// debug 
 	GameText *frameMillis = NULL;
 	GameText *fps = NULL;
@@ -34,7 +29,6 @@ private:
 	GameText *playerAnimationStateText = NULL;
 	//GameText *backgroundRectText = NULL;
 
-	//std::vector<Rect> groundColliders;
 	std::vector<RectangleCollider*> groundColliders;
 	std::vector<CameraControlledEntity*> entities;
 
@@ -51,7 +45,6 @@ private:
 	float cameraMovePointX = -.42f;
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
 
-	Rect hostageColliderRect;
 	std::vector<Hostage*> hostages;
 
 	// level1 
@@ -86,10 +79,7 @@ public:
 	// Physic state machine
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
-	void setup() {
-		Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
-		camera = new Camera(cameraPosition);
-
+	void initLevel1() {
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
 		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
@@ -142,7 +132,7 @@ public:
 			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
-		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		Rect hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
@@ -157,6 +147,19 @@ public:
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
+		for (RectangleCollider *collider: groundColliders) {
+			entities.push_back(collider);
+		}
+		
+		for (Hostage *hostage: hostages) {
+			entities.push_back(hostage);
+		}
+
+		entities.push_back(background);
+		entities.push_back(player);
+		entities.push_back(waterFallAnimation);
+		entities.push_back(waterFall2Animation);
+
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
@@ -170,41 +173,15 @@ public:
 		*/
 
 		// apply the camera 
-		camera->apply(background);
-		camera->apply(player);
-		camera->apply(waterFallAnimation);
-		camera->apply(waterFall2Animation);
-
-		/*
-		background->moveXBy(-cameraPos.x);
-		background->moveYBy(-cameraPos.y);
-
-		player->moveXBy(-cameraPos.x);
-		player->moveYBy(-cameraPos.y);
-
-		waterFallAnimation->moveXBy(-cameraPos.x);
-		waterFallAnimation->moveYBy(-cameraPos.y);
-
-		waterFall2Animation->moveXBy(-cameraPos.x);
-		waterFall2Animation->moveYBy(-cameraPos.y);
-		*/
-
-		// TODO: change this to entity as well ??  
-		for (CameraControlledEntity *ground : groundColliders) {
-			camera->apply(ground);
-			/*
-			ground.x -= cameraPos.x;
-			ground.y -= cameraPos.y;
-			*/
+		for (CameraControlledEntity *entity: entities) {
+			camera->apply(entity);
 		}
+	}
 
-		for (Hostage *hostage: hostages) {
-			camera->apply(hostage);
-			/*
-			hostage->moveXBy(-cameraPos.x);
-			hostage->moveYBy(-cameraPos.y);
-			*/
-		}
+	void setup() {
+		Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
+		camera = new Camera(cameraPosition);
+		initLevel1();
 	}
 
 	float tempSpeed = 1;
@@ -221,36 +198,14 @@ public:
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
 
-		// @EndTest
-
-
-		// @StartTest: Level 
 		if (levelData.levelStarted) {
 			if (levelData.playerColliderRect.x >= cameraMovePointX) {
 				float d = tempSpeed * dt;
 				//cameraPos.x += d;
 				camera->moveXBy(d);
 
-				camera->update(background);
-				camera->update(waterFallAnimation);
-				camera->update(waterFall2Animation);
-
-				/*
-				background->moveXBy(-d);
-				waterFallAnimation->moveXBy(-d);
-				waterFall2Animation->moveXBy(-d);
-				*/
-
-				player->moveXBy(-d);
-
-				for (RectangleCollider *ground : groundColliders) {
-					//ground.x -= d;
-					camera->update(ground);
-				}
-
-				for (Hostage *hostage: hostages) {
-					//hostage->moveXBy(-d);
-					camera->update(hostage);
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
 				}
 			}
 
@@ -272,8 +227,6 @@ public:
 		for (Hostage *hostage: hostages) {
 			hostage->update(input, levelData, dt);
 		}
-
-		// @EndTest 
 
 		// Debug info
 		if (platformDebugInfo) {
