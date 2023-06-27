@@ -131,6 +131,15 @@ public:
 		groundColliders.push_back(
 			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight))
 		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({3368, 229, 316, 36}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({3474, 205, 290, 34}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({3544, 144, 608, 55}, backgroundPixelWidth, backgroundPixelHeight))
+		);
 
 		Rect hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
@@ -159,6 +168,10 @@ public:
 		entities.push_back(player);
 		entities.push_back(waterFallAnimation);
 		entities.push_back(waterFall2Animation);
+
+
+
+
 
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);

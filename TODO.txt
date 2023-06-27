@@ -1,7 +1,9 @@
 TODO: 
-	PLACE ALL THE COLLIDER IN LEVEL1 (1h) [] @Current 
+	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [] @Current 
+		-> where should we up the camera (.5h) [] 
+		-> what the behaviour should be (1h) []
 
-	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) []
+	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) []
 
 	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -85,6 +87,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	PLACE ALL THE COLLIDER IN LEVEL1 (1h) [X] 
 	WORK ON THE CAMERA APPLY CODE (2h) [X] 
 		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
 		Another Idea: 
