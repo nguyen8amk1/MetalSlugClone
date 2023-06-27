@@ -22,6 +22,7 @@ TODO:
 			INTO THE LEVEL 
  
 	WORK ON THE CAMERA APPLY CODE (2h) []
+		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
 
 	Reminder: 
 		i feel like we're having a huge spagetti when using levelData that can be modified in player body   
