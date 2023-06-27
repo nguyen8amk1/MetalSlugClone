@@ -6,7 +6,7 @@
 
 namespace MetalSlug {
 
-class Player {
+class Player: public CameraControlledEntity {
 private: 
 	Rect colliderRect = { -17.5f, .3f, .2f, .4f };
 
@@ -121,8 +121,8 @@ public:
 			colliderRect.y -= (float)(gravity*dt); 
 
 			CollisionInfo colInfo;
-			for (Rect& ground : levelData.groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground, colInfo);
+			for (RectangleCollider* ground : levelData.groundColliders) {
+				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
 				if (colInfo.count > 0) {
 					break;
 				}
@@ -137,8 +137,8 @@ public:
 		else if (physicState == PhysicState::ONGROUND) {
 			levelData.levelStarted = true;
 			bool collided = false;
-			for (Rect &ground : levelData.groundColliders) {
-				collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground);
+			for (RectangleCollider* ground : levelData.groundColliders) {
+				collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
 				if (collided) {
 					break;
 				}
@@ -176,8 +176,8 @@ public:
 			colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
 
 			CollisionInfo colInfo;
-			for (Rect &ground: levelData.groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground, colInfo);
+			for (RectangleCollider *ground: levelData.groundColliders) {
+				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
 				if (colInfo.count > 0) break;
 			}
 
@@ -267,8 +267,8 @@ public:
 		}
 
 		bool collided = false;
-		for (Rect &ground: levelData.groundColliders) {
-			collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground);
+		for (RectangleCollider *ground: levelData.groundColliders) {
+			collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
 			if (collided) break;
 		}
 
@@ -304,11 +304,11 @@ public:
 	}
 	*/
 
-	void moveXBy(float d) {
+	void moveXBy(float d) override {
 		colliderRect.x += d;
 	}
 
-	void moveYBy(float d) {
+	void moveYBy(float d) override {
 		colliderRect.y += d;
 	}
 };

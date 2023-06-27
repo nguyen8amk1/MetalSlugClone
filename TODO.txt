@@ -1,4 +1,5 @@
 TODO: 
+	FIXME: collider have some jittery when the background sliding, maybe because it's the updating order Entity  
 	WORK ON THE CAMERA APPLY CODE (2h) [] @Current 
 		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
 		Another Idea: 

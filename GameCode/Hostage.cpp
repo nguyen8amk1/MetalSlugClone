@@ -6,7 +6,8 @@
 #include "CollisionChecker.h"
 
 namespace MetalSlug {
-class Hostage {
+
+class Hostage: public CameraControlledEntity {
 private: 
 	Rect hostageColliderRect;
 
@@ -57,8 +58,8 @@ public:
 		// Physic state machine 
 		switch (hostageCurrentPhysicState) {
 		case HostagePhysicState::ONGROUND: {
-			for (Rect &groundCollider: levelData.groundColliders) {
-				if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider)) {
+			for (RectangleCollider *groundCollider: levelData.groundColliders) {
+				if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider->getRect())) {
 					hostageCurrentPhysicState = HostagePhysicState::FALL;
 					break;
 				}
@@ -68,9 +69,9 @@ public:
 		case HostagePhysicState::FALL: {
 			hostageColliderRect.y -= (float)(gravity*dt); 
 
-			for (Rect& groundCollider : levelData.groundColliders) {
+			for (RectangleCollider* groundCollider : levelData.groundColliders) {
 				CollisionInfo colInfo;
-				CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider, colInfo);
+				CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider->getRect(), colInfo);
 				if (colInfo.count > 0) {
 					hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
 					hostageColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
@@ -123,11 +124,11 @@ public:
 	}
 	*/
 
-	void moveXBy(float d) {
+	void moveXBy(float d) override {
 		hostageColliderRect.x += d;
 	}
 
-	void moveYBy(float d) {
+	void moveYBy(float d) override {
 		hostageColliderRect.y += d;
 	}
 };

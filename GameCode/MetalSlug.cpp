@@ -12,48 +12,18 @@
 
 namespace MetalSlug {
 
-class Camera {
-private: 
-	Vec2f currentPosition;
-	Vec2f oldPosition;
-
-public: 
-	Camera(const Vec2f position) {
-		this->currentPosition = position;
-		this->oldPosition = position;
-	}
-
-	void apply(Entity *entity) {
-		entity->moveXBy(currentPosition.x);
-		entity->moveYBy(currentPosition.y);
-	}
-
-	void update(Entity *entity) {
-		float dx = currentPosition.x - oldPosition.x;
-		float dy = currentPosition.y - oldPosition.y;
-
-		entity->moveXBy(dx);
-		entity->moveYBy(dy);
-	}
-
-	void moveXBy(float d) {
-		oldPosition.x = currentPosition.x;
-		currentPosition.x += d;
-	}
-
-	void moveYBy(float d) {
-		oldPosition.y = currentPosition.y;
-		currentPosition.y += d;
-	}
-};
-
 class MetalSlug {
 private: 
 	PlatformSpecficMethodsCollection *platformMethods; 
-	Rect backgroundRect;
 
-	std::vector<std::string> frameFiles;
+	// TODO: instead of background rect use Animation for background rect  
+	AnimationMetaData backgroundMetaData;
+	Animation *background;
+
+	/*
+	Rect backgroundRect;
 	PlatformSpecificImage* backgroundImg;
+	*/
 
 	// debug 
 	GameText *frameMillis = NULL;
@@ -64,7 +34,9 @@ private:
 	GameText *playerAnimationStateText = NULL;
 	//GameText *backgroundRectText = NULL;
 
-	std::vector<Rect> groundColliders;
+	//std::vector<Rect> groundColliders;
+	std::vector<RectangleCollider*> groundColliders;
+	std::vector<CameraControlledEntity*> entities;
 
 	Color collidedColor = {255, 0, 0, 255};
 	Color groundColor = {255, 255, 0, 255};
@@ -72,10 +44,8 @@ private:
 
 	// NOTE: the only feature we have with the camera is move up, down, left, right 
 	// no zoom, no scale -> fixed view port is 320 by 224
-	Vec2f cameraPos = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
-
+	Camera *camera;
 	Player *player;
-
 
 	// Level code
 	float cameraMovePointX = -.42f;
@@ -87,7 +57,6 @@ private:
 	// level1 
 	AnimationMetaData waterFallAnimationMetaData;
 	Animation *waterFallAnimation;
-
 	AnimationMetaData waterFall2AnimationMetaData;
 	Animation *waterFall2Animation;
 
@@ -118,15 +87,16 @@ public:
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
 	void setup() {
-		/*
-		THE OTHER HALF OF THE WATERFALL (1h) [] @Current
-			0, 346, 832, 304
-			rect: 3320, 0, 832, 304
-		*/
+		Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
+		camera = new Camera(cameraPosition);
 
-		player = new Player(gravity, tempSpeed, platformMethods);
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
+		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
+		background = new Animation(backgroundMetaData, platformMethods);
+		background->changeSize(37.108f, 1.357f*2.0f);
+
+		player = new Player(gravity, tempSpeed, platformMethods);
 
 		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 1, 8, {0, 0}, {430, 272});
 		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
@@ -138,16 +108,39 @@ public:
 		Rect waterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
 		waterFall2Animation->setRect(waterFall2Rect);
 
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({851, 236, 71, 19}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight));
-		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight))
+		);
+
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22 }, backgroundPixelWidth, backgroundPixelHeight))
+		);
+
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({851, 236, 71, 19}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight))
+		);
+		groundColliders.push_back(
+			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight))
+		);
 
 		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
@@ -176,10 +169,16 @@ public:
 		groundPos  = platformMethods->createText(0, 75, 10);
 		*/
 
-		backgroundImg = platformMethods->loadImage("Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
-		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
-
 		// apply the camera 
+		camera->apply(background);
+		camera->apply(player);
+		camera->apply(waterFallAnimation);
+		camera->apply(waterFall2Animation);
+
+		/*
+		background->moveXBy(-cameraPos.x);
+		background->moveYBy(-cameraPos.y);
+
 		player->moveXBy(-cameraPos.x);
 		player->moveYBy(-cameraPos.y);
 
@@ -188,21 +187,24 @@ public:
 
 		waterFall2Animation->moveXBy(-cameraPos.x);
 		waterFall2Animation->moveYBy(-cameraPos.y);
+		*/
 
-		for (Rect &ground : groundColliders) {
+		// TODO: change this to entity as well ??  
+		for (CameraControlledEntity *ground : groundColliders) {
+			camera->apply(ground);
+			/*
 			ground.x -= cameraPos.x;
 			ground.y -= cameraPos.y;
+			*/
 		}
 
 		for (Hostage *hostage: hostages) {
+			camera->apply(hostage);
+			/*
 			hostage->moveXBy(-cameraPos.x);
 			hostage->moveYBy(-cameraPos.y);
+			*/
 		}
-
-		backgroundRect.x -= cameraPos.x;
-		backgroundRect.y -= cameraPos.y;
-
-		backgroundImg->setRect(backgroundRect);
 	}
 
 	float tempSpeed = 1;
@@ -215,43 +217,40 @@ public:
 
 	LevelData levelData;
 	void updateAndRender(GameInputContext &input, double dt) {
-		backgroundImg->setRect(backgroundRect);
-		platformMethods->renderImage(backgroundImg);
-		waterFallAnimation->animate(dt);
-		waterFall2Animation->animate(dt);
 
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
 
 		// @EndTest
 
-		if (platformDebugInfo) {
-			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
-			fps->setText(Util::MessageFormater::print("FPS: ", platformDebugInfo->fps));
-
-			platformMethods->drawText(frameMillis);
-			platformMethods->drawText(fps);
-		}
-
 
 		// @StartTest: Level 
 		if (levelData.levelStarted) {
 			if (levelData.playerColliderRect.x >= cameraMovePointX) {
 				float d = tempSpeed * dt;
-				cameraPos.x += d;
+				//cameraPos.x += d;
+				camera->moveXBy(d);
+
+				camera->update(background);
+				camera->update(waterFallAnimation);
+				camera->update(waterFall2Animation);
+
+				/*
+				background->moveXBy(-d);
+				waterFallAnimation->moveXBy(-d);
+				waterFall2Animation->moveXBy(-d);
+				*/
 
 				player->moveXBy(-d);
 
-				for (Rect &ground : groundColliders) {
-					ground.x -= d;
+				for (RectangleCollider *ground : groundColliders) {
+					//ground.x -= d;
+					camera->update(ground);
 				}
 
-				backgroundRect.x -= d;
-				waterFallAnimation->moveXBy(-d);
-				waterFall2Animation->moveXBy(-d);
-
 				for (Hostage *hostage: hostages) {
-					hostage->moveXBy(-d);
+					//hostage->moveXBy(-d);
+					camera->update(hostage);
 				}
 			}
 
@@ -263,6 +262,10 @@ public:
 			}
 		}
 
+		background->animate(dt);
+		waterFallAnimation->animate(dt);
+		waterFall2Animation->animate(dt);
+
 		levelData.groundColliders = groundColliders;
 		player->update(input, levelData, dt);
 
@@ -273,10 +276,18 @@ public:
 		// @EndTest 
 
 		// Debug info
+		if (platformDebugInfo) {
+			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
+			fps->setText(Util::MessageFormater::print("FPS: ", platformDebugInfo->fps));
+
+			platformMethods->drawText(frameMillis);
+			platformMethods->drawText(fps);
+		}
 		platformMethods->drawRectangle(levelData.playerColliderRect, playerColor);
 
-		for (Rect &ground : groundColliders) {
-			platformMethods->drawRectangle(ground, groundColor);
+		for (RectangleCollider *ground : groundColliders) {
+			Rect r = ground->getRect();
+			platformMethods->drawRectangle(r, groundColor);
 		}
 
 		/*

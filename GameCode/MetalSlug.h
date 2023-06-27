@@ -5,11 +5,6 @@
 
 namespace MetalSlug {
 
-class Entity {
-public: 
-	virtual void moveXBy(float d) = 0;
-	virtual void moveYBy(float d) = 0;
-};
 
 struct Rect {
 	float x, y, width, height;
@@ -105,11 +100,70 @@ public:
 	virtual void debugLog(const std::string& debugString) = 0;
 };
 
+
+class CameraControlledEntity {
+public: 
+	virtual void moveXBy(float d) = 0;
+	virtual void moveYBy(float d) = 0;
+};
+
+class RectangleCollider : public CameraControlledEntity {
+private: 
+	Rect rect;
+public: 
+	RectangleCollider(Rect rect) {
+		this->rect = rect;
+	}
+
+	void moveXBy(float d) override {
+		rect.x += d;
+	}
+
+	void moveYBy(float d) override {
+		rect.y += d;
+	}
+
+	Rect getRect() { return this->rect; }
+};
+
+class Camera {
+private: 
+	Vec2f currentPosition;
+	Vec2f oldPosition;
+
+public: 
+	Camera(const Vec2f position) {
+		this->currentPosition = position;
+		this->oldPosition = position;
+	}
+
+	void apply(CameraControlledEntity *entity) {
+		entity->moveXBy(-currentPosition.x);
+		entity->moveYBy(-currentPosition.y);
+	}
+
+	void update(CameraControlledEntity *entity) {
+		float dx = currentPosition.x - oldPosition.x;
+		float dy = currentPosition.y - oldPosition.y;
+
+		entity->moveXBy(-dx);
+		entity->moveYBy(-dy);
+	}
+
+	void moveXBy(float d) {
+		oldPosition.x = currentPosition.x;
+		currentPosition.x += d;
+	}
+
+	void moveYBy(float d) {
+		oldPosition.y = currentPosition.y;
+		currentPosition.y += d;
+	}
+};
+
 struct LevelData {
-	std::vector<Rect> groundColliders;
+	std::vector<RectangleCollider*> groundColliders;
 	Rect playerColliderRect;
 	bool levelStarted = false;
 };
-
-class MetalSlug;
 }
