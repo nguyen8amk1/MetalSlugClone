@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "MetalSlug.h"
-#include "Animation.cpp"
+#include "Animation.h"
 #include "../Util.cpp"
 #include "CollisionChecker.h"
 

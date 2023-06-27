@@ -102,6 +102,7 @@ public:
 struct LevelData {
 	std::vector<Rect> groundColliders;
 	Rect playerColliderRect;
+	bool levelStarted = false;
 };
 
 class MetalSlug;
