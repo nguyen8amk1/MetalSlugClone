@@ -1,4 +1,10 @@
 TODO: 
+	WORK ON THE CAMERA APPLY CODE (2h) [] @Current 
+		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
+		Another Idea: 
+			have a camera class with an apply method which takes an interface 
+			and apply camera transformation on it @UseThis 
+
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
@@ -17,12 +23,9 @@ TODO:
 				THE OTHER HALF OF THE WATERFALL (1h) [X] 
 					0, 346, 832, 304
 					rect: 3320, 0, 832, 304
-				THE RIVER (1h) [] @Current
-				THE HOUSES (1h) []
+				THE RIVER (1h) [] @Later
+				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
- 
-	WORK ON THE CAMERA APPLY CODE (2h) []
-		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
 
 	Reminder: 
 		i feel like we're having a huge spagetti when using levelData that can be modified in player body   

@@ -5,6 +5,12 @@
 
 namespace MetalSlug {
 
+class Entity {
+public: 
+	virtual void moveXBy(float d) = 0;
+	virtual void moveYBy(float d) = 0;
+};
+
 struct Rect {
 	float x, y, width, height;
 };

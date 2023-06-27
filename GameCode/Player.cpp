@@ -297,10 +297,12 @@ public:
 		currentAnimation->animate(dt);
 	}
 
+	/*
 	void applyCamera(const Vec2f &cameraPos) {
 		colliderRect.x -= cameraPos.x;
 		colliderRect.y -= cameraPos.y;
 	}
+	*/
 
 	void moveXBy(float d) {
 		colliderRect.x += d;

@@ -12,6 +12,41 @@
 
 namespace MetalSlug {
 
+class Camera {
+private: 
+	Vec2f currentPosition;
+	Vec2f oldPosition;
+
+public: 
+	Camera(const Vec2f position) {
+		this->currentPosition = position;
+		this->oldPosition = position;
+	}
+
+	void apply(Entity *entity) {
+		entity->moveXBy(currentPosition.x);
+		entity->moveYBy(currentPosition.y);
+	}
+
+	void update(Entity *entity) {
+		float dx = currentPosition.x - oldPosition.x;
+		float dy = currentPosition.y - oldPosition.y;
+
+		entity->moveXBy(dx);
+		entity->moveYBy(dy);
+	}
+
+	void moveXBy(float d) {
+		oldPosition.x = currentPosition.x;
+		currentPosition.x += d;
+	}
+
+	void moveYBy(float d) {
+		oldPosition.y = currentPosition.y;
+		currentPosition.y += d;
+	}
+};
+
 class MetalSlug {
 private: 
 	PlatformSpecficMethodsCollection *platformMethods; 
@@ -46,7 +81,6 @@ private:
 	float cameraMovePointX = -.42f;
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
 
-	// TODO: place 1 hostage into the scene  
 	Rect hostageColliderRect;
 	std::vector<Hostage*> hostages;
 
@@ -146,7 +180,9 @@ public:
 		backgroundRect = {0, 0, backgroundImg->getGameWidth(), backgroundImg->getGameHeight()};
 
 		// apply the camera 
-		player->applyCamera(cameraPos);
+		player->moveXBy(-cameraPos.x);
+		player->moveYBy(-cameraPos.y);
+
 		waterFallAnimation->moveXBy(-cameraPos.x);
 		waterFallAnimation->moveYBy(-cameraPos.y);
 
