@@ -5,10 +5,9 @@ TODO:
 		have all the colliders in place as well [X] 
 			-> first figure out all the collider rects in PTS first [X]
 			-> then write it out in a datastructure then load into the map  [X]
+		place hostages into RIGHT places, with animation (2h) [X] 
 
-		place hostages into RIGHT places, with animation (2h) [] @Current 
-
-		place the sceneries into RIGHT place as well, with animation (4h) []
+		place the sceneries into RIGHT place as well, with animation (4h) [] @Current 
 
 	PUT THE PLAYER CODE IN OTHER FILE (1h) []
 

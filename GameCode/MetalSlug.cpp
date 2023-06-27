@@ -96,9 +96,13 @@ private:
 
 	// TODO: place 1 hostage into the scene  
 	Rect hostageColliderRect;
+	/*
 	Hostage *hostage;
 	Hostage *hostage1;
 	Hostage *hostage2;
+	*/
+
+	std::vector<Hostage*> hostages;
 
 	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
 		float tx = backgroundPixelWidth/320.0f; 
@@ -112,8 +116,8 @@ private:
 
 		return { x, y, w, h };
 	}
-public:
 
+public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;
 	}
@@ -139,14 +143,20 @@ public:
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight));
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight));
 
-		hostageColliderRect = { .4f, 0, .2f, .4f };
-		hostage = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
+		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		hostageColliderRect.width = .2f;
+		hostageColliderRect.height = .4f;
+		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
-		hostageColliderRect = { 1, 0, .2f, .4f };
-		hostage1 = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
+		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1230, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		hostageColliderRect.width = .2f;
+		hostageColliderRect.height = .4f;
+		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
-		hostageColliderRect = { 2, 0, .2f, .4f };
-		hostage2 = new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods);
+		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1423, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		hostageColliderRect.width = .2f;
+		hostageColliderRect.height = .4f;
+		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
 		playerInit();
 
@@ -179,6 +189,10 @@ public:
 			ground.y -= cameraPos.y;
 		}
 
+		for (Hostage *hostage: hostages) {
+			hostage->moveXBy(-cameraPos.x);
+			hostage->moveYBy(-cameraPos.y);
+		}
 
 		backgroundRect.x -= cameraPos.x;
 		backgroundRect.y -= cameraPos.y;
@@ -259,9 +273,9 @@ public:
 		levelData.groundColliders = groundColliders;
 		levelData.playerColliderRect = playerColliderRect;
 
-		hostage->update(input, levelData, dt);
-		hostage1->update(input, levelData, dt);
-		hostage2->update(input, levelData, dt);
+		for (Hostage *hostage: hostages) {
+			hostage->update(input, levelData, dt);
+		}
 
 		// @StartTest: Level 
 		if (levelStarted) {
@@ -277,9 +291,9 @@ public:
 
 				backgroundRect.x -= d;
 
-				hostage->moveXBy(-d);
-				hostage1->moveXBy(-d);
-				hostage2->moveXBy(-d);
+				for (Hostage *hostage: hostages) {
+					hostage->moveXBy(-d);
+				}
 			}
 
 			CollisionInfo colInfo;

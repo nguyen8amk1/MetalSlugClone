@@ -126,6 +126,10 @@ public:
 	void moveXBy(float d) {
 		hostageColliderRect.x += d;
 	}
+
+	void moveYBy(float d) {
+		hostageColliderRect.y += d;
+	}
 };
 
 }
