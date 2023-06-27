@@ -54,6 +54,9 @@ private:
 	AnimationMetaData waterFallAnimationMetaData;
 	Animation *waterFallAnimation;
 
+	AnimationMetaData waterFall2AnimationMetaData;
+	Animation *waterFall2Animation;
+
 	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
 		float tx = backgroundPixelWidth/320.0f; 
 		float ty = backgroundPixelHeight/224.0f; 
@@ -81,16 +84,25 @@ public:
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
 	void setup() {
+		/*
+		THE OTHER HALF OF THE WATERFALL (1h) [] @Current
+			0, 346, 832, 304
+			rect: 3320, 0, 832, 304
+		*/
+
 		player = new Player(gravity, tempSpeed, platformMethods);
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
 
 		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 1, 8, {0, 0}, {430, 272});
 		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
-
 		Rect waterFallRect = convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
 		waterFallAnimation->setRect(waterFallRect);
 
+		Util::AnimationUtil::initAnimationMetaData(waterFall2AnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 2, 4, {0, 346}, {832, 304});
+		waterFall2Animation = new Animation(waterFall2AnimationMetaData, platformMethods);
+		Rect waterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
+		waterFall2Animation->setRect(waterFall2Rect);
 
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight));
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22}, backgroundPixelWidth, backgroundPixelHeight));
@@ -138,6 +150,9 @@ public:
 		waterFallAnimation->moveXBy(-cameraPos.x);
 		waterFallAnimation->moveYBy(-cameraPos.y);
 
+		waterFall2Animation->moveXBy(-cameraPos.x);
+		waterFall2Animation->moveYBy(-cameraPos.y);
+
 		for (Rect &ground : groundColliders) {
 			ground.x -= cameraPos.x;
 			ground.y -= cameraPos.y;
@@ -167,6 +182,7 @@ public:
 		backgroundImg->setRect(backgroundRect);
 		platformMethods->renderImage(backgroundImg);
 		waterFallAnimation->animate(dt);
+		waterFall2Animation->animate(dt);
 
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
@@ -196,6 +212,7 @@ public:
 
 				backgroundRect.x -= d;
 				waterFallAnimation->moveXBy(-d);
+				waterFall2Animation->moveXBy(-d);
 
 				for (Hostage *hostage: hostages) {
 					hostage->moveXBy(-d);

@@ -9,9 +9,17 @@ TODO:
 
 		place the sceneries into RIGHT place as well, with animation (4h) [] 
 			have the houses explode when it collide with player 
-			let's test with something that is the most visible and the easiest to implemenet 
+			let's test with something that is the most visible and the easiest to implement  
 				-> The waterfall -> test out with PTS first  
 				-> add more collider blocks on the level [X]
+
+			NOW PLACE: 
+				THE OTHER HALF OF THE WATERFALL (1h) [X] 
+					0, 346, 832, 304
+					rect: 3320, 0, 832, 304
+				THE RIVER (1h) [] @Current
+				THE HOUSES (1h) []
+			INTO THE LEVEL 
  
 	WORK ON THE CAMERA APPLY CODE (2h) []
 
@@ -62,6 +70,7 @@ TODO:
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 BUG: 
+	THE WATER FALL ANIMATION KINDA JITTER, 100% because the spritesheet 
 	FIXME: collision on the hortizontal side not working ?? 
 		-> this happens because the game only checking a single collision at a time  
 
