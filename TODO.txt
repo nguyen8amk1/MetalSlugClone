@@ -8,7 +8,11 @@ TODO:
 		place hostages into RIGHT places, with animation (2h) [X] 
 
 		place the sceneries into RIGHT place as well, with animation (4h) [] 
-
+			have the houses explode when it collide with player 
+			let's test with something that is the most visible and the easiest to implemenet 
+				-> The waterfall -> test out with PTS first  
+				-> add more collider blocks on the level [X]
+ 
 	WORK ON THE CAMERA APPLY CODE (2h) []
 
 	Reminder: 

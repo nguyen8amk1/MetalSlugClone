@@ -48,14 +48,11 @@ private:
 
 	// TODO: place 1 hostage into the scene  
 	Rect hostageColliderRect;
-	
-	/*
-	Hostage *hostage;
-	Hostage *hostage1;
-	Hostage *hostage2;
-	*/
-
 	std::vector<Hostage*> hostages;
+
+	// level1 
+	AnimationMetaData waterFallAnimationMetaData;
+	Animation *waterFallAnimation;
 
 	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
 		float tx = backgroundPixelWidth/320.0f; 
@@ -85,9 +82,16 @@ public:
 	// The animation state machine will sometimes based on the state of the physics state machine 
 	void setup() {
 		player = new Player(gravity, tempSpeed, platformMethods);
-
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
+
+		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 1, 8, {0, 0}, {430, 272});
+		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
+
+		Rect waterFallRect = convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
+		waterFallAnimation->setRect(waterFallRect);
+
+
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight));
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22}, backgroundPixelWidth, backgroundPixelHeight));
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight));
@@ -97,6 +101,7 @@ public:
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight));
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight));
 		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight));
+		groundColliders.push_back(convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight));
 
 		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
@@ -130,6 +135,8 @@ public:
 
 		// apply the camera 
 		player->applyCamera(cameraPos);
+		waterFallAnimation->moveXBy(-cameraPos.x);
+		waterFallAnimation->moveYBy(-cameraPos.y);
 
 		for (Rect &ground : groundColliders) {
 			ground.x -= cameraPos.x;
@@ -159,6 +166,8 @@ public:
 	void updateAndRender(GameInputContext &input, double dt) {
 		backgroundImg->setRect(backgroundRect);
 		platformMethods->renderImage(backgroundImg);
+		waterFallAnimation->animate(dt);
+
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
 
@@ -186,6 +195,7 @@ public:
 				}
 
 				backgroundRect.x -= d;
+				waterFallAnimation->moveXBy(-d);
 
 				for (Hostage *hostage: hostages) {
 					hostage->moveXBy(-d);

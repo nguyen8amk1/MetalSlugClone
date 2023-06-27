@@ -31,6 +31,10 @@ public:
     void changePos(float x, float y);
     void changeSize(float width, float height);
     void flip(int hDir, int vDir);
+    void moveXBy(float d);
+    void moveYBy(float d);
+    void setRect(const Rect& r);
+
     ~Animation();
 };
 

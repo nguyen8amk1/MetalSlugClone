@@ -72,6 +72,19 @@ void Animation::flip(int hDir, int vDir) {
 		flipY = false;
 	}
 }
+
+void Animation::moveXBy(float d) {
+	rect.x += d;
+}
+
+void Animation::moveYBy(float d) {
+	rect.y += d;
+}
+
+void Animation::setRect(const Rect &r) {
+	changeSize(r.width, r.height);
+	changePos(r.x, r.y);
+}
 /*
 Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {
 	this->platformMethods = platformMethods;
