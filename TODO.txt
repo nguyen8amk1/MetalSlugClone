@@ -1,5 +1,22 @@
-TODO: 
-	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [] @Current 
+TODO:  
+	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [] 
+		-> Have the opening scene for level 1 
+			-> parachute slowly comes down @Current 
+
+			x axis is based on the player 
+			-> camera state is based on the player's x axis -> and control the y axis 
+			-> if go too soon the white part will be shown
+
+			// Camera state 
+				opening position: 0, 64, 320, 224
+				after landing position: 0, 80, 320, 224
+				waterfall step 1: 3235, 67, 320, 224
+				waterfall step 2: 3339, 41, 320, 224
+				waterfall step 3: 3441, 14, 320, 224
+				waterfall step 4: 3501, 0, 320, 224
+				waterfall step 5: 3501, 0, 320, 224
+			Idea: interplolate the position between the states @Later  
+
 		-> where should we up the camera (.5h) [] 
 		-> what the behaviour should be (1h) []
 
@@ -39,15 +56,13 @@ TODO:
 					 and the that collider rect we track it outside of the player body 
 					 Idea: may be we should have a get collider method on the player 
 	
-	
 	ENEMY (2h) []
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
 
 	ENEMY INTERACTION WITH PLAYER (2h) []
 
-	REFACTOR THE PLAYER RELATED CODE INTO PLAYER CLASS (2h) []
-
+	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) []
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -65,6 +80,9 @@ TODO:
 
 	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
 		-> when level1 done, have proper structure for a level, a separate file for level 
+
+		@Idea: Could we use Figma as a level editor ??  
+			-> export the json file then parse it and generate all the level data 
 
 	PARALAX BACKGROUND (2h) []
 

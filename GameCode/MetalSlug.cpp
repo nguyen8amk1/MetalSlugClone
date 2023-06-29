@@ -16,7 +16,6 @@ class MetalSlug {
 private: 
 	PlatformSpecficMethodsCollection *platformMethods; 
 
-	// TODO: instead of background rect use Animation for background rect  
 	AnimationMetaData backgroundMetaData;
 	Animation *background;
 
@@ -44,7 +43,6 @@ private:
 	// Level code
 	float cameraMovePointX = -.42f;
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
-
 	std::vector<Hostage*> hostages;
 
 	// level1 
@@ -52,19 +50,38 @@ private:
 	Animation *waterFallAnimation;
 	AnimationMetaData waterFall2AnimationMetaData;
 	Animation *waterFall2Animation;
+	
+	/*
+		opening position: 0, 64, 320, 224
+		after landing position: 0, 80, 320, 224
+		waterfall step 1: 3235, 67, 320, 224
+		waterfall step 2: 3339, 41, 320, 224
+		waterfall step 3: 3441, 14, 320, 224
+		waterfall step 4: 3501, 0, 320, 224
+		waterfall step 5: 3501, 0, 320, 224
+	*/
 
-	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
-		float tx = backgroundPixelWidth/320.0f; 
-		float ty = backgroundPixelHeight/224.0f; 
+	enum class Level1CameraState {
+		OPENING, 
+		AFTER_LANDING, 
+		WATERFALL_STEP1, 
+		WATERFALL_STEP2, 
+		WATERFALL_STEP3, 
+		WATERFALL_STEP4, 
+		WATERFALL_STEP5
+	};
 
-		float w = pixelRect.width/111.888f;
-		float h = pixelRect.height/112.0f;
+	// What will the level state use to control  
+	// -> THE PLAYER PHYSIC, ANIMATION STATE MACHINE ONLY STARTED WHEN IN THE RUNNING LEVEL STATE 
+	// NOTE: THE LEVEL STATE MACHINE ONLY CONTROL PLAYER, CAMERA BEHAVIOR THE OTHER (BACKGROUND, COLLIDER, ...) NOT INVOLVE
+	enum class Level1State {
+		OPENING, 
+		PLAYING, 
+		END
+	};
 
-		float x = (pixelRect.x/111.888f) - 1.43*tx + w/2.0f;
-		float y = ty - (2*ty*pixelRect.y/304.0f) - h/2.0f;
-
-		return { x, y, w, h };
-	}
+	Level1CameraState currentCameraState = Level1CameraState::OPENING;
+	Level1State currentLevel1State = Level1State::OPENING;
 
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
@@ -79,9 +96,168 @@ public:
 	// Physic state machine
 	// Animation state machine 
 	// The animation state machine will sometimes based on the state of the physics state machine 
+
+	void setup() {
+		initLevel1();
+
+		frameMillis = platformMethods->createText(0, 0, 10);
+		fps  = platformMethods->createText(0, 15, 10);
+		playerXY  = platformMethods->createText(0, 30, 10);
+
+		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
+		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
+
+	}
+
+	float tempSpeed = 1;
+	float gravity = 2.2f;
+
+	// Camera 
+	// NOTE: All the pos of entity in the game is in world space not camera space, 
+	// the camera calculation is just for rendering   
+	// NOTE: text not involve with the camera 
+
+	// Everything right here is in Level running state:  
+	LevelData levelData;
+	void updateAndRender(GameInputContext &input, double dt) {
+		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
+		//platformMethods->drawText(backgroundRectText);
+
+		background->animate(dt);
+		waterFallAnimation->animate(dt);
+		waterFall2Animation->animate(dt);
+
+		// TODO: LEVEL STATE MACHINE
+		switch (currentLevel1State) {
+		case Level1State::OPENING: {
+			// action: the player will move slowly down, 
+				// -> Problems: 
+				// the player control is in the player update function, we can't control in here 
+				// -> 2 solutions:  
+					// -> bring player control code to here 
+					// -> add another state to player and set it right here ?? @Current
+						//+ make a new state machine (Player's level state machine) system for player ?? 
+						//+ this new state machine will control the other 2 state machine and can be set from outside ??
+
+			// event: once touch the ground will: 
+				// switch the level state to playing mode 
+			break;
+		}
+		case Level1State::PLAYING: {
+			if (levelData.playerColliderRect.x >= cameraMovePointX) {
+				float d = tempSpeed * dt;
+				//cameraPos.x += d;
+				camera->moveXBy(d);
+
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+			}
+
+			CollisionInfo colInfo;
+			CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, preventGoingBackBlock, colInfo);
+			if (colInfo.count > 0) {
+				player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
+				player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
+			}
+
+			levelData.groundColliders = groundColliders;
+
+			player->update(input, levelData, dt);
+
+			for (Hostage *hostage: hostages) {
+				hostage->update(input, levelData, dt);
+			}
+
+			break;
+		}
+		case Level1State::END: {
+
+			break;
+		}
+		}
+
+		// TODO: CAMERA STATE MACHINE 
+		switch (currentCameraState) {
+		case Level1CameraState::OPENING:{
+			// action: maybe the camera moving should be here  
+			// event: player touch the ground -> camera y position = ... , transition to after landing
+			break;
+		}
+		case Level1CameraState::AFTER_LANDING:{
+			// action: 
+			// event: 
+				// player.x hit waterfall_transition_1_x -> 
+				// camera y position = ..., transition to water fall step 1 
+			break;
+		}
+		case Level1CameraState::WATERFALL_STEP1: {
+			// action
+			// event 
+			break;
+		}
+		case Level1CameraState::WATERFALL_STEP2: {
+			// action
+			// event 
+			break;
+		}
+		case Level1CameraState::WATERFALL_STEP3: {
+			// action
+			// event 
+			break;
+		}
+		case Level1CameraState::WATERFALL_STEP4: {
+			// action
+			// event 
+			break;
+		}
+		case Level1CameraState::WATERFALL_STEP5: {
+			// action
+			// event 
+			break;
+		}
+			
+		}
+
+		displayDebug();
+	}
+	
+	~MetalSlug() {
+		//delete playerHalfAnim;
+
+		/*
+		frameMillis->clean();
+		fps->clean();
+		*/
+
+		delete frameMillis;
+		delete fps;
+	}
+
+private: 
+	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
+		float tx = backgroundPixelWidth/320.0f; 
+		float ty = backgroundPixelHeight/224.0f; 
+
+		float w = pixelRect.width/111.888f;
+		float h = pixelRect.height/112.0f;
+
+		float x = (pixelRect.x/111.888f) - 1.43*tx + w/2.0f;
+		float y = ty - (2*ty*pixelRect.y/304.0f) - h/2.0f;
+
+		return { x, y, w, h };
+	}
+
 	void initLevel1() {
+
+		//opening position: 0, 64, 320, 224
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
+		float openingYPos = convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight).y;
+		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
+		Vec2f cameraPosition = {-17.12425f, openingYPos}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
+		camera = new Camera(cameraPosition);
+
 		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
 		background = new Animation(backgroundMetaData, platformMethods);
 		background->changeSize(37.108f, 1.357f*2.0f);
@@ -169,17 +345,6 @@ public:
 		entities.push_back(waterFallAnimation);
 		entities.push_back(waterFall2Animation);
 
-
-
-
-
-		frameMillis = platformMethods->createText(0, 0, 10);
-		fps  = platformMethods->createText(0, 15, 10);
-		playerXY  = platformMethods->createText(0, 30, 10);
-
-		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
-		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
-
 		/*
 		backgroundRectText  = platformMethods->createText(0, 60, 10);
 		groundPos  = platformMethods->createText(0, 75, 10);
@@ -191,56 +356,7 @@ public:
 		}
 	}
 
-	void setup() {
-		Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
-		camera = new Camera(cameraPosition);
-		initLevel1();
-	}
-
-	float tempSpeed = 1;
-	float gravity = 2.2f;
-
-	// Camera 
-	// NOTE: All the pos of entity in the game is in world space not camera space, 
-	// the camera calculation is just for rendering   
-	// NOTE: text not involve with the camera 
-
-	LevelData levelData;
-	void updateAndRender(GameInputContext &input, double dt) {
-
-		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
-		//platformMethods->drawText(backgroundRectText);
-
-		if (levelData.levelStarted) {
-			if (levelData.playerColliderRect.x >= cameraMovePointX) {
-				float d = tempSpeed * dt;
-				//cameraPos.x += d;
-				camera->moveXBy(d);
-
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
-			}
-
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, preventGoingBackBlock, colInfo);
-			if (colInfo.count > 0) {
-				player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
-				player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
-			}
-		}
-
-		background->animate(dt);
-		waterFallAnimation->animate(dt);
-		waterFall2Animation->animate(dt);
-
-		levelData.groundColliders = groundColliders;
-		player->update(input, levelData, dt);
-
-		for (Hostage *hostage: hostages) {
-			hostage->update(input, levelData, dt);
-		}
-
+	void displayDebug() {
 		// Debug info
 		if (platformDebugInfo) {
 			frameMillis->setText(Util::MessageFormater::print("Frametime Millis: ", platformDebugInfo->frameTimeMillis));
@@ -262,6 +378,7 @@ public:
 		Point cameraMoveLineEnd = {cameraMovePointX, 1};
 		platformMethods->drawLine(cameraMoveLineStart, cameraMoveLineEnd, groundColor);
 		*/
+
 
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", levelData.playerColliderRect.x, ", ", levelData.playerColliderRect.y));
 		platformMethods->drawText(playerXY);
@@ -304,18 +421,7 @@ public:
 		playerAnimationStateText->setText(Util::MessageFormater::print("Animation state: ", animationStateStr));
 		platformMethods->drawText(playerAnimationStateText);
 		*/
-	}
-	
-	~MetalSlug() {
-		//delete playerHalfAnim;
 
-		/*
-		frameMillis->clean();
-		fps->clean();
-		*/
-
-		delete frameMillis;
-		delete fps;
 	}
 };
 
