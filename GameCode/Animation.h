@@ -27,14 +27,14 @@ private:
 
 public:
     Animation(AnimationMetaData& metaData, PlatformSpecficMethodsCollection* platformMethods);
-    void animate(double dt);
+    void animate(Camera *camera, double dt);
     void changePos(float x, float y);
     void changeSize(float width, float height);
     void flip(int hDir, int vDir);
     void moveXBy(float d) override;
     void moveYBy(float d) override;
     void setRect(const Rect& r);
-
+    Rect getRect();
     ~Animation();
 };
 

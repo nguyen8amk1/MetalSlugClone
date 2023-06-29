@@ -1,8 +1,4 @@
 TODO:  
-	// FIXME: @Current 
-	// the player position or anything that's displayed on the screen is only screen coord, not world coord
-	// -> only transform the position when rendering, the processing information should be world space 
-
 	// Camera state -> @Revisit: Check the coordinate of these again 
 		opening position: 0, 64, 320, 224
 		after landing position: 0, 80, 320, 224
@@ -97,6 +93,10 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	// FIXME: [X]
+	// the player position or anything that's displayed on the screen is only screen coord, not world coord
+	// -> only transform the position when rendering, the processing information should be world space 
+
 	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [X] -> basically working
 		-> Have the opening scene for level 1 
 			-> parachute slowly comes down 

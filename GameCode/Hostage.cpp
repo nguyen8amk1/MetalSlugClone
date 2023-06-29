@@ -54,7 +54,7 @@ public:
 		hostageCurrentAnimation = hostageTiedAnimation;
 	}
 
-	void update(const GameInputContext& input, LevelData &levelData, double dt) {
+	void update(const GameInputContext& input, LevelData &levelData, Camera *camera, double dt) {
 		// Physic state machine 
 		switch (hostageCurrentPhysicState) {
 		case HostagePhysicState::ONGROUND: {
@@ -108,21 +108,15 @@ public:
 
 		// Rendering 
 		hostageCurrentAnimation->changePos(hostageColliderRect.x, hostageColliderRect.y);
-		hostageCurrentAnimation->animate(dt);
+		hostageCurrentAnimation->animate(camera, dt);
 		Color testCol = {255, 255, 0};
-		platformMethods->drawRectangle(hostageColliderRect, testCol);
+		
+		Rect r = hostageColliderRect;
+		Vec2f t = camera->convertWorldPosToScreenPos({r.x, r.y});
+		r.x = t.x;
+		r.y = t.y;
+		platformMethods->drawRectangle(r, testCol);
 	}
-
-	/*
-	void changePos(float x, float y) {
-		hostageColliderRect.x = x;
-		hostageColliderRect.y = y;
-	}
-
-	Vec2f getCurrentPos() {
-		return { hostageColliderRect.x, hostageColliderRect.y };
-	}
-	*/
 
 	void moveXBy(float d) override {
 		hostageColliderRect.x += d;

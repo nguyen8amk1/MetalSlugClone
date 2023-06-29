@@ -107,6 +107,42 @@ public:
 	virtual void moveYBy(float d) = 0;
 };
 
+
+class Camera {
+private: 
+	Vec2f currentPosition;
+	Vec2f oldPosition;
+
+public: 
+	Camera(const Vec2f position) {
+		this->currentPosition = position;
+		this->oldPosition = position;
+	}
+
+	Vec2f convertWorldPosToScreenPos(const Vec2f &pos) {
+		float x = pos.x - currentPosition.x;
+		float y = pos.y - currentPosition.y;
+		float dx = currentPosition.x - oldPosition.x;
+		float dy = currentPosition.y - oldPosition.y;
+
+		return {x - dx, y - dy};
+	}
+
+	void moveXBy(float d) {
+		oldPosition.x = currentPosition.x;
+		currentPosition.x += d;
+	}
+
+	void moveYBy(float d) {
+		oldPosition.y = currentPosition.y;
+		currentPosition.y += d;
+	}
+
+	Vec2f getPos() {
+		return currentPosition;
+	}
+};
+
 class RectangleCollider : public CameraControlledEntity {
 private: 
 	Rect rect;
@@ -123,46 +159,11 @@ public:
 		rect.y += d;
 	}
 
+	void update(Camera &camera) {
+		camera.convertWorldPosToScreenPos({rect.x, rect.y});
+	}
+
 	Rect getRect() { return this->rect; }
-};
-
-class Camera {
-private: 
-	Vec2f currentPosition;
-	Vec2f oldPosition;
-
-public: 
-	Camera(const Vec2f position) {
-		this->currentPosition = position;
-		this->oldPosition = position;
-	}
-
-	void apply(CameraControlledEntity *entity) {
-		entity->moveXBy(-currentPosition.x);
-		entity->moveYBy(-currentPosition.y);
-	}
-
-	void update(CameraControlledEntity *entity) {
-		float dx = currentPosition.x - oldPosition.x;
-		float dy = currentPosition.y - oldPosition.y;
-
-		entity->moveXBy(-dx);
-		entity->moveYBy(-dy);
-	}
-
-	void moveXBy(float d) {
-		oldPosition.x = currentPosition.x;
-		currentPosition.x += d;
-	}
-
-	void moveYBy(float d) {
-		oldPosition.y = currentPosition.y;
-		currentPosition.y += d;
-	}
-
-	Vec2f getPos() {
-		return currentPosition;
-	}
 };
 
 struct LevelData {

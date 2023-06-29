@@ -35,7 +35,7 @@ Animation::Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollecti
 	}
 }
 
-void Animation::animate(double dt) {
+void Animation::animate(Camera *camera, double dt) {
 
 	timeAccumulator += dt;
 	if (timeAccumulator >= animDelay) {
@@ -44,7 +44,13 @@ void Animation::animate(double dt) {
 
 		timeAccumulator -= animDelay;
 	}
-	platformMethods->renderImagePortionAt(spriteSheet, pixelRects[currentFrameIndex], rect, flipX, flipY);
+
+	Rect r = rect;
+	Vec2f t = camera->convertWorldPosToScreenPos({ r.x, r.y });
+	r.x = t.x;
+	r.y = t.y;
+
+	platformMethods->renderImagePortionAt(spriteSheet, pixelRects[currentFrameIndex], r, flipX, flipY);
 }
 
 void Animation::changePos(float x, float y) {
@@ -84,6 +90,10 @@ void Animation::moveYBy(float d) {
 void Animation::setRect(const Rect &r) {
 	changeSize(r.width, r.height);
 	changePos(r.x, r.y);
+}
+
+Rect Animation::getRect() {
+	return rect; 
 }
 /*
 Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {

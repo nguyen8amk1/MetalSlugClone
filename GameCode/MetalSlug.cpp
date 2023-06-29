@@ -108,8 +108,6 @@ public:
 	float gravity = 2.2f;
 
 	// Camera 
-	// NOTE: All the pos of entity in the game is in world space not camera space, 
-	// the camera calculation is just for rendering   
 	// NOTE: text not involve with the camera 
 
 	// Everything right here is in Level running state:  
@@ -118,9 +116,10 @@ public:
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
 
-		background->animate(dt);
-		waterFallAnimation->animate(dt);
-		waterFall2Animation->animate(dt);
+		// FIXME: need to rethink this part, but the player is working
+		background->animate(camera, dt);
+		waterFallAnimation->animate(camera, dt);
+		waterFall2Animation->animate(camera, dt);
 
 		// LEVEL STATE MACHINE
 		switch (currentLevel1State) {
@@ -130,7 +129,7 @@ public:
 			levelData.groundColliders = groundColliders;
 
 			player->moveYBy(-gravity*.2f*dt);
-			player->update(i, levelData, dt);
+			player->update(i, levelData, camera, dt);
 
 			levelData.playerColliderRect = player->getRect();
 
@@ -148,19 +147,18 @@ public:
 			break;
 		}
 		case Level1State::PLAYING: {
-			if (levelData.playerColliderRect.x >= cameraMovePointX) {
+			Vec2f t = camera->convertWorldPosToScreenPos({ levelData.playerColliderRect.x, levelData.playerColliderRect.y });
+			Rect r = levelData.playerColliderRect;
+			r.x = t.x;
+			r.y = t.y;
+
+			if (r.x >= cameraMovePointX) {
 				float d = tempSpeed * dt;
-				//cameraPos.x += d;
-
 				camera->moveXBy(d);
-
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
 			}
 
 			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, preventGoingBackBlock, colInfo);
+			CollisionChecker::doesRectangleVsRectangleCollide(r, preventGoingBackBlock, colInfo);
 			if (colInfo.count > 0) {
 				player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
 				player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
@@ -168,13 +166,13 @@ public:
 
 			levelData.groundColliders = groundColliders;
 
-			player->update(input, levelData, dt);
+			player->update(input, levelData, camera, dt);
 
 			levelData.playerColliderRect = player->getRect();
 
 
 			for (Hostage *hostage: hostages) {
-				hostage->update(input, levelData, dt);
+				hostage->update(input, levelData, camera, dt);
 			}
 
 			break;
@@ -196,11 +194,6 @@ public:
 				currentCameraState = Level1CameraState::AFTER_LANDING;
 				float d = cameraAfterLandingRect.y - cameraOpeningRect.y;
 				camera->moveYBy(d);
-
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
-
 				camera->moveYBy(0);
 			}
 			break;
@@ -214,9 +207,6 @@ public:
 
 				float d = cameraWaterFall1Rect.y - cameraAfterLandingRect.y;
 				camera->moveYBy(d);
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
 				camera->moveYBy(0);
 			}
 
@@ -232,9 +222,6 @@ public:
 
 				float d = cameraWaterFall2Rect.y - cameraWaterFall1Rect.y;
 				camera->moveYBy(d);
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
 				camera->moveYBy(0);
 			}
 			break;
@@ -247,9 +234,6 @@ public:
 
 				float d = cameraWaterFall3Rect.y - cameraWaterFall2Rect.y;
 				camera->moveYBy(d);
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
 				camera->moveYBy(0);
 			}
 			break;
@@ -262,9 +246,6 @@ public:
 
 				float d = cameraWaterFall4Rect.y - cameraWaterFall3Rect.y;
 				camera->moveYBy(d);
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
 				camera->moveYBy(0);
 			}
 			break;
@@ -278,9 +259,6 @@ public:
 
 				float d = cameraWaterFall5Rect.y - cameraWaterFall4Rect.y;
 				camera->moveYBy(d);
-				for (CameraControlledEntity *entity: entities) {
-					camera->update(entity);
-				}
 				camera->moveYBy(0);
 			}
 			break;
@@ -337,6 +315,7 @@ private:
 			waterfall step 4: 3501, 0, 320, 224
 			waterfall step 5: 3501, 0, 320, 224
 		*/
+
 		cameraOpeningRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraAfterLandingRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraWaterFall1Rect = convertLevelColliderBlockPixelRectToGameRect({ 3235, 67, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
@@ -423,6 +402,7 @@ private:
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
+		/*
 		for (RectangleCollider *collider: groundColliders) {
 			entities.push_back(collider);
 		}
@@ -435,6 +415,7 @@ private:
 		entities.push_back(player);
 		entities.push_back(waterFallAnimation);
 		entities.push_back(waterFall2Animation);
+		*/
 
 		/*
 		backgroundRectText  = platformMethods->createText(0, 60, 10);
@@ -442,9 +423,11 @@ private:
 		*/
 
 		// apply the camera 
+		/*
 		for (CameraControlledEntity *entity: entities) {
 			camera->apply(entity);
 		}
+		*/
 	}
 
 	void displayDebug() {
@@ -456,10 +439,18 @@ private:
 			platformMethods->drawText(frameMillis);
 			platformMethods->drawText(fps);
 		}
-		platformMethods->drawRectangle(levelData.playerColliderRect, playerColor);
+
+		Rect r = levelData.playerColliderRect;
+		Vec2f t = camera->convertWorldPosToScreenPos({r.x, r.y});
+		r.x = t.x;
+		r.y = t.y;
+		platformMethods->drawRectangle(r, playerColor);
 
 		for (RectangleCollider *ground : groundColliders) {
-			Rect r = ground->getRect();
+			r = ground->getRect();
+			Vec2f t = camera->convertWorldPosToScreenPos({r.x, r.y});
+			r.x = t.x;
+			r.y = t.y;
 			platformMethods->drawRectangle(r, groundColor);
 		}
 

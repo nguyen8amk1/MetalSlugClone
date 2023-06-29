@@ -111,7 +111,7 @@ public:
 		delete fallingLegAnimation;
 	}
 
-	void update(const GameInputContext &input, LevelData &levelData, double dt) {
+	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
 		if (input.pressLeft) {
 			colliderRect.x -= (float)(moveSpeed*dt); 
@@ -293,19 +293,12 @@ public:
 		float legY = colliderRect.y - .15f;
 		currentLegAnimation->changePos(legX, legY);
 		currentLegAnimation->flip(horizontalFacingDirection, 1);
-		currentLegAnimation->animate(dt);
+		currentLegAnimation->animate(camera, dt);
 
 		currentAnimation->changePos(colliderRect.x, colliderRect.y);
 		currentAnimation->flip(horizontalFacingDirection, 1);
-		currentAnimation->animate(dt);
+		currentAnimation->animate(camera, dt);
 	}
-
-	/*
-	void applyCamera(const Vec2f &cameraPos) {
-		colliderRect.x -= cameraPos.x;
-		colliderRect.y -= cameraPos.y;
-	}
-	*/
 
 	void moveXBy(float d) override {
 		colliderRect.x += d;
