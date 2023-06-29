@@ -53,8 +53,8 @@ private:
 	
 
 	Rect cameraOpeningRect, cameraAfterLandingRect,
-		cameraWaterFall1, cameraWaterFall2, cameraWaterFall3,
-		cameraWaterFall4, cameraWaterFall5;
+		cameraWaterFall1Rect, cameraWaterFall2Rect, cameraWaterFall3Rect,
+		cameraWaterFall4Rect, cameraWaterFall5Rect;
 
 	enum class Level1CameraState {
 		OPENING, 
@@ -122,25 +122,14 @@ public:
 		waterFallAnimation->animate(dt);
 		waterFall2Animation->animate(dt);
 
-		// TODO: LEVEL STATE MACHINE
+		// LEVEL STATE MACHINE
 		switch (currentLevel1State) {
 		case Level1State::OPENING: {
 			// action: the player will move slowly down, 
-				// -> Problems: 
-				// the player control is in the player update function, we can't control in here 
-				// -> 2 solutions:  
-					// -> THE PLAYER CONTROL STUFF IS ONLY IN THE LEVEL PLAYING STATE @Current  
-					// -> in the opening and the end disable the input, let's the level control 
-					// -> Idea: could attach some animation data in the leveldata in order to have different opening and ending animation for each level 
-					// Player's state machin will be done outside ?? 
-					// -> add another state to player and set it right here ?? 
-						//+ make a new state machine (Player's level state machine) system for player ?? 
-						//+ this new state machine will control the other 2 state machine and can be set from outside ??
 			GameInputContext i;
 			levelData.groundColliders = groundColliders;
 
 			player->moveYBy(-gravity*.2f*dt);
-
 			player->update(i, levelData, dt);
 
 			levelData.playerColliderRect = player->getRect();
@@ -180,7 +169,9 @@ public:
 			levelData.groundColliders = groundColliders;
 
 			player->update(input, levelData, dt);
+
 			levelData.playerColliderRect = player->getRect();
+
 
 			for (Hostage *hostage: hostages) {
 				hostage->update(input, levelData, dt);
@@ -216,29 +207,82 @@ public:
 		}
 		case Level1CameraState::AFTER_LANDING:{
 			// action: 
+			// ... 
 			// event: 
-				// player.x hit waterfall_transition_1_x -> 
-				// camera y position = ..., transition to water fall step 1 
+			if (camera->getPos().x >= cameraWaterFall1Rect.x) {
+				currentCameraState = Level1CameraState::WATERFALL_STEP1;
+
+				float d = cameraWaterFall1Rect.y - cameraAfterLandingRect.y;
+				camera->moveYBy(d);
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+				camera->moveYBy(0);
+			}
+
+			// player.x hit waterfall_transition_1_x -> 
+			// camera y position = ..., transition to water fall step 1 
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP1: {
 			// action
 			// event 
+			if (camera->getPos().x >= cameraWaterFall2Rect.x) {
+				currentCameraState = Level1CameraState::WATERFALL_STEP2;
+
+				float d = cameraWaterFall2Rect.y - cameraWaterFall1Rect.y;
+				camera->moveYBy(d);
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+				camera->moveYBy(0);
+			}
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP2: {
 			// action
 			// event 
+			if (camera->getPos().x >= cameraWaterFall3Rect.x) {
+				currentCameraState = Level1CameraState::WATERFALL_STEP3;
+
+				float d = cameraWaterFall3Rect.y - cameraWaterFall2Rect.y;
+				camera->moveYBy(d);
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+				camera->moveYBy(0);
+			}
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP3: {
 			// action
 			// event 
+			if (camera->getPos().x >= cameraWaterFall4Rect.x) {
+				currentCameraState = Level1CameraState::WATERFALL_STEP4;
+
+				float d = cameraWaterFall4Rect.y - cameraWaterFall3Rect.y;
+				camera->moveYBy(d);
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+				camera->moveYBy(0);
+			}
+			break;
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP4: {
 			// action
 			// event 
+			if (camera->getPos().x >= cameraWaterFall5Rect.x) {
+				currentCameraState = Level1CameraState::WATERFALL_STEP5;
+
+				float d = cameraWaterFall5Rect.y - cameraWaterFall4Rect.y;
+				camera->moveYBy(d);
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+				camera->moveYBy(0);
+			}
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP5: {
@@ -295,10 +339,10 @@ private:
 		*/
 		cameraOpeningRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraAfterLandingRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall1 = convertLevelColliderBlockPixelRectToGameRect({ 3235, 67, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall2 = convertLevelColliderBlockPixelRectToGameRect({ 3339, 41, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall3 = convertLevelColliderBlockPixelRectToGameRect({ 3441, 14, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall4 = convertLevelColliderBlockPixelRectToGameRect({ 3051, 0, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall1Rect = convertLevelColliderBlockPixelRectToGameRect({ 3235, 67, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({ 3339, 41, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall3Rect = convertLevelColliderBlockPixelRectToGameRect({ 3441, 14, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall4Rect = convertLevelColliderBlockPixelRectToGameRect({ 3051, 0, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		//cameraWaterFall5 = convertLevelColliderBlockPixelRectToGameRect({ }, backgroundPixelWidth, backgroundPixelHeight);
 
 		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 

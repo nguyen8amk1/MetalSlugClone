@@ -159,6 +159,10 @@ public:
 		oldPosition.y = currentPosition.y;
 		currentPosition.y += d;
 	}
+
+	Vec2f getPos() {
+		return currentPosition;
+	}
 };
 
 struct LevelData {

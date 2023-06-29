@@ -1,4 +1,8 @@
 TODO:  
+	// FIXME: 
+	// the player position or anything that's displayed on the screen is only screen coord, not world coord
+	// -> only transform the position when rendering, the processing information should be world space 
+
 	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [] 
 		-> Have the opening scene for level 1 
 			-> parachute slowly comes down @Current 
