@@ -26,22 +26,22 @@ struct PlatformDebugInfo {
 };
 
 struct GameInputContext {
-	bool pressLeft,
-		pressRight,
-		pressUp,
-		pressDown,
-		pressJump,
-		pressShoot,
-		pressUpArrow,
-		pressDownArrow,
-		pressLeftArrow,
-		pressRightArrow,
-		pressDebugZoomInBackground,
-		pressDebugZoomOutBackground,
-		pressEnter;
+	bool pressLeft = false,
+		pressRight = false,
+		pressUp = false,
+		pressDown = false,
+		pressJump = false,
+		pressShoot = false,
+		pressUpArrow = false,
+		pressDownArrow = false,
+		pressLeftArrow = false,
+		pressRightArrow = false,
+		pressDebugZoomInBackground = false,
+		pressDebugZoomOutBackground = false,
+		pressEnter = false;
 
-	bool mouseRightClick, 
-		mouseLeftClick;
+	bool mouseRightClick = false, 
+		mouseLeftClick = false;
 };
 
 struct GameText {

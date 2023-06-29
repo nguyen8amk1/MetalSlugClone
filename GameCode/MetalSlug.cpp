@@ -51,15 +51,10 @@ private:
 	AnimationMetaData waterFall2AnimationMetaData;
 	Animation *waterFall2Animation;
 	
-	/*
-		opening position: 0, 64, 320, 224
-		after landing position: 0, 80, 320, 224
-		waterfall step 1: 3235, 67, 320, 224
-		waterfall step 2: 3339, 41, 320, 224
-		waterfall step 3: 3441, 14, 320, 224
-		waterfall step 4: 3501, 0, 320, 224
-		waterfall step 5: 3501, 0, 320, 224
-	*/
+
+	Rect cameraOpeningRect, cameraAfterLandingRect,
+		cameraWaterFall1, cameraWaterFall2, cameraWaterFall3,
+		cameraWaterFall4, cameraWaterFall5;
 
 	enum class Level1CameraState {
 		OPENING, 
@@ -134,19 +129,40 @@ public:
 				// -> Problems: 
 				// the player control is in the player update function, we can't control in here 
 				// -> 2 solutions:  
-					// -> bring player control code to here 
-					// -> add another state to player and set it right here ?? @Current
+					// -> THE PLAYER CONTROL STUFF IS ONLY IN THE LEVEL PLAYING STATE @Current  
+					// -> in the opening and the end disable the input, let's the level control 
+					// -> Idea: could attach some animation data in the leveldata in order to have different opening and ending animation for each level 
+					// Player's state machin will be done outside ?? 
+					// -> add another state to player and set it right here ?? 
 						//+ make a new state machine (Player's level state machine) system for player ?? 
 						//+ this new state machine will control the other 2 state machine and can be set from outside ??
+			GameInputContext i;
+			levelData.groundColliders = groundColliders;
+
+			player->moveYBy(-gravity*.2f*dt);
+
+			player->update(i, levelData, dt);
+
+			levelData.playerColliderRect = player->getRect();
 
 			// event: once touch the ground will: 
 				// switch the level state to playing mode 
+			CollisionInfo colInfo;
+			CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, groundColliders[0]->getRect(), colInfo);
+			if (colInfo.count > 0) {
+				player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
+				player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
+				currentLevel1State = Level1State::PLAYING;
+				levelData.levelStarted = true;
+			}
+
 			break;
 		}
 		case Level1State::PLAYING: {
 			if (levelData.playerColliderRect.x >= cameraMovePointX) {
 				float d = tempSpeed * dt;
 				//cameraPos.x += d;
+
 				camera->moveXBy(d);
 
 				for (CameraControlledEntity *entity: entities) {
@@ -164,6 +180,7 @@ public:
 			levelData.groundColliders = groundColliders;
 
 			player->update(input, levelData, dt);
+			levelData.playerColliderRect = player->getRect();
 
 			for (Hostage *hostage: hostages) {
 				hostage->update(input, levelData, dt);
@@ -181,7 +198,20 @@ public:
 		switch (currentCameraState) {
 		case Level1CameraState::OPENING:{
 			// action: maybe the camera moving should be here  
+			//...
+
 			// event: player touch the ground -> camera y position = ... , transition to after landing
+			if (levelData.levelStarted) {
+				currentCameraState = Level1CameraState::AFTER_LANDING;
+				float d = cameraAfterLandingRect.y - cameraOpeningRect.y;
+				camera->moveYBy(d);
+
+				for (CameraControlledEntity *entity: entities) {
+					camera->update(entity);
+				}
+
+				camera->moveYBy(0);
+			}
 			break;
 		}
 		case Level1CameraState::AFTER_LANDING:{
@@ -253,9 +283,26 @@ private:
 		//opening position: 0, 64, 320, 224
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
-		float openingYPos = convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight).y;
+
+		/*
+			opening position: 0, 64, 320, 224
+			after landing position: 0, 80, 320, 224
+			waterfall step 1: 3235, 67, 320, 224
+			waterfall step 2: 3339, 41, 320, 224
+			waterfall step 3: 3441, 14, 320, 224
+			waterfall step 4: 3501, 0, 320, 224
+			waterfall step 5: 3501, 0, 320, 224
+		*/
+		cameraOpeningRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraAfterLandingRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall1 = convertLevelColliderBlockPixelRectToGameRect({ 3235, 67, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall2 = convertLevelColliderBlockPixelRectToGameRect({ 3339, 41, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall3 = convertLevelColliderBlockPixelRectToGameRect({ 3441, 14, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall4 = convertLevelColliderBlockPixelRectToGameRect({ 3051, 0, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		//cameraWaterFall5 = convertLevelColliderBlockPixelRectToGameRect({ }, backgroundPixelWidth, backgroundPixelHeight);
+
 		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
-		Vec2f cameraPosition = {-17.12425f, openingYPos}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
+		Vec2f cameraPosition = {cameraOpeningRect.x, cameraOpeningRect.y}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 		camera = new Camera(cameraPosition);
 
 		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});

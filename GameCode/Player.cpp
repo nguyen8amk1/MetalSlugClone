@@ -61,6 +61,10 @@ private:
 
 
 public: 
+	void changeGravity(float gravity) {
+		this->gravity = gravity;
+	}
+
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
 		this->moveSpeed = moveSpeed;
 		this->gravity = gravity;
@@ -116,76 +120,77 @@ public:
 			colliderRect.x += (float)(moveSpeed*dt); 
 		}
 
-		// Physics state machine
-		if (physicState == PhysicState::FALL) {
-			colliderRect.y -= (float)(gravity*dt); 
+		if (levelData.levelStarted) {
+			// Physics state machine
+			if (physicState == PhysicState::FALL) {
+				colliderRect.y -= (float)(gravity*dt); 
 
-			CollisionInfo colInfo;
-			for (RectangleCollider* ground : levelData.groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
+				CollisionInfo colInfo;
+				for (RectangleCollider* ground : levelData.groundColliders) {
+					CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
+					if (colInfo.count > 0) {
+						break;
+					}
+				}
+
 				if (colInfo.count > 0) {
-					break;
+					physicState = PhysicState::ONGROUND;
+					colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+					colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 				}
 			}
+			else if (physicState == PhysicState::ONGROUND) {
+				bool collided = false;
+				for (RectangleCollider* ground : levelData.groundColliders) {
+					collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
+					if (collided) {
+						break;
+					}
+				}
 
-			if (colInfo.count > 0) {
-				physicState = PhysicState::ONGROUND;
-				colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-			}
-		}
-		else if (physicState == PhysicState::ONGROUND) {
-			levelData.levelStarted = true;
-			bool collided = false;
-			for (RectangleCollider* ground : levelData.groundColliders) {
-				collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
-				if (collided) {
-					break;
+				if (!collided) {
+					physicState = PhysicState::FALL;
+				}
+				else if(collided && 
+						input.pressJump) {
+					physicState = PhysicState::JUMPUP;
+					jumpT = 0;
+					originalGroundY = colliderRect.y; 
 				}
 			}
+			else if (physicState == PhysicState::JUMPUP) {
+				jumpT += gravity*dt;
+				jumpProgress = -pow((jumpT-1), 2) + 1;
+				colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
 
-			if (!collided) {
-				physicState = PhysicState::FALL;
+				// TODO: handle if sudden hit another object on the head -> physicState = FALL
+				bool suddenHitPlatform = false;
+
+				if (jumpT >= 1) {
+					jumpT -= 1;
+					physicState = PhysicState::JUMPDOWN;
+				}
+				else if (suddenHitPlatform) {
+					physicState = PhysicState::FALL;
+				}
 			}
-			else if(collided && 
-					input.pressJump) {
-				physicState = PhysicState::JUMPUP;
-				jumpT = 0;
-				originalGroundY = colliderRect.y; 
-			}
-		}
-		else if (physicState == PhysicState::JUMPUP) {
-			jumpT += gravity*dt;
-			jumpProgress = -pow((jumpT-1), 2) + 1;
-			colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
+			else if (physicState == PhysicState::JUMPDOWN) {
+				jumpT += gravity*dt;
+				jumpProgress = -pow(jumpT, 2) + 1;
+				colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
 
-			// TODO: handle if sudden hit another object on the head -> physicState = FALL
-			bool suddenHitPlatform = false;
+				CollisionInfo colInfo;
+				for (RectangleCollider *ground: levelData.groundColliders) {
+					CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
+					if (colInfo.count > 0) break;
+				}
 
-			if (jumpT >= 1) {
-				jumpT -= 1;
-				physicState = PhysicState::JUMPDOWN;
-			}
-			else if (suddenHitPlatform) {
-				physicState = PhysicState::FALL;
-			}
-		}
-		else if (physicState == PhysicState::JUMPDOWN) {
-			jumpT += gravity*dt;
-			jumpProgress = -pow(jumpT, 2) + 1;
-			colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
+				if (colInfo.count > 0) {
+					physicState = PhysicState::ONGROUND;
 
-			CollisionInfo colInfo;
-			for (RectangleCollider *ground: levelData.groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
-				if (colInfo.count > 0) break;
-			}
-
-			if (colInfo.count > 0) {
-				physicState = PhysicState::ONGROUND;
-
-				colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+					colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+					colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+				}
 			}
 		}
 
@@ -284,8 +289,6 @@ public:
 		*/
 		// @EndTest
 
-		levelData.playerColliderRect = colliderRect;
-
 		float legX = colliderRect.x;
 		float legY = colliderRect.y - .15f;
 		currentLegAnimation->changePos(legX, legY);
@@ -311,6 +314,8 @@ public:
 	void moveYBy(float d) override {
 		colliderRect.y += d;
 	}
+
+	Rect getRect() { return colliderRect; }
 };
 
 }
