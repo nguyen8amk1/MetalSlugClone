@@ -1,28 +1,16 @@
 TODO:  
-	// FIXME: 
+	// FIXME: @Current 
 	// the player position or anything that's displayed on the screen is only screen coord, not world coord
 	// -> only transform the position when rendering, the processing information should be world space 
 
-	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [] 
-		-> Have the opening scene for level 1 
-			-> parachute slowly comes down @Current 
-
-			x axis is based on the player 
-			-> camera state is based on the player's x axis -> and control the y axis 
-			-> if go too soon the white part will be shown
-
-			// Camera state 
-				opening position: 0, 64, 320, 224
-				after landing position: 0, 80, 320, 224
-				waterfall step 1: 3235, 67, 320, 224
-				waterfall step 2: 3339, 41, 320, 224
-				waterfall step 3: 3441, 14, 320, 224
-				waterfall step 4: 3501, 0, 320, 224
-				waterfall step 5: 3501, 0, 320, 224
-			Idea: interplolate the position between the states @Later  
-
-		-> where should we up the camera (.5h) [] 
-		-> what the behaviour should be (1h) []
+	// Camera state -> @Revisit: Check the coordinate of these again 
+		opening position: 0, 64, 320, 224
+		after landing position: 0, 80, 320, 224
+		waterfall step 1: 3235, 67, 320, 224
+		waterfall step 2: 3339, 41, 320, 224
+		waterfall step 3: 3441, 14, 320, 224
+		waterfall step 4: 3501, 0, 320, 224
+		waterfall step 5: 3501, 0, 320, 224
 
 	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) []
 
@@ -109,6 +97,27 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	DO SOME LEVEL1 CAMERA WORK (like for different part of the level the camera change y pos) (2h) [X] -> basically working
+		-> Have the opening scene for level 1 
+			-> parachute slowly comes down 
+
+			x axis is based on the player 
+			-> camera state is based on the player's x axis -> and control the y axis 
+			-> if go too soon the white part will be shown
+
+			// Camera state -> @Revisit: Check the coordinate of these again 
+				opening position: 0, 64, 320, 224
+				after landing position: 0, 80, 320, 224
+				waterfall step 1: 3235, 67, 320, 224
+				waterfall step 2: 3339, 41, 320, 224
+				waterfall step 3: 3441, 14, 320, 224
+				waterfall step 4: 3501, 0, 320, 224
+				waterfall step 5: 3501, 0, 320, 224
+			Idea: interplolate the position between the states @Later  
+
+		-> where should we up the camera (.5h) [X] 
+		-> what the behaviour should be (1h) [X]
+
 	PLACE ALL THE COLLIDER IN LEVEL1 (1h) [X] 
 	WORK ON THE CAMERA APPLY CODE (2h) [X] 
 		Idea: have an interface with apply camera method then collect all of the objects in a vector ?? 
