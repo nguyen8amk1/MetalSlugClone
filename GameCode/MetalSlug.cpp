@@ -37,6 +37,9 @@ private:
 
 	// NOTE: the only feature we have with the camera is move up, down, left, right 
 	// no zoom, no scale -> fixed view port is 320 by 224
+
+	// Camera 
+	// NOTE: text not involve with the camera 
 	Camera *camera;
 	Player *player;
 
@@ -78,6 +81,11 @@ private:
 	Level1CameraState currentCameraState = Level1CameraState::OPENING;
 	Level1State currentLevel1State = Level1State::OPENING;
 
+	float tempSpeed = 1;
+	float gravity = 2.2f;
+
+	LevelData levelData;
+
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;
@@ -104,19 +112,10 @@ public:
 
 	}
 
-	float tempSpeed = 1;
-	float gravity = 2.2f;
-
-	// Camera 
-	// NOTE: text not involve with the camera 
-
-	// Everything right here is in Level running state:  
-	LevelData levelData;
 	void updateAndRender(GameInputContext &input, double dt) {
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
 
-		// FIXME: need to rethink this part, but the player is working
 		background->animate(camera, dt);
 		waterFallAnimation->animate(camera, dt);
 		waterFall2Animation->animate(camera, dt);
@@ -124,148 +123,47 @@ public:
 		// LEVEL STATE MACHINE
 		switch (currentLevel1State) {
 		case Level1State::OPENING: {
-			// action: the player will move slowly down, 
-			GameInputContext i;
-			levelData.groundColliders = groundColliders;
-
-			player->moveYBy(-gravity*.2f*dt);
-			player->update(i, levelData, camera, dt);
-
-			levelData.playerColliderRect = player->getRect();
-
-			// event: once touch the ground will: 
-				// switch the level state to playing mode 
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, groundColliders[0]->getRect(), colInfo);
-			if (colInfo.count > 0) {
-				player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
-				player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
-				currentLevel1State = Level1State::PLAYING;
-				levelData.levelStarted = true;
-			}
-
+			doLevelOpeningState(input, dt);
 			break;
 		}
 		case Level1State::PLAYING: {
-			Vec2f t = camera->convertWorldPosToScreenPos({ levelData.playerColliderRect.x, levelData.playerColliderRect.y });
-			Rect r = levelData.playerColliderRect;
-			r.x = t.x;
-			r.y = t.y;
-
-			if (r.x >= cameraMovePointX) {
-				float d = tempSpeed * dt;
-				camera->moveXBy(d);
-			}
-
-			CollisionInfo colInfo;
-			CollisionChecker::doesRectangleVsRectangleCollide(r, preventGoingBackBlock, colInfo);
-			if (colInfo.count > 0) {
-				player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
-				player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
-			}
-
-			levelData.groundColliders = groundColliders;
-
-			player->update(input, levelData, camera, dt);
-
-			levelData.playerColliderRect = player->getRect();
-
-
-			for (Hostage *hostage: hostages) {
-				hostage->update(input, levelData, camera, dt);
-			}
-
+			doLevelPlayingState(input, dt);
 			break;
 		}
 		case Level1State::END: {
-
+			// TODO: 
 			break;
 		}
 		}
 
-		// TODO: CAMERA STATE MACHINE 
+		// CAMERA STATE MACHINE 
 		switch (currentCameraState) {
 		case Level1CameraState::OPENING:{
-			// action: maybe the camera moving should be here  
-			//...
-
-			// event: player touch the ground -> camera y position = ... , transition to after landing
-			if (levelData.levelStarted) {
-				currentCameraState = Level1CameraState::AFTER_LANDING;
-				float d = cameraAfterLandingRect.y - cameraOpeningRect.y;
-				camera->moveYBy(d);
-				camera->moveYBy(0);
-			}
+			doCameraOpeningState();
 			break;
 		}
 		case Level1CameraState::AFTER_LANDING:{
-			// action: 
-			// ... 
-			// event: 
-			if (camera->getPos().x >= cameraWaterFall1Rect.x) {
-				currentCameraState = Level1CameraState::WATERFALL_STEP1;
-
-				float d = cameraWaterFall1Rect.y - cameraAfterLandingRect.y;
-				camera->moveYBy(d);
-				camera->moveYBy(0);
-			}
-
-			// player.x hit waterfall_transition_1_x -> 
-			// camera y position = ..., transition to water fall step 1 
+			doCameraAfterLandingState();
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP1: {
-			// action
-			// event 
-			if (camera->getPos().x >= cameraWaterFall2Rect.x) {
-				currentCameraState = Level1CameraState::WATERFALL_STEP2;
-
-				float d = cameraWaterFall2Rect.y - cameraWaterFall1Rect.y;
-				camera->moveYBy(d);
-				camera->moveYBy(0);
-			}
+			doWaterFall1State();
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP2: {
-			// action
-			// event 
-			if (camera->getPos().x >= cameraWaterFall3Rect.x) {
-				currentCameraState = Level1CameraState::WATERFALL_STEP3;
-
-				float d = cameraWaterFall3Rect.y - cameraWaterFall2Rect.y;
-				camera->moveYBy(d);
-				camera->moveYBy(0);
-			}
+			doWaterFall2State();
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP3: {
-			// action
-			// event 
-			if (camera->getPos().x >= cameraWaterFall4Rect.x) {
-				currentCameraState = Level1CameraState::WATERFALL_STEP4;
-
-				float d = cameraWaterFall4Rect.y - cameraWaterFall3Rect.y;
-				camera->moveYBy(d);
-				camera->moveYBy(0);
-			}
-			break;
+			doWaterFall3State();
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP4: {
-			// action
-			// event 
-			if (camera->getPos().x >= cameraWaterFall5Rect.x) {
-				currentCameraState = Level1CameraState::WATERFALL_STEP5;
-
-				float d = cameraWaterFall5Rect.y - cameraWaterFall4Rect.y;
-				camera->moveYBy(d);
-				camera->moveYBy(0);
-			}
+			doWaterFall4State();
 			break;
 		}
 		case Level1CameraState::WATERFALL_STEP5: {
-			// action
-			// event 
+			doWaterFall5State();
 			break;
 		}
 			
@@ -468,6 +366,142 @@ private:
 		platformMethods->drawText(playerAnimationStateText);
 		*/
 
+	}
+
+	void doLevelOpeningState(GameInputContext &input, double dt) {
+		// action: the player will move slowly down, 
+		GameInputContext i;
+		levelData.groundColliders = groundColliders;
+
+		player->moveYBy(-gravity*.2f*dt);
+		player->update(i, levelData, camera, dt);
+
+		levelData.playerColliderRect = player->getRect();
+
+		// event: once touch the ground will: 
+			// switch the level state to playing mode 
+		CollisionInfo colInfo;
+		CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, groundColliders[0]->getRect(), colInfo);
+		if (colInfo.count > 0) {
+			player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
+			player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
+			currentLevel1State = Level1State::PLAYING;
+			levelData.levelStarted = true;
+		}
+	}
+
+	void doLevelPlayingState(GameInputContext &input, double dt) {
+		Vec2f t = camera->convertWorldPosToScreenPos({ levelData.playerColliderRect.x, levelData.playerColliderRect.y });
+		Rect r = levelData.playerColliderRect;
+		r.x = t.x;
+		r.y = t.y;
+
+		if (r.x >= cameraMovePointX) {
+			float d = tempSpeed * dt;
+			camera->moveXBy(d);
+		}
+
+		CollisionInfo colInfo;
+		CollisionChecker::doesRectangleVsRectangleCollide(r, preventGoingBackBlock, colInfo);
+		if (colInfo.count > 0) {
+			player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
+			player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
+		}
+
+		levelData.groundColliders = groundColliders;
+
+		player->update(input, levelData, camera, dt);
+
+		levelData.playerColliderRect = player->getRect();
+
+
+		for (Hostage *hostage: hostages) {
+			hostage->update(input, levelData, camera, dt);
+		}
+
+	}
+
+	void doCameraOpeningState() {
+		// action: maybe the camera moving should be here  
+		//...
+
+		// event: player touch the ground -> camera y position = ... , transition to after landing
+		if (levelData.levelStarted) {
+			currentCameraState = Level1CameraState::AFTER_LANDING;
+			float d = cameraAfterLandingRect.y - cameraOpeningRect.y;
+			camera->moveYBy(d);
+			camera->moveYBy(0);
+		}
+	}
+
+	void doCameraAfterLandingState() {
+		// action: 
+		// ... 
+		// event: 
+		if (camera->getPos().x >= cameraWaterFall1Rect.x) {
+			currentCameraState = Level1CameraState::WATERFALL_STEP1;
+
+			float d = cameraWaterFall1Rect.y - cameraAfterLandingRect.y;
+			camera->moveYBy(d);
+			camera->moveYBy(0);
+		}
+
+		// player.x hit waterfall_transition_1_x -> 
+		// camera y position = ..., transition to water fall step 1 
+	}
+
+	void doWaterFall1State() {
+		// action
+		// event 
+		if (camera->getPos().x >= cameraWaterFall2Rect.x) {
+			currentCameraState = Level1CameraState::WATERFALL_STEP2;
+
+			float d = cameraWaterFall2Rect.y - cameraWaterFall1Rect.y;
+			camera->moveYBy(d);
+			camera->moveYBy(0);
+		}
+	}
+
+	void doWaterFall2State() {
+		// action
+		// event 
+		if (camera->getPos().x >= cameraWaterFall3Rect.x) {
+			currentCameraState = Level1CameraState::WATERFALL_STEP3;
+
+			float d = cameraWaterFall3Rect.y - cameraWaterFall2Rect.y;
+			camera->moveYBy(d);
+			camera->moveYBy(0);
+		}
+	}
+
+	void doWaterFall3State() {
+		// action
+		// event 
+		if (camera->getPos().x >= cameraWaterFall4Rect.x) {
+			currentCameraState = Level1CameraState::WATERFALL_STEP4;
+
+			float d = cameraWaterFall4Rect.y - cameraWaterFall3Rect.y;
+			camera->moveYBy(d);
+			camera->moveYBy(0);
+		}
+	}
+
+	void doWaterFall4State() {
+		// action
+		// event 
+		if (camera->getPos().x >= cameraWaterFall5Rect.x) {
+			currentCameraState = Level1CameraState::WATERFALL_STEP5;
+
+			float d = cameraWaterFall5Rect.y - cameraWaterFall4Rect.y;
+			camera->moveYBy(d);
+			camera->moveYBy(0);
+		}
+	}
+
+	void doWaterFall5State() {
+			// action
+			//...
+			// event 
 	}
 };
 

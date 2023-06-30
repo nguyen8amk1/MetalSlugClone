@@ -128,6 +128,14 @@ public:
 		return {x - dx, y - dy};
 	}
 
+	 Rect convertWorldRectToScreenRect(const Rect rect) {
+		Rect r = rect;
+		Vec2f t = convertWorldPosToScreenPos({ r.x, r.y });
+		r.x = t.x;
+		r.y = t.y;
+		return r;
+	 }
+
 	void moveXBy(float d) {
 		oldPosition.x = currentPosition.x;
 		currentPosition.x += d;

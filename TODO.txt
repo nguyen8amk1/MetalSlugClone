@@ -1,5 +1,7 @@
 TODO:  
-	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) [] @Current 
+	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) [] @Current
+
+	REFACTOR THE LEVEL1 CAMERA INTO ANOTHER CLASS, THINGS STARTED TO GET CLUSTERED (2h) []
 
 	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -25,8 +27,11 @@ TODO:
 				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
 
-	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity  
+	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
 		-> pretty everything seems jittery
+
+	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) []
+
 
 	ENEMY (2h) []
 

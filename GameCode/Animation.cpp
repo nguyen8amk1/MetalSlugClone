@@ -25,12 +25,6 @@ Animation::Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollecti
 			pixelRect.height = (float)fabs(metaData.framePixelSize.y);
 
 			pixelRects.push_back(pixelRect);
-
-			/*
-			Rect fittedRect = {}; 
-			fittingRect(pixelRect, fittedRect, rect);
-			fittedNormalizedRects.push_back(fittedRect);
-			*/
 		}
 	}
 }
@@ -45,10 +39,14 @@ void Animation::animate(Camera *camera, double dt) {
 		timeAccumulator -= animDelay;
 	}
 
+	/*
 	Rect r = rect;
 	Vec2f t = camera->convertWorldPosToScreenPos({ r.x, r.y });
 	r.x = t.x;
 	r.y = t.y;
+	*/
+
+	Rect r = camera->convertWorldRectToScreenRect(rect);
 
 	platformMethods->renderImagePortionAt(spriteSheet, pixelRects[currentFrameIndex], r, flipX, flipY);
 }
@@ -95,6 +93,7 @@ void Animation::setRect(const Rect &r) {
 Rect Animation::getRect() {
 	return rect; 
 }
+
 /*
 Animation(float animDelay, std::vector<std::string> &frameFiles, PlatformSpecficMethodsCollection *platformMethods, Rect &rect) {
 	this->platformMethods = platformMethods;
