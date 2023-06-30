@@ -1,18 +1,5 @@
 TODO:  
-	MIGRATE THE RESOLUTION TO USE 304X224 RESOLUTION (2h) [] @Current
-
-	// Camera state -> @Revisit: Check the coordinate of these again (1h) [] 
-		opening position: 0, 64, 320, 224
-		after landing position: 0, 80, 320, 224
-		waterfall step 1: 3235, 67, 320, 224
-		waterfall step 2: 3339, 41, 320, 224
-		waterfall step 3: 3441, 14, 320, 224
-		waterfall step 4: 3501, 0, 320, 224
-		waterfall step 5: 3832, 0, 320, 224
-
-	USE FILEPATH FOR ALL THE ASSETS WE WANT TO LOAD (.5h) [] 
-
-	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) []
+	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) [] @Current 
 
 	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -41,13 +28,6 @@ TODO:
 	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity  
 		-> pretty everything seems jittery
 
-	Reminder: 
-		i feel like we're having a huge spagetti when using levelData that can be modified in player body   
-		since i have no idea where the data is modified so it's really hard to track   
-		for example: right now the player collider rect is set inside the player update method 
-					 and the that collider rect we track it outside of the player body 
-					 Idea: may be we should have a get collider method on the player 
-	
 	ENEMY (2h) []
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
@@ -97,6 +77,11 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	// Camera state -> @Revisit: Check the coordinate of these again (1h) [X] 
+	MIGRATE THE RESOLUTION TO USE 304X224 RESOLUTION (2h) [X] 
+		-> what need to be changed  
+		the convert function and the SDLUtil conversion function 
+
 	// FIXME: [X]
 	// the player position or anything that's displayed on the screen is only screen coord, not world coord
 	// -> only transform the position when rendering, the processing information should be world space 

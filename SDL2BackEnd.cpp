@@ -8,7 +8,7 @@
 #include "GameCode/MetalSlug.cpp"
 #include "SDL2PlatformMethodsCollection.cpp"
 
-#define SCREEN_WIDTH 320
+#define SCREEN_WIDTH 304
 #define SCREEN_HEIGHT 224
 #define SCALE_FACTOR 3 
 #define SCALED_SCREEN_WIDTH SCALE_FACTOR*SCREEN_WIDTH

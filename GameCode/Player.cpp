@@ -8,7 +8,7 @@ namespace MetalSlug {
 
 class Player: public CameraControlledEntity {
 private: 
-	Rect colliderRect = { -17.5f, .3f, .2f, .4f };
+	Rect colliderRect = { -19.0f, .3f, .2f, .4f };
 
 	enum class PhysicState {
 		ONGROUND,

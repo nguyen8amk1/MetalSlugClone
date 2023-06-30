@@ -288,14 +288,14 @@ public:
 
 private: 
 	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
-		float tx = backgroundPixelWidth/320.0f; 
+		float tx = backgroundPixelWidth/304.0f; 
 		float ty = backgroundPixelHeight/224.0f; 
 
-		float w = pixelRect.width/111.888f;
+		float w = pixelRect.width/106.2937f;
 		float h = pixelRect.height/112.0f;
 
-		float x = (pixelRect.x/111.888f) - 1.43*tx + w/2.0f;
-		float y = ty - (2*ty*pixelRect.y/304.0f) - h/2.0f;
+		float x = (pixelRect.x/106.2937f) - 1.43*tx + w/2.0f;
+		float y = ty - (2*ty*pixelRect.y/backgroundPixelHeight) - h/2.0f;
 
 		return { x, y, w, h };
 	}
@@ -306,23 +306,13 @@ private:
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
 
-		/*
-			opening position: 0, 64, 320, 224
-			after landing position: 0, 80, 320, 224
-			waterfall step 1: 3235, 67, 320, 224
-			waterfall step 2: 3339, 41, 320, 224
-			waterfall step 3: 3441, 14, 320, 224
-			waterfall step 4: 3501, 0, 320, 224
-			waterfall step 5: 3501, 0, 320, 224
-		*/
-
-		cameraOpeningRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraAfterLandingRect = convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall1Rect = convertLevelColliderBlockPixelRectToGameRect({ 3235, 67, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({ 3339, 41, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall3Rect = convertLevelColliderBlockPixelRectToGameRect({ 3441, 14, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall4Rect = convertLevelColliderBlockPixelRectToGameRect({ 3051, 0, 320, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		//cameraWaterFall5 = convertLevelColliderBlockPixelRectToGameRect({ }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraOpeningRect		= convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraAfterLandingRect	= convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall1Rect = convertLevelColliderBlockPixelRectToGameRect({ 3176, 80, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({ 3251, 67, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall3Rect = convertLevelColliderBlockPixelRectToGameRect({ 3355, 41, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall4Rect = convertLevelColliderBlockPixelRectToGameRect({ 3457, 14, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall5Rect = convertLevelColliderBlockPixelRectToGameRect({ 3517,	0, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 
 		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 		Vec2f cameraPosition = {cameraOpeningRect.x, cameraOpeningRect.y}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
@@ -330,7 +320,8 @@ private:
 
 		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
 		background = new Animation(backgroundMetaData, platformMethods);
-		background->changeSize(37.108f, 1.357f*2.0f);
+		Rect backgroundRect = convertLevelColliderBlockPixelRectToGameRect({0, 0, (float)backgroundPixelWidth, (float)backgroundPixelHeight}, backgroundPixelWidth, backgroundPixelHeight);
+		background->setRect(backgroundRect);
 
 		player = new Player(gravity, tempSpeed, platformMethods);
 
@@ -401,33 +392,6 @@ private:
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
-
-		/*
-		for (RectangleCollider *collider: groundColliders) {
-			entities.push_back(collider);
-		}
-		
-		for (Hostage *hostage: hostages) {
-			entities.push_back(hostage);
-		}
-
-		entities.push_back(background);
-		entities.push_back(player);
-		entities.push_back(waterFallAnimation);
-		entities.push_back(waterFall2Animation);
-		*/
-
-		/*
-		backgroundRectText  = platformMethods->createText(0, 60, 10);
-		groundPos  = platformMethods->createText(0, 75, 10);
-		*/
-
-		// apply the camera 
-		/*
-		for (CameraControlledEntity *entity: entities) {
-			camera->apply(entity);
-		}
-		*/
 	}
 
 	void displayDebug() {

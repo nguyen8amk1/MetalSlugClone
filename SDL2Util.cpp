@@ -14,12 +14,12 @@ public:
 		//int pixelHeight = MetalSlug::MetalSlug::pixelScreenHeight;
 		//int pixelWidth = MetalSlug::MetalSlug::pixelScreenWidth;
 		//pixelY = (-pixelHeight / 2)* (normY + 1) + pixelHeight;
-		pixelX = 111.888 * (normX + 1.43);
+		pixelX = 106.2937 * (normX + 1.43); 
 		pixelY = -112*(normY + 1) + 224;
 	}
 
 	static void normalizedSizeToPixelSize(float normWidth, float normHeight, int &pixelWidth, int &pixelHeight) {
-		pixelWidth = (int)(111.888*normWidth);  
+		pixelWidth = (int)(106.2937*normWidth);  
 		pixelHeight = (int)(112*normHeight); 
 	}
 
