@@ -1,12 +1,16 @@
 TODO:  
-	// Camera state -> @Revisit: Check the coordinate of these again 
+	MIGRATE THE RESOLUTION TO USE 304X224 RESOLUTION (2h) [] @Current
+
+	// Camera state -> @Revisit: Check the coordinate of these again (1h) [] 
 		opening position: 0, 64, 320, 224
 		after landing position: 0, 80, 320, 224
 		waterfall step 1: 3235, 67, 320, 224
 		waterfall step 2: 3339, 41, 320, 224
 		waterfall step 3: 3441, 14, 320, 224
 		waterfall step 4: 3501, 0, 320, 224
-		waterfall step 5: 3501, 0, 320, 224
+		waterfall step 5: 3832, 0, 320, 224
+
+	USE FILEPATH FOR ALL THE ASSETS WE WANT TO LOAD (.5h) [] 
 
 	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) []
 
