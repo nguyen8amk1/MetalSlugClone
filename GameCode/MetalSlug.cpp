@@ -45,6 +45,7 @@ private:
 	float cameraMovePointX = -.42f;
 	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
 	std::vector<Hostage*> hostages;
+	float endOfMapX = 0;
 
 	// level1 
 	AnimationMetaData waterFallAnimationMetaData;
@@ -204,6 +205,7 @@ private:
 		cameraWaterFall3Rect = convertLevelColliderBlockPixelRectToGameRect({ 3355, 41, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraWaterFall4Rect = convertLevelColliderBlockPixelRectToGameRect({ 3457, 14, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraWaterFall5Rect = convertLevelColliderBlockPixelRectToGameRect({ 3517,	0, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		endOfMapX = convertLevelColliderBlockPixelRectToGameRect({3848, 0, 304, 224}, backgroundPixelWidth, backgroundPixelHeight).x;
 
 		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 		Vec2f cameraPosition = {cameraOpeningRect.x, cameraOpeningRect.y}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
@@ -386,7 +388,8 @@ private:
 		r.x = t.x;
 		r.y = t.y;
 
-		if (r.x >= cameraMovePointX) {
+		bool outsideOfMap = camera->getPos().x >= endOfMapX; // FIXME: end of map still off a few pixels
+		if (r.x >= cameraMovePointX && !outsideOfMap) {
 			float d = tempSpeed * dt;
 			camera->moveXBy(d);
 		}

@@ -1,11 +1,5 @@
 TODO:  
-	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity @Current
-		-> pretty everything seems jittery
-		-> basically i see the shaking i believe
-
 	REFACTOR THE LEVEL1 CAMERA INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
-
-	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) [] @Current
 
 	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -32,6 +26,15 @@ TODO:
 			INTO THE LEVEL 
 
 	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) []
+
+	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
+		-> pretty everything seems jittery
+		-> basically i see the shaking i believe
+
+		Possible Reason: 
+			the resolution is too small so the pixel snapping might have some hard time to snap, 
+			maybe adjust to a bigger resolution and somehow stretch the game sprites to fixed that instead of stretch 304x224 to x3
+			-> meaning the sprites is still in their own pixel size by the position will be way more precise since the range is larger 
 
 	ENEMY (2h) []
 
@@ -82,6 +85,8 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) [X] 
+
 	// Camera state -> @Revisit: Check the coordinate of these again (1h) [X] 
 	MIGRATE THE RESOLUTION TO USE 304X224 RESOLUTION (2h) [X] 
 		-> what need to be changed  
