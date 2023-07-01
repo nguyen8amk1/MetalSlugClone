@@ -23,10 +23,8 @@ private:
 	GameText *frameMillis = NULL;
 	GameText *fps = NULL;
 	GameText *playerXY = NULL;
-	//GameText *groundPos = NULL;
 	GameText *playerPhysicStateText = NULL;
 	GameText *playerAnimationStateText = NULL;
-	//GameText *backgroundRectText = NULL;
 
 	std::vector<RectangleCollider*> groundColliders;
 	std::vector<CameraControlledEntity*> entities;
@@ -106,23 +104,18 @@ public:
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
-
 		playerPhysicStateText  = platformMethods->createText(0, 45, 10);
 		playerAnimationStateText  = platformMethods->createText(0, 60, 10);
-
 	}
 
 	void updateAndRender(GameInputContext &input, double dt) {
 		//backgroundRectText->setText(Util::MessageFormater::print("bgrect: ", backgroundRect.x, ", ", backgroundRect.y));
 		//platformMethods->drawText(backgroundRectText);
 
-		background->animate(camera, dt);
-		waterFallAnimation->animate(camera, dt);
-		waterFall2Animation->animate(camera, dt);
-
 		// LEVEL STATE MACHINE
 		switch (currentLevel1State) {
 		case Level1State::OPENING: {
+			background->animate(camera, dt);
 			doLevelOpeningState(input, dt);
 			break;
 		}
@@ -327,9 +320,6 @@ private:
 		playerXY->setText(Util::MessageFormater::print("Player pos: ", levelData.playerColliderRect.x, ", ", levelData.playerColliderRect.y));
 		platformMethods->drawText(playerXY);
 
-		//groundPos->setText(Util::MessageFormater::print("Ground pos: ", ground.x, ", ", ground.y));
-		//platformMethods->drawText(groundPos);
-
 		/*
 		std::string physicStateStr;
 		if (playerPhysicState == PlayerPhysicState::FALL) {
@@ -410,15 +400,17 @@ private:
 
 		levelData.groundColliders = groundColliders;
 
+		background->animate(camera, dt);
+		waterFallAnimation->animate(camera, dt);
+		waterFall2Animation->animate(camera, dt);
+
 		player->update(input, levelData, camera, dt);
 
 		levelData.playerColliderRect = player->getRect();
 
-
 		for (Hostage *hostage: hostages) {
 			hostage->update(input, levelData, camera, dt);
 		}
-
 	}
 
 	void doCameraOpeningState() {

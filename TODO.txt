@@ -1,9 +1,13 @@
 TODO:  
+	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity @Current
+		-> pretty everything seems jittery
+		-> basically i see the shaking i believe
+
+	REFACTOR THE LEVEL1 CAMERA INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
+
 	LOCK THE MAP KEEP THE PLAYER FROM SEEING THE MAGENTA BACKGROUND (.5h) [] @Current
 
-	REFACTOR THE LEVEL1 CAMERA INTO ANOTHER CLASS, THINGS STARTED TO GET CLUSTERED (2h) []
-
-	LOAD THE LEVEL METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
+	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
@@ -27,11 +31,7 @@ TODO:
 				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
 
-	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
-		-> pretty everything seems jittery
-
 	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) []
-
 
 	ENEMY (2h) []
 

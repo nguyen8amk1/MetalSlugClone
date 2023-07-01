@@ -4,6 +4,7 @@
 #include<sstream>
 #include<string>
 #include<stdint.h>
+#include<math.h>
 #include<SDL.h>
 
 namespace SDL2Util {
@@ -14,13 +15,13 @@ public:
 		//int pixelHeight = MetalSlug::MetalSlug::pixelScreenHeight;
 		//int pixelWidth = MetalSlug::MetalSlug::pixelScreenWidth;
 		//pixelY = (-pixelHeight / 2)* (normY + 1) + pixelHeight;
-		pixelX = 106.2937 * (normX + 1.43); 
-		pixelY = -112*(normY + 1) + 224;
+		pixelX = (int)roundf(106.2937f * (normX + 1.43f)); 
+		pixelY = (int)roundf(-112.0f * (normY + 1.0f) + 224.0f);
 	}
 
 	static void normalizedSizeToPixelSize(float normWidth, float normHeight, int &pixelWidth, int &pixelHeight) {
-		pixelWidth = (int)(106.2937*normWidth);  
-		pixelHeight = (int)(112*normHeight); 
+		pixelWidth = (int)roundf(106.2937f*normWidth);  
+		pixelHeight = (int)roundf(112.0f*normHeight); 
 	}
 
 	static void toMiddleOrigin(int &x, int &y, int width, int height) {
