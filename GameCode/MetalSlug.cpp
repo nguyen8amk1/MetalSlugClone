@@ -179,33 +179,20 @@ public:
 	}
 
 private: 
-	Rect convertLevelColliderBlockPixelRectToGameRect(const Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
-		float tx = backgroundPixelWidth/304.0f; 
-		float ty = backgroundPixelHeight/224.0f; 
-
-		float w = pixelRect.width/106.2937f;
-		float h = pixelRect.height/112.0f;
-
-		float x = (pixelRect.x/106.2937f) - 1.43*tx + w/2.0f;
-		float y = ty - (2*ty*pixelRect.y/backgroundPixelHeight) - h/2.0f;
-
-		return { x, y, w, h };
-	}
-
 	void initLevel1() {
 
 		//opening position: 0, 64, 320, 224
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
 
-		cameraOpeningRect		= convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraAfterLandingRect	= convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall1Rect = convertLevelColliderBlockPixelRectToGameRect({ 3176, 80, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({ 3251, 67, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall3Rect = convertLevelColliderBlockPixelRectToGameRect({ 3355, 41, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall4Rect = convertLevelColliderBlockPixelRectToGameRect({ 3457, 14, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall5Rect = convertLevelColliderBlockPixelRectToGameRect({ 3517,	0, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		endOfMapX = convertLevelColliderBlockPixelRectToGameRect({3848, 0, 304, 224}, backgroundPixelWidth, backgroundPixelHeight).x;
+		cameraOpeningRect		= Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 64, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraAfterLandingRect	= Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 80, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall1Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3176, 80, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall2Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3251, 67, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall3Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3355, 41, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall4Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3457, 14, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall5Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3517,	0, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		endOfMapX = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3848, 0, 304, 224}, backgroundPixelWidth, backgroundPixelHeight).x;
 
 		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 		Vec2f cameraPosition = {cameraOpeningRect.x, cameraOpeningRect.y}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
@@ -213,75 +200,75 @@ private:
 
 		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
 		background = new Animation(backgroundMetaData, platformMethods);
-		Rect backgroundRect = convertLevelColliderBlockPixelRectToGameRect({0, 0, (float)backgroundPixelWidth, (float)backgroundPixelHeight}, backgroundPixelWidth, backgroundPixelHeight);
+		Rect backgroundRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({0, 0, (float)backgroundPixelWidth, (float)backgroundPixelHeight}, backgroundPixelWidth, backgroundPixelHeight);
 		background->setRect(backgroundRect);
 
 		player = new Player(gravity, tempSpeed, platformMethods);
 
 		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 1, 8, {0, 0}, {430, 272});
 		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
-		Rect waterFallRect = convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
+		Rect waterFallRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
 		waterFallAnimation->setRect(waterFallRect);
 
 		Util::AnimationUtil::initAnimationMetaData(waterFall2AnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 2, 4, {0, 346}, {832, 304});
 		waterFall2Animation = new Animation(waterFall2AnimationMetaData, platformMethods);
-		Rect waterFall2Rect = convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
+		Rect waterFall2Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
 		waterFall2Animation->setRect(waterFall2Rect);
 
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22 }, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22 }, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({851, 236, 71, 19}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({851, 236, 71, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({3368, 229, 316, 36}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3368, 229, 316, 36}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({3474, 205, 290, 34}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3474, 205, 290, 34}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 		groundColliders.push_back(
-			new RectangleCollider(convertLevelColliderBlockPixelRectToGameRect({3544, 144, 608, 55}, backgroundPixelWidth, backgroundPixelHeight))
+			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3544, 144, 608, 55}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
-		Rect hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		Rect hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
-		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1230, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1230, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
-		hostageColliderRect = convertLevelColliderBlockPixelRectToGameRect({1423, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1423, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));

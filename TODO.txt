@@ -1,5 +1,13 @@
 TODO:  
-	REFACTOR THE LEVEL1 CAMERA INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
+	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
+
+	ENEMY (2h) []
+
+	ENEMY PLACEMENT AND GENERATION (2h) []
+
+	ENEMY INTERACTION WITH PLAYER (2h) []
+
+	GRENADE (2h) []
 
 	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -25,7 +33,8 @@ TODO:
 				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
 
-	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) []
+
+	REFACTOR THE LEVEL1 INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
 
 	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
 		-> pretty everything seems jittery
@@ -36,12 +45,6 @@ TODO:
 			maybe adjust to a bigger resolution and somehow stretch the game sprites to fixed that instead of stretch 304x224 to x3
 			-> meaning the sprites is still in their own pixel size by the position will be way more precise since the range is larger 
 
-	ENEMY (2h) []
-
-	ENEMY PLACEMENT AND GENERATION (2h) []
-
-	ENEMY INTERACTION WITH PLAYER (2h) []
-
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) []
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
@@ -50,7 +53,6 @@ TODO:
 
 	NEED ONE WAY PLATFORM (2h) []
 
-	GRENADE (2h) []
 		BOUNCE: 
 		-> a bounce is jumps with reduce height every time hit the ground 
 
