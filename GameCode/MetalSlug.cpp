@@ -377,7 +377,17 @@ private:
 
 		bool outsideOfMap = camera->getPos().x >= endOfMapX; // FIXME: end of map still off a few pixels
 		if (r.x >= cameraMovePointX && !outsideOfMap) {
-			float d = tempSpeed * dt;
+			// NOTE: Need to take a course on easing :))
+			// Coding math link: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
+
+			float factor = 1.0f; // TODO: this should be a different curve rather than just linear, log() or something else, this should change depend of the distance between the camera and the player
+			float d = tempSpeed*factor * dt; 
+
+			// TODO: the easing only happens when you stopped 
+			// but the camera should also not follow at the same space at the player
+
+			// TODO: Currently something similar to tweening is working though 
+			// But the player can move pass the point so need someway to handle that 
 			camera->moveXBy(d);
 		}
 
@@ -406,7 +416,6 @@ private:
 	void doCameraOpeningState() {
 		// action: maybe the camera moving should be here  
 		//...
-
 		// event: player touch the ground -> camera y position = ... , transition to after landing
 		if (levelData.levelStarted) {
 			currentCameraState = Level1CameraState::AFTER_LANDING;
@@ -419,6 +428,7 @@ private:
 	void doCameraAfterLandingState() {
 		// action: 
 		// ... 
+
 		// event: 
 		if (camera->getPos().x >= cameraWaterFall1Rect.x) {
 			currentCameraState = Level1CameraState::WATERFALL_STEP1;

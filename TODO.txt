@@ -1,13 +1,14 @@
 TODO:  
-	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
-
-	ENEMY (2h) []
+	ENEMY (2h) [] @Current 
 
 	ENEMY PLACEMENT AND GENERATION (2h) []
 
 	ENEMY INTERACTION WITH PLAYER (2h) []
 
 	GRENADE (2h) []
+
+	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
+		this is the link to the easing video: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
 
 	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
