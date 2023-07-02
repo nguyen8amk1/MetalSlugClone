@@ -54,7 +54,7 @@ public:
 		hostageCurrentAnimation = hostageTiedAnimation;
 	}
 
-	void update(const GameInputContext& input, LevelData &levelData, Camera *camera, double dt) {
+	void update(LevelData &levelData, Camera *camera, double dt) {
 		// Physic state machine 
 		switch (hostageCurrentPhysicState) {
 		case HostagePhysicState::ONGROUND: {

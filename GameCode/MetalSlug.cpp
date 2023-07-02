@@ -9,6 +9,7 @@
 
 #include "Hostage.cpp"
 #include "Player.cpp"
+#include "RebelSoilder.h"
 
 namespace MetalSlug {
 
@@ -84,6 +85,8 @@ private:
 	float gravity = 2.2f;
 
 	LevelData levelData;
+
+	RebelSoilder *rebelSoilder;
 
 	// TODO: I need a template class that takes  
 	// Collider 
@@ -278,6 +281,11 @@ private:
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+
+		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		rebelColliderRect.width = .2f;
+		rebelColliderRect.height = .4f;
+		rebelSoilder = new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods);
 	}
 
 	void displayDebug() {
@@ -415,8 +423,10 @@ private:
 		levelData.playerColliderRect = player->getRect();
 
 		for (Hostage *hostage: hostages) {
-			hostage->update(input, levelData, camera, dt);
+			hostage->update(levelData, camera, dt);
 		}
+
+		rebelSoilder->update(levelData, camera, dt);
 	}
 
 	void doCameraOpeningState() {

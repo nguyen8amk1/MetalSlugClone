@@ -52,7 +52,7 @@ public:
 		metaData.framePixelSize = framePixelSize;
 
 		float h = (metaData.framePixelSize.y/224.0f)*2;
-		float w = h*(metaData.framePixelSize.y/metaData.framePixelSize.y); 
+		float w = h*(metaData.framePixelSize.x/metaData.framePixelSize.y); 
 		MetalSlug::Rect animRect = {0, 0, fabs(w), fabs(h)};
 		metaData.rect = animRect;
 	}
