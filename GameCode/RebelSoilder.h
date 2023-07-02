@@ -97,7 +97,6 @@ public:
 		}
 
 
-
 		// Animation state machine 
 		switch (currentAnimationState) {
 		case AnimationState::IDLING: {

@@ -22,7 +22,7 @@ private:
 		JUMPING,
 		FALLING,
 		WALKING
-	};
+	}Vec2f ;
 
 	PhysicState physicState = PhysicState::ONGROUND;
 	AnimationState animationState = AnimationState::IDLING;
@@ -59,6 +59,8 @@ private:
 	Animation* currentAnimation;
 	Animation* currentLegAnimation;
 
+	Rect interactionRectDisabledRect = {0, 0, .2f, .2f};
+	Rect interactionRect;
 
 public: 
 	void changeGravity(float gravity) {
@@ -111,6 +113,7 @@ public:
 		delete fallingLegAnimation;
 	}
 
+
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
 		if (input.pressLeft) {
@@ -118,6 +121,26 @@ public:
 		}
 		else if (input.pressRight) {
 			colliderRect.x += (float)(moveSpeed*dt); 
+		}
+
+		if (input.pressShoot) {
+
+			bool facingRight = horizontalFacingDirection == 1;
+			bool facingLeft = horizontalFacingDirection == -1;
+			if (facingRight) {
+				interactionRect.x = colliderRect.x + colliderRect.width/2;
+			}
+			else if(facingLeft){
+				interactionRect.x = colliderRect.x - colliderRect.width/2;
+			}
+
+			interactionRect.y = colliderRect.y;
+			interactionRect.width = colliderRect.width/2;
+			interactionRect.height = colliderRect.height/2;
+		}
+		else {
+			interactionRect = interactionRectDisabledRect;
+			interactionRect.y = -5.0f;
 		}
 
 		if (levelData.levelStarted) {
@@ -309,6 +332,8 @@ public:
 	}
 
 	Rect getRect() { return colliderRect; }
+
+	Rect getInteractionRect() { return interactionRect; }
 };
 
 }

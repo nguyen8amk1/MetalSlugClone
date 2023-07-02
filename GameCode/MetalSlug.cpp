@@ -189,8 +189,6 @@ public:
 
 private: 
 	void initLevel1() {
-
-		//opening position: 0, 64, 320, 224
 		int backgroundPixelWidth = 4152;
 		int backgroundPixelHeight = 304;
 
@@ -303,6 +301,13 @@ private:
 		r.x = t.x;
 		r.y = t.y;
 		platformMethods->drawRectangle(r, playerColor);
+
+		r = levelData.playerInteractionRect;
+		t = camera->convertWorldPosToScreenPos({r.x, r.y});
+		r.x = t.x;
+		r.y = t.y;
+		platformMethods->drawRectangle(r, playerColor);
+		//OutputDebugStringA(Util::MessageFormater::print("Interaction rect: ", levelData.playerInteractionRect.x, ", ", levelData.playerInteractionRect.y, ", ", levelData.playerInteractionRect.width, ", ", levelData.playerInteractionRect.height, '\n').c_str());
 
 		for (RectangleCollider *ground : groundColliders) {
 			r = ground->getRect();
@@ -418,15 +423,16 @@ private:
 		waterFallAnimation->animate(camera, dt);
 		waterFall2Animation->animate(camera, dt);
 
-		player->update(input, levelData, camera, dt);
-
-		levelData.playerColliderRect = player->getRect();
-
 		for (Hostage *hostage: hostages) {
 			hostage->update(levelData, camera, dt);
 		}
-
 		rebelSoilder->update(levelData, camera, dt);
+
+		player->update(input, levelData, camera, dt);
+
+		levelData.playerColliderRect = player->getRect();
+		levelData.playerInteractionRect = player->getInteractionRect();
+
 	}
 
 	void doCameraOpeningState() {

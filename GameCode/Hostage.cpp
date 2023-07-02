@@ -87,8 +87,8 @@ public:
 		switch (hostageCurrentAnimationState) {
 		case HostageAnimationState::TIED: {
 			// TODO: 
-			bool touchPlayer = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, levelData.playerColliderRect);
-			if (touchPlayer) {
+			bool playerUntied = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, levelData.playerInteractionRect);
+			if (playerUntied) {
 				hostageCurrentAnimationState = HostageAnimationState::UNTIED;
 				hostageCurrentAnimation = hostageUntiedAnimation;
 			}

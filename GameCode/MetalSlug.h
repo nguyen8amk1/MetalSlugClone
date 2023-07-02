@@ -177,6 +177,7 @@ public:
 struct LevelData {
 	std::vector<RectangleCollider*> groundColliders;
 	Rect playerColliderRect;
+	Rect playerInteractionRect;
 	bool levelStarted = false;
 };
 }
