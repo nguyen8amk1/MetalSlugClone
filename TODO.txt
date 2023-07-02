@@ -7,9 +7,6 @@ TODO:
 
 	GRENADE (2h) []
 
-	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
-		this is the link to the easing video: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
-
 	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
@@ -34,6 +31,8 @@ TODO:
 				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
 
+	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
+		this is the link to the easing video: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
 
 	REFACTOR THE LEVEL1 INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
 
