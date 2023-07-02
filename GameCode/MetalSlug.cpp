@@ -85,6 +85,12 @@ private:
 
 	LevelData levelData;
 
+	// TODO: I need a template class that takes  
+	// Collider 
+	// PhysicStateMachine 
+	// AnimationStateMachine 
+
+
 public:
 	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
 		this->platformMethods = platformMethods;

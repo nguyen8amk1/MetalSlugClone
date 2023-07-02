@@ -48,6 +48,21 @@
     <ClCompile Include="GameCode\CollisionChecker.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
+    <ClCompile Include="GameCode\Tinyc2CollisionChecker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDL2SandBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\Player.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\Hostage.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\RebelSoilder.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
@@ -60,6 +75,12 @@
   <ItemGroup>
     <ClInclude Include="GameCode\MetalSlug.h">
       <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\CollisionChecker.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
