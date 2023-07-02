@@ -178,6 +178,10 @@ struct LevelData {
 	std::vector<RectangleCollider*> groundColliders;
 	Rect playerColliderRect;
 	Rect playerInteractionRect;
+
+	Rect dangerRect;
+
 	bool levelStarted = false;
 };
+
 }

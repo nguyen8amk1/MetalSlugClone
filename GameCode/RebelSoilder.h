@@ -9,6 +9,8 @@ class RebelSoilder: public CameraControlledEntity {
 private: 
 	// Collider 
 	Rect colliderRect;
+	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
+	Rect interactionRect;
 
 	// Physic state machine  
 	enum class PhysicState {
@@ -48,6 +50,8 @@ public:
 		this->moveSpeed = moveSpeed;
 		this->platformMethods = platformMethods;
 		this->colliderRect = colliderRect;
+
+		interactionRect = interactionRectDisabledRect;
 
 		std::string filename = "Assets/Imgs/Characters/rebel_soilder.png";
 
@@ -106,6 +110,11 @@ public:
 			if (touchPlayer) {
 				currentAnimationState = AnimationState::SLASHING;
 				currentAnimation = slashingAnimation;
+
+				interactionRect.x = colliderRect.x - colliderRect.width/2;
+				interactionRect.y = colliderRect.y;
+				interactionRect.width = colliderRect.width/2;
+				interactionRect.height = colliderRect.height/2;
 			}
 			else if (playerInThrowingRange) {
 				currentAnimationState = AnimationState::THROWING_BOMB;
@@ -151,6 +160,8 @@ public:
 	void moveYBy(float d) override {
 		colliderRect.y += d;
 	}
+
+	Rect getInteractionRect() { return interactionRect; }
 };
 
 }

@@ -307,6 +307,12 @@ private:
 		r.x = t.x;
 		r.y = t.y;
 		platformMethods->drawRectangle(r, playerColor);
+
+		r = rebelSoilder->getInteractionRect();
+		t = camera->convertWorldPosToScreenPos({r.x, r.y});
+		r.x = t.x;
+		r.y = t.y;
+		platformMethods->drawRectangle(r, playerColor);
 		//OutputDebugStringA(Util::MessageFormater::print("Interaction rect: ", levelData.playerInteractionRect.x, ", ", levelData.playerInteractionRect.y, ", ", levelData.playerInteractionRect.width, ", ", levelData.playerInteractionRect.height, '\n').c_str());
 
 		for (RectangleCollider *ground : groundColliders) {
@@ -426,7 +432,9 @@ private:
 		for (Hostage *hostage: hostages) {
 			hostage->update(levelData, camera, dt);
 		}
+
 		rebelSoilder->update(levelData, camera, dt);
+		levelData.dangerRect = rebelSoilder->getInteractionRect();
 
 		player->update(input, levelData, camera, dt);
 

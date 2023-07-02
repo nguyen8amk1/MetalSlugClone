@@ -4,6 +4,9 @@
 #include "CollisionChecker.h"
 #include "../Util.cpp"
 
+// Only for test 
+#include "Windows.h"
+
 namespace MetalSlug {
 
 class Player: public CameraControlledEntity {
@@ -59,7 +62,7 @@ private:
 	Animation* currentAnimation;
 	Animation* currentLegAnimation;
 
-	Rect interactionRectDisabledRect = {0, 0, .2f, .2f};
+	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
 	Rect interactionRect;
 
 public: 
@@ -140,7 +143,6 @@ public:
 		}
 		else {
 			interactionRect = interactionRectDisabledRect;
-			interactionRect.y = -5.0f;
 		}
 
 		if (levelData.levelStarted) {
@@ -174,11 +176,16 @@ public:
 				if (!collided) {
 					physicState = PhysicState::FALL;
 				}
-				else if(collided && 
-						input.pressJump) {
+				else if(input.pressJump) {
 					physicState = PhysicState::JUMPUP;
 					jumpT = 0;
 					originalGroundY = colliderRect.y; 
+				}
+
+				bool hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, levelData.dangerRect);
+				if (hitDangerRect) {
+					// TODO: change to die animation and die physics
+					OutputDebugStringA(Util::MessageFormater::print("PLAYER DIEEEEEEE\n").c_str());
 				}
 			}
 			else if (physicState == PhysicState::JUMPUP) {

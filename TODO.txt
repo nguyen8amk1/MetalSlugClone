@@ -1,5 +1,11 @@
 TODO:  
 	ENEMY INTERACTION (SLASHING) WITH PLAYER (2h) [] @Current 
+		-> Player knock back physic []
+		-> Player death animation []
+
+	ENEMY ANIMATIONS (2h) []
+		ANIMATION PTS [] 
+		ANIMATION Installation []
 
 	ENEMY PLACEMENT AND GENERATION (2h) [] 
 
