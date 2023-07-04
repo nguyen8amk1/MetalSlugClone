@@ -11,7 +11,6 @@ TODO:
 		-> knock back only plays when hit by projectile (bomb, bullet,...)
 		-> Figure out what's the knock back curve looks like 
 
-
 	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
@@ -32,7 +31,7 @@ TODO:
 	ENEMY ANIMATIONS (2h) []
 		ANIMATION PTS [] 
 		ANIMATION Installation []
-
+	
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
@@ -56,38 +55,26 @@ TODO:
 			INTO THE LEVEL 
 
 
-	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
+	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] 
 		this is the link to the easing video: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
-
 
 	REFACTOR THE LEVEL1 INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
 
-
-	REBELS AI (4h) []
-
-	SIMPLE BOSS FIGHT (4h) []
-
 	ENEMY GENERATION (2h) [] 
-
-	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
-		-> pretty everything seems jittery
-		-> basically i see the shaking i believe
-
-		Possible Reason: 
-			the resolution is too small so the pixel snapping might have some hard time to snap, 
-			maybe adjust to a bigger resolution and somehow stretch the game sprites to fixed that instead of stretch 304x224 to x3
-			-> meaning the sprites is still in their own pixel size by the position will be way more precise since the range is larger 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) []
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
+	REBELS AI (4h) []
+
+	SIMPLE BOSS FIGHT (4h) []
+
 	DO THE ACTUAL GOOD LOOKING ANIMATION (2h) []
 
-	NEED ONE WAY PLATFORM (2h) []
+	PLAYER ANIMATION TRANSITION (4h) []
 
-		BOUNCE: 
-		-> a bounce is jumps with reduce height every time hit the ground 
+	NEED ONE WAY PLATFORM (2h) []
 
 	INPUT BUFFERING FOR GAMEPLAY MOVEMENT (4h) []
 
@@ -111,11 +98,18 @@ TODO:
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 BUG: 
-	THE WATER FALL ANIMATION KINDA JITTER, 100% because the spritesheet 
 	FIXME: collision on the hortizontal side not working ?? 
 		-> this happens because the game only checking a single collision at a time  
 
-	FIXME: glitching happens again when on level collider
+	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
+		-> pretty everything seems jittery
+		-> basically i see the shaking i believe
+
+		Possible Reason: 
+			the resolution is too small so the pixel snapping might have some hard time to snap, 
+			maybe adjust to a bigger resolution and somehow stretch the game sprites to fixed that instead of stretch 304x224 to x3
+			-> meaning the sprites is still in their own pixel size by the position will be way more precise since the range is larger 
+
 
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	

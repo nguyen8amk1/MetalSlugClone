@@ -402,17 +402,10 @@ private:
 
 		bool outsideOfMap = camera->getPos().x >= endOfMapX; // FIXME: end of map still off a few pixels
 		if (r.x >= cameraMovePointX && !outsideOfMap) {
-			// NOTE: Need to take a course on easing :))
+			// TODO: Need to take a course on easing :))
 			// Coding math link: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
+			float d = tempSpeed*dt; 
 
-			float factor = 1.0f; // TODO: this should be a different curve rather than just linear, log() or something else, this should change depend of the distance between the camera and the player
-			float d = tempSpeed*factor * dt; 
-
-			// TODO: the easing only happens when you stopped 
-			// but the camera should also not follow at the same space at the player
-
-			// TODO: Currently something similar to tweening is working though 
-			// But the player can move pass the point so need someway to handle that 
 			camera->moveXBy(d);
 		}
 
