@@ -1,15 +1,16 @@
 TODO:  
-	ENEMY INTERACTION (SLASHING) WITH PLAYER (2h) [] @Current 
-		-> Player knock back physic []
-		-> Player death animation []
-
-	ENEMY ANIMATIONS (2h) []
-		ANIMATION PTS [] 
-		ANIMATION Installation []
-
-	ENEMY PLACEMENT AND GENERATION (2h) [] 
+	ENEMY PLACEMENT (2h) [] @Current 
+		place more enemies on to the level 
 
 	GRENADE (2h) []
+		Player's grenade 
+
+	PLAYER SHOOTING (2h) []
+
+	PLAYER KNOCK BACK PHYSIC []
+		-> knock back only plays when hit by projectile (bomb, bullet,...)
+		-> Figure out what's the knock back curve looks like 
+
 
 	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -27,6 +28,10 @@ TODO:
 			PLAYER CONTROLLED ENTITY HAVING A UPDATE() input
 
 	TAKE NEW WEAPON (2h) []
+
+	ENEMY ANIMATIONS (2h) []
+		ANIMATION PTS [] 
+		ANIMATION Installation []
 
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
@@ -50,12 +55,19 @@ TODO:
 				THE HOUSES (1h) [] @Later
 			INTO THE LEVEL 
 
+
 	THE CAMERA THAT FOLLOWS THE PLAYER HAVE SOME TWEENING (2h) [] @Current 
 		this is the link to the easing video: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
 
+
 	REFACTOR THE LEVEL1 INTO ANOTHER CLASS, THINGS STARTING TO GET CLUSTERED (2h) []
 
+
+	REBELS AI (4h) []
+
 	SIMPLE BOSS FIGHT (4h) []
+
+	ENEMY GENERATION (2h) [] 
 
 	FIXME: from background to collider have some jittery when the background sliding, maybe because it's the updating order Entity 
 		-> pretty everything seems jittery
@@ -108,6 +120,9 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	ENEMY INTERACTION (SLASHING) WITH PLAYER (2h) [X] 
+		-> Player standing death animation plays when get slash [X] 
+
 	HOSTAGE ONLY UNTIED WHEN THE PLAYER PRESS J (2h) [X] 
 
 	ENEMY (2h) [X] 

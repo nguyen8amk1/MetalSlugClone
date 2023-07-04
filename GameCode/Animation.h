@@ -25,6 +25,8 @@ private:
     PlatformSpecificImage* spriteSheet = nullptr;
     std::vector<Rect> pixelRects;
 
+	bool oneCycleFinish = false;
+
 public:
     Animation(AnimationMetaData& metaData, PlatformSpecficMethodsCollection* platformMethods);
     void animate(Camera *camera, double dt);
@@ -34,6 +36,7 @@ public:
     void moveXBy(float d) override;
     void moveYBy(float d) override;
     void setRect(const Rect& r);
+    bool finishOneCycle();
     Rect getRect();
     ~Animation();
 };

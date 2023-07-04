@@ -68,6 +68,7 @@ public:
 
 	}
 
+	double timeAccumulator = 0.0;
 	void update(LevelData &levelData, Camera *camera, double dt) {
 		// NOTE: This physic state is reused from  
 		// Modularize this 
@@ -110,11 +111,6 @@ public:
 			if (touchPlayer) {
 				currentAnimationState = AnimationState::SLASHING;
 				currentAnimation = slashingAnimation;
-
-				interactionRect.x = colliderRect.x - colliderRect.width/2;
-				interactionRect.y = colliderRect.y;
-				interactionRect.width = colliderRect.width/2;
-				interactionRect.height = colliderRect.height/2;
 			}
 			else if (playerInThrowingRange) {
 				currentAnimationState = AnimationState::THROWING_BOMB;
@@ -124,8 +120,17 @@ public:
 		}
 
 		case AnimationState::SLASHING: {
-			// TODO: 
-			// action:...
+			timeAccumulator += dt;
+			if (timeAccumulator >= .7f) {
+				interactionRect.x = colliderRect.x - colliderRect.width/2;
+				interactionRect.y = colliderRect.y;
+				interactionRect.width = colliderRect.width/2;
+				interactionRect.height = colliderRect.height/2;
+				timeAccumulator = 0;
+			}
+			else {
+				interactionRect = interactionRectDisabledRect;
+			}
 			// transition: to idling or throwing bomb 
 			// event: ...
 			break;

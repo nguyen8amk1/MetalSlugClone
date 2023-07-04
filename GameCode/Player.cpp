@@ -24,7 +24,8 @@ private:
 		IDLING,
 		JUMPING,
 		FALLING,
-		WALKING
+		WALKING, 
+		DYING
 	}Vec2f ;
 
 	PhysicState physicState = PhysicState::ONGROUND;
@@ -59,8 +60,13 @@ private:
 	AnimationMetaData fallingLegAnimationMetaData;
 	Animation* fallingLegAnimation;
 
+	AnimationMetaData dieAnimationMetaData; // row: 1, col: 19, 0, 97, 817, 40
+	Animation* dieAnimation;
+
 	Animation* currentAnimation;
 	Animation* currentLegAnimation;
+
+	bool die = false;
 
 	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
 	Rect interactionRect;
@@ -100,6 +106,9 @@ public:
 		Util::AnimationUtil::initAnimationMetaData(fallingLegAnimationMetaData, filename, .1f, 1, 6, {279, 64}, {-21, 25});
 		fallingLegAnimation = new Animation(fallingLegAnimationMetaData, platformMethods);
 
+		Util::AnimationUtil::initAnimationMetaData(dieAnimationMetaData, filename, .1f, 1, 19, {0, 97}, {43, 40});
+		dieAnimation = new Animation(dieAnimationMetaData, platformMethods);
+
 		currentAnimation = idlingAnimation;
 		currentLegAnimation = idlingLegAnimation;
 	}
@@ -119,31 +128,34 @@ public:
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
-		if (input.pressLeft) {
-			colliderRect.x -= (float)(moveSpeed*dt); 
-		}
-		else if (input.pressRight) {
-			colliderRect.x += (float)(moveSpeed*dt); 
-		}
-
-		if (input.pressShoot) {
-
-			bool facingRight = horizontalFacingDirection == 1;
-			bool facingLeft = horizontalFacingDirection == -1;
-			if (facingRight) {
-				interactionRect.x = colliderRect.x + colliderRect.width/2;
+		if (!die) {
+			if (input.pressLeft) {
+				colliderRect.x -= (float)(moveSpeed*dt); 
 			}
-			else if(facingLeft){
-				interactionRect.x = colliderRect.x - colliderRect.width/2;
+			else if (input.pressRight) {
+				colliderRect.x += (float)(moveSpeed*dt); 
 			}
 
-			interactionRect.y = colliderRect.y;
-			interactionRect.width = colliderRect.width/2;
-			interactionRect.height = colliderRect.height/2;
+			if (input.pressShoot) {
+
+				bool facingRight = horizontalFacingDirection == 1;
+				bool facingLeft = horizontalFacingDirection == -1;
+				if (facingRight) {
+					interactionRect.x = colliderRect.x + colliderRect.width/2;
+				}
+				else if(facingLeft){
+					interactionRect.x = colliderRect.x - colliderRect.width/2;
+				}
+
+				interactionRect.y = colliderRect.y;
+				interactionRect.width = colliderRect.width/2;
+				interactionRect.height = colliderRect.height/2;
+			}
+			else {
+				interactionRect = interactionRectDisabledRect;
+			}
 		}
-		else {
-			interactionRect = interactionRectDisabledRect;
-		}
+
 
 		if (levelData.levelStarted) {
 			// Physics state machine
@@ -176,7 +188,7 @@ public:
 				if (!collided) {
 					physicState = PhysicState::FALL;
 				}
-				else if(input.pressJump) {
+				else if(!die && input.pressJump) {
 					physicState = PhysicState::JUMPUP;
 					jumpT = 0;
 					originalGroundY = colliderRect.y; 
@@ -184,8 +196,7 @@ public:
 
 				bool hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, levelData.dangerRect);
 				if (hitDangerRect) {
-					// TODO: change to die animation and die physics
-					OutputDebugStringA(Util::MessageFormater::print("PLAYER DIEEEEEEE\n").c_str());
+					die = true;
 				}
 			}
 			else if (physicState == PhysicState::JUMPUP) {
@@ -242,14 +253,14 @@ public:
 			}
 
 			if (input.pressJump) {
-				animationState = AnimationState::JUMPING;
-				currentAnimation = jumpingAnimation;
-				currentLegAnimation = jumpingLegAnimation;
+				toJumpingAnimation();
 			}
 			else if (!onGround) {
-				animationState = AnimationState::FALLING;
-				currentAnimation = fallingAnimation;
-				currentLegAnimation = fallingLegAnimation;
+				toFallingAnimation();
+			}
+
+			if (die) {
+				toDyingAnimation();
 			}
 		}break;
 
@@ -261,38 +272,43 @@ public:
 				physicState != PhysicState::JUMPDOWN && 
 				physicState != PhysicState::FALL) {
 
-				animationState = AnimationState::IDLING;
-				currentAnimation = idlingAnimation;
-				currentLegAnimation = idlingLegAnimation;
+				toIdlingAnimation();
 			}
 			else if (physicState == PhysicState::JUMPUP) {
-				animationState = AnimationState::JUMPING;
-				currentAnimation = jumpingAnimation;
-				currentLegAnimation = jumpingLegAnimation;
+				toJumpingAnimation();
 			}
 			else if (physicState == PhysicState::FALL) {
-				animationState = AnimationState::FALLING;
-				currentAnimation = fallingAnimation;
-				currentLegAnimation = fallingLegAnimation;
+				toFallingAnimation();
+			}
+
+			if (die) {
+				toDyingAnimation();
 			}
 		} break;
 
 		case AnimationState::JUMPING: {
 			if (physicState == PhysicState::JUMPDOWN ||
 				physicState == PhysicState::FALL) {
-
-				animationState = AnimationState::FALLING;
-				currentAnimation = fallingAnimation;
-				currentLegAnimation = fallingLegAnimation;
+				toFallingAnimation();
 			}
 
 		} break;
 
 		case AnimationState::FALLING: {
 			if (physicState == PhysicState::ONGROUND) {
-				animationState = AnimationState::IDLING;
-				currentAnimation = idlingAnimation;
-				currentLegAnimation = idlingLegAnimation;
+				toIdlingAnimation();
+			}
+		} break;
+
+		case AnimationState::DYING: {
+			// TODO: 
+			// action: 
+			// event: 
+			bool doneDieAnimation = dieAnimation->finishOneCycle();
+			if (doneDieAnimation) {
+				toIdlingAnimation();
+				colliderRect.x -= .2f;
+				die = false;
 			}
 		} break;
 
@@ -321,13 +337,40 @@ public:
 
 		float legX = colliderRect.x;
 		float legY = colliderRect.y - .15f;
-		currentLegAnimation->changePos(legX, legY);
-		currentLegAnimation->flip(horizontalFacingDirection, 1);
-		currentLegAnimation->animate(camera, dt);
+
+		if (currentLegAnimation) {
+			currentLegAnimation->changePos(legX, legY);
+			currentLegAnimation->flip(horizontalFacingDirection, 1);
+			currentLegAnimation->animate(camera, dt);
+		}
 
 		currentAnimation->changePos(colliderRect.x, colliderRect.y);
 		currentAnimation->flip(horizontalFacingDirection, 1);
 		currentAnimation->animate(camera, dt);
+	}
+
+	void toIdlingAnimation() {
+		animationState = AnimationState::IDLING;
+		currentAnimation = idlingAnimation;
+		currentLegAnimation = idlingLegAnimation;
+	}
+
+	void toFallingAnimation() {
+		animationState = AnimationState::FALLING;
+		currentAnimation = fallingAnimation;
+		currentLegAnimation = fallingLegAnimation;
+	}
+
+	void toDyingAnimation() {
+		animationState = AnimationState::DYING;
+		currentAnimation = dieAnimation;
+		currentLegAnimation = NULL;
+	}
+
+	void toJumpingAnimation() {
+		animationState = AnimationState::JUMPING;
+		currentAnimation = jumpingAnimation;
+		currentLegAnimation = jumpingLegAnimation;
 	}
 
 	void moveXBy(float d) override {

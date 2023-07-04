@@ -34,10 +34,19 @@ void Animation::animate(Camera *camera, double dt) {
 	timeAccumulator += dt;
 	if (timeAccumulator >= animDelay) {
 		++currentFrameIndex;
+
+		if (currentFrameIndex >= pixelRects.size()) {
+			oneCycleFinish = true;
+		}
+		else {
+			oneCycleFinish = false;
+		}
+
 		currentFrameIndex %= pixelRects.size();
 
 		timeAccumulator -= animDelay;
 	}
+
 
 	/*
 	Rect r = rect;
@@ -136,6 +145,12 @@ Animation(float animDelay, const std::string &tiledSheetFileName, PlatformSpecfi
 	}
 }
 */
+
+bool Animation::finishOneCycle() {
+	bool t = oneCycleFinish;
+	oneCycleFinish = false;
+	return t;
+}
 
 Animation::~Animation() {
 }
