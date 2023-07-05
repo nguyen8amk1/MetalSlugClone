@@ -163,7 +163,6 @@ public:
 		delete fallingLegAnimation;
 	}
 
-
 	float firstHopHeight = .251851f;
 	float howFarFirstHop = 0.31097f;
 	float secondHopHeight = .15f;
