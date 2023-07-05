@@ -8,9 +8,23 @@ TODO:
 				Rotating
 				Explode 
 			
-		how the grenade moves ?? [] @Current 
+		how the grenade moves ?? [] 
 			total 2 hop 
 			total time: (284 - 249  + 1) = 36 frames (30fps)
+			separate the lerp into 2 axes x, y:  
+				each controlled by it's own t 
+				the up and down action will have separate lerp 
+				goals: 
+					from 0 to a in b time 
+					first let's try linear: @Current 
+						y: 
+							up 
+							down 
+						x: 
+
+			define (use for player as well): 
+				upCurve:-(yt - 1)^2 + 1  
+				downCurve: -yt^2 + 1
 
 			first hop:
 				Idea: 
@@ -20,29 +34,50 @@ TODO:
 				peak = (1017, 513);
 				throw base = (798, 648)
 
-				time: (266 - 249 + 1) = 18 frames -> .6s
-
+				time: (266 - 249 + 1) = 18 frames -> .6s 
 				height (from throw base to peak): (513 - 648) + 1 = 136 pixels; -> 136/1080 *2  = .251851
 				how far (half): (1017 - 798) + 1 = 220; -> 220/1920 * 2.714 = 0.31097;
 
-			second hop: @Todo  
+				y: 
+					up: upCurve * height
+					down: downCurve * height
+				x: xt * how_far/2
+
+				x += playerPos.x;
+				y += playerPos.y;
+
+			second hop:
 				peak = (1418, 662)
 				bounce base = (1261, 742)
-
 				time: (284 - 267 + 1) = 18 frames -> .6s
 				height: 742 - 662 + 1 = 81 -> 81/1080 *2 = .15
-				how far: 1600 - 1261 + 1 =  340/1920 * 2.714 = .4806  
+				how far: 1600 - 1261 + 1 =  340/1920 * 2.714 = .4806
+
+				y: 
+					up: upCurve * height
+					down: downCurve * height
+				x: xt * how_far/2
+
+				x += groundHit.x;
+				y += groundHit.y;
+
+			FOR NOW JUST DRAW A RECTANGLE FOR THE GRENADE @Current 
+
+			Current the old jumping method that we use does not adjust the speed of the interpolation using specific time frame 
+			but instead use the specific speed that seems good 
+			-> Make the speed depends on the time frame instead 
+			-> Meaning the t will go from 0 to 1 in a specific time 
+
 
 		player throwing animation (1 frame) 
 		grenade animation (1 frame) 
-
-		grenade bounce (2h) []
-			it's basically a jump physic at lower height
 
 
 	ENEMY THROWING GRENADE (with animation) (2h) []
 
 	PLAYER SHOOTING (2h) [] 
+
+	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) []
 
 	PLAYER KNOCK BACK PHYSIC []
 		-> knock back only plays when hit by projectile (bomb, bullet,...)

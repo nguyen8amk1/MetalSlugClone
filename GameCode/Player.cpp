@@ -206,15 +206,9 @@ public:
 				jumpProgress = -pow((jumpT-1), 2) + 1;
 				colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
 
-				// TODO: handle if sudden hit another object on the head -> physicState = FALL
-				bool suddenHitPlatform = false;
-
 				if (jumpT >= 1) {
 					jumpT -= 1;
 					physicState = PhysicState::JUMPDOWN;
-				}
-				else if (suddenHitPlatform) {
-					physicState = PhysicState::FALL;
 				}
 			}
 			else if (physicState == PhysicState::JUMPDOWN) {
