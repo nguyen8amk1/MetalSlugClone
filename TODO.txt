@@ -1,17 +1,14 @@
 TODO:  
-	ENEMY PLACEMENT (2h) [] @Current 
-		place more enemies on to the level 
-
-	GRENADE (2h) []
+	GRENADE (2h) [] @Current 
 		Player's grenade 
 
-	PLAYER SHOOTING (2h) []
+	PLAYER SHOOTING (2h) [] 
 
 	PLAYER KNOCK BACK PHYSIC []
 		-> knock back only plays when hit by projectile (bomb, bullet,...)
 		-> Figure out what's the knock back curve looks like 
 
-	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
+	LOAD THE LEVEL METADATA (JSON) FROM A FILE SO THAT NO NEED TO RECOMPILE (4h) []
 
 	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
 		AN ENTITY IN THE GAME INCLUDES: 
@@ -114,6 +111,9 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	ENEMY PLACEMENT (2h) [X] 
+		place more enemies on to the level 
+
 	ENEMY INTERACTION (SLASHING) WITH PLAYER (2h) [X] 
 		-> Player standing death animation plays when get slash [X] 
 

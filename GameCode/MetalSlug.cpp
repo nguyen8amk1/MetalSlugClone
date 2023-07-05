@@ -86,7 +86,8 @@ private:
 
 	LevelData levelData;
 
-	RebelSoilder *rebelSoilder;
+	std::vector<RebelSoilder*> rebelSoilders;
+	//RebelSoilder *rebelSoilder;
 
 	// TODO: I need a template class that takes  
 	// Collider 
@@ -280,10 +281,25 @@ private:
 		hostageColliderRect.height = .4f;
 		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
+		// Rebels 
 		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		rebelSoilder = new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods);
+		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+
+		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({630, 100 ,18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		rebelColliderRect.width = .2f;
+		rebelColliderRect.height = .4f;
+		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+
+		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({870, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
+		rebelColliderRect.width = .2f;
+		rebelColliderRect.height = .4f;
+		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+
+		for (RebelSoilder *rebelSoilder: rebelSoilders) {
+			levelData.dangerRects.push_back(rebelSoilder->getInteractionRect());
+		}
 	}
 
 	void displayDebug() {
@@ -308,11 +324,13 @@ private:
 		r.y = t.y;
 		platformMethods->drawRectangle(r, playerColor);
 
-		r = rebelSoilder->getInteractionRect();
-		t = camera->convertWorldPosToScreenPos({r.x, r.y});
-		r.x = t.x;
-		r.y = t.y;
-		platformMethods->drawRectangle(r, playerColor);
+		for (RebelSoilder *rebelSoilder: rebelSoilders) {
+			r = rebelSoilder->getInteractionRect();
+			t = camera->convertWorldPosToScreenPos({r.x, r.y});
+			r.x = t.x;
+			r.y = t.y;
+			platformMethods->drawRectangle(r, playerColor);
+		}
 		//OutputDebugStringA(Util::MessageFormater::print("Interaction rect: ", levelData.playerInteractionRect.x, ", ", levelData.playerInteractionRect.y, ", ", levelData.playerInteractionRect.width, ", ", levelData.playerInteractionRect.height, '\n').c_str());
 
 		for (RectangleCollider *ground : groundColliders) {
@@ -426,8 +444,12 @@ private:
 			hostage->update(levelData, camera, dt);
 		}
 
-		rebelSoilder->update(levelData, camera, dt);
-		levelData.dangerRect = rebelSoilder->getInteractionRect();
+		for (int i = 0; i < rebelSoilders.size(); i++) {
+			RebelSoilder* rebelSoilder = rebelSoilders[i];
+			rebelSoilder->update(levelData, camera, dt);
+			levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
+		}
+
 
 		player->update(input, levelData, camera, dt);
 

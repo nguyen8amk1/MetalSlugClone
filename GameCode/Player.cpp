@@ -194,7 +194,12 @@ public:
 					originalGroundY = colliderRect.y; 
 				}
 
-				bool hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, levelData.dangerRect);
+				bool hitDangerRect = false;
+				for (Rect dangerRect: levelData.dangerRects) {
+					hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, dangerRect);
+					if (hitDangerRect) break;
+				}
+
 				if (hitDangerRect) {
 					die = true;
 				}
