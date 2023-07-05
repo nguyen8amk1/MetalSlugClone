@@ -101,7 +101,7 @@ struct SDL2PlatformSpecificImage : MetalSlug::PlatformSpecificImage {
     }
 
     float getGameWidth() override {
-        return ((float)textureRect.w/320)*2.86;
+        return ((float)textureRect.w/304)*2.714;
     }
 
     float getGameHeight() override {

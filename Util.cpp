@@ -60,14 +60,15 @@ public:
 const class LevelUtil {
 public: 
 	static MetalSlug::Rect convertLevelColliderBlockPixelRectToGameRect(const MetalSlug::Rect& pixelRect, int backgroundPixelWidth, int backgroundPixelHeight) {
+		// NOTE: i have no idea what's going in this function, stay awayy  
 		float tx = backgroundPixelWidth/304.0f; 
 		float ty = backgroundPixelHeight/224.0f; 
 
-		float w = pixelRect.width/106.2937f;
-		float h = pixelRect.height/112.0f;
-
-		float x = (pixelRect.x/106.2937f) - 1.43*tx + w/2.0f;
-		float y = ty - (2*ty*pixelRect.y/backgroundPixelHeight) - h/2.0f;
+		float magicX = 112.0117f;
+		float w = pixelRect.width / magicX;
+		float h = pixelRect.height / 112.0f;
+		float x = (pixelRect.x / magicX) - 1.357f*tx + w / 2.0f;
+		float y = ty - (2 * ty * pixelRect.y / backgroundPixelHeight) - h / 2.0f;
 
 		return { x, y, w, h };
 	}

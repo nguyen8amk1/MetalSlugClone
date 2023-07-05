@@ -44,9 +44,10 @@ private:
 
 	// Level code
 	float cameraMovePointX = -.42f;
-	Rect preventGoingBackBlock = {-1.43f - .05f, 0, .1f, 2};
+	Rect preventGoingBackBlock = {-1.357f - .05f, 0, .1f, 2};
 	std::vector<Hostage*> hostages;
 	float endOfMapX = 0;
+	bool cameraGoesOutsideOfMap = false; 
 
 	// level1 
 	AnimationMetaData waterFallAnimationMetaData;
@@ -199,7 +200,7 @@ private:
 		cameraWaterFall2Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3251, 67, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraWaterFall3Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3355, 41, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		cameraWaterFall4Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3457, 14, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
-		cameraWaterFall5Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3517,	0, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
+		cameraWaterFall5Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 3517, 0, 304, 224 }, backgroundPixelWidth, backgroundPixelHeight);
 		endOfMapX = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3848, 0, 304, 224}, backgroundPixelWidth, backgroundPixelHeight).x;
 
 		//Vec2f cameraPosition = {-17.12425f, -0.357f}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
@@ -418,13 +419,14 @@ private:
 		r.x = t.x;
 		r.y = t.y;
 
-		bool outsideOfMap = camera->getPos().x >= endOfMapX; // FIXME: end of map still off a few pixels
-		if (r.x >= cameraMovePointX && !outsideOfMap) {
+		if (r.x >= cameraMovePointX) {
 			// TODO: Need to take a course on easing :))
 			// Coding math link: https://www.youtube.com/watch?v=zLh0K1PdUbc&ab_channel=CodingMath
-			float d = tempSpeed*dt; 
+			float d = tempSpeed * dt;
+			cameraGoesOutsideOfMap = camera->getPos().x + d >= endOfMapX;
 
-			camera->moveXBy(d);
+			if(!cameraGoesOutsideOfMap) 
+				camera->moveXBy(d);
 		}
 
 		CollisionInfo colInfo;

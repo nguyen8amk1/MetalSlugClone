@@ -1,6 +1,46 @@
 TODO:  
-	GRENADE (2h) [] @Current 
-		Player's grenade 
+	PLAYER THROWING GRENADE (with animation) (2h) []
+		GRENADE ALSO HAVE 2 STATE MACHINE: 
+			Physic state machine
+				First hop
+				Second hop
+			Animation state machine  
+				Rotating
+				Explode 
+			
+		how the grenade moves ?? [] @Current 
+			total 2 hop 
+			total time: (284 - 249  + 1) = 36 frames (30fps)
+
+			first hop:
+				Idea: 
+					the hop gonna be a parabolla from 
+						throw base to peak being half 
+
+				peak = (1017, 513);
+				throw base = (798, 648)
+
+				time: (266 - 249 + 1) = 18 frames -> .6s
+
+				height (from throw base to peak): (513 - 648) + 1 = 136 pixels; -> 136/1080 *2  = .251851
+				how far (half): (1017 - 798) + 1 = 220; -> 220/1920 * 2.714 = 0.31097;
+
+			second hop: @Todo  
+				peak = (1418, 662)
+				bounce base = (1261, 742)
+
+				time: (284 - 267 + 1) = 18 frames -> .6s
+				height: 742 - 662 + 1 = 81 -> 81/1080 *2 = .15
+				how far: 1600 - 1261 + 1 =  340/1920 * 2.714 = .4806  
+
+		player throwing animation (1 frame) 
+		grenade animation (1 frame) 
+
+		grenade bounce (2h) []
+			it's basically a jump physic at lower height
+
+
+	ENEMY THROWING GRENADE (with animation) (2h) []
 
 	PLAYER SHOOTING (2h) [] 
 
@@ -102,6 +142,7 @@ BUG:
 		-> pretty everything seems jittery
 		-> basically i see the shaking i believe
 
+		Pixel snapping is the problem
 		Possible Reason: 
 			the resolution is too small so the pixel snapping might have some hard time to snap, 
 			maybe adjust to a bigger resolution and somehow stretch the game sprites to fixed that instead of stretch 304x224 to x3

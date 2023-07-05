@@ -4,14 +4,11 @@
 #include "CollisionChecker.h"
 #include "../Util.cpp"
 
-// Only for test 
-#include "Windows.h"
-
 namespace MetalSlug {
 
 class Player: public CameraControlledEntity {
 private: 
-	Rect colliderRect = { -19.0f, .3f, .2f, .4f };
+	Rect colliderRect = { -17.8f, 1.0f, .2f, .4f };
 
 	enum class PhysicState {
 		ONGROUND,
