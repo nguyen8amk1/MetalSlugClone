@@ -142,6 +142,7 @@ public:
 				gameInput.pressRight = keyboardState[SDL_SCANCODE_D];
 				gameInput.pressJump = keyboardState[SDL_SCANCODE_K];
 				gameInput.pressShoot = keyboardState[SDL_SCANCODE_J];
+				gameInput.pressThrowGrenade = keyboardState[SDL_SCANCODE_U];
 
 				gameInput.pressUpArrow = keyboardState[SDL_SCANCODE_UP];
 				gameInput.pressDownArrow = keyboardState[SDL_SCANCODE_DOWN];

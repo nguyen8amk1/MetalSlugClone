@@ -8,7 +8,7 @@ TODO:
 				Rotating
 				Explode 
 			
-		how the grenade moves ?? [] 
+		how the grenade moves ?? [X] 
 			total 2 hop 
 			total time: (284 - 249  + 1) = 36 frames (30fps)
 			separate the lerp into 2 axes x, y:  
@@ -61,17 +61,16 @@ TODO:
 				x += groundHit.x;
 				y += groundHit.y;
 
-			FOR NOW JUST DRAW A RECTANGLE FOR THE GRENADE @Current 
-
-			Current the old jumping method that we use does not adjust the speed of the interpolation using specific time frame 
+			Current the old jumping method that we use does not adjust the speed of the interpolation using specific time frame @Current 
 			but instead use the specific speed that seems good 
 			-> Make the speed depends on the time frame instead 
 			-> Meaning the t will go from 0 to 1 in a specific time 
 
+		grenade animation (1 frame) [X]
 
 		player throwing animation (1 frame) 
-		grenade animation (1 frame) 
 
+	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM OTHERS LEG ANIMATION (2h) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) []
 

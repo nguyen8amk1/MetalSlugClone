@@ -32,6 +32,7 @@ struct GameInputContext {
 		pressDown = false,
 		pressJump = false,
 		pressShoot = false,
+		pressThrowGrenade = false,
 		pressUpArrow = false,
 		pressDownArrow = false,
 		pressLeftArrow = false,

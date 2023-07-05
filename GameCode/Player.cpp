@@ -4,6 +4,8 @@
 #include "CollisionChecker.h"
 #include "../Util.cpp"
 
+#include "Windows.h"
+
 namespace MetalSlug {
 
 class Player: public CameraControlledEntity {
@@ -22,7 +24,8 @@ private:
 		JUMPING,
 		FALLING,
 		WALKING, 
-		DYING
+		DYING, 
+		THROWING 
 	}Vec2f ;
 
 	PhysicState physicState = PhysicState::ONGROUND;
@@ -57,8 +60,11 @@ private:
 	AnimationMetaData fallingLegAnimationMetaData;
 	Animation* fallingLegAnimation;
 
-	AnimationMetaData dieAnimationMetaData; // row: 1, col: 19, 0, 97, 817, 40
+	AnimationMetaData dieAnimationMetaData; 
 	Animation* dieAnimation;
+
+	AnimationMetaData throwingAnimationMetaData; 
+	Animation* throwingAnimation;
 
 	Animation* currentAnimation;
 	Animation* currentLegAnimation;
@@ -68,6 +74,33 @@ private:
 	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
 	Rect interactionRect;
 
+	// Grenade 
+	Rect grenadeRect = { 0, 0, .1f, .1f };
+
+	enum class GrenadePhysicState {
+		NONE, 
+		FIRST_HOP_UP, 
+		FIRST_HOP_DOWN, 
+		SECOND_HOP_UP, 
+		SECOND_HOP_DOWN, 
+		ON_GROUND
+	};
+
+	enum class GrenadeAnimationState {
+		NONE,
+		FIRST_HOP, 
+		SECOND_HOP, 
+		EXPLODE
+	};
+
+	GrenadePhysicState currentGrenadePhysicState = GrenadePhysicState::NONE;
+	GrenadeAnimationState currentGrenadeAnimationState = GrenadeAnimationState::NONE;
+
+	AnimationMetaData grenadeSpinningAnimationMetaData;
+	Animation* grenadeSpinningAnimation;
+
+	Animation* currentGrenadeAnimation;
+	
 public: 
 	void changeGravity(float gravity) {
 		this->gravity = gravity;
@@ -106,6 +139,14 @@ public:
 		Util::AnimationUtil::initAnimationMetaData(dieAnimationMetaData, filename, .1f, 1, 19, {0, 97}, {43, 40});
 		dieAnimation = new Animation(dieAnimationMetaData, platformMethods);
 
+		// TODO: need the animation in the file 
+		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .1f, 1, 19, {0, 200}, {43, 40});
+		throwingAnimation = new Animation(throwingAnimationMetaData, platformMethods);
+
+		//Grenade
+		Util::AnimationUtil::initAnimationMetaData(grenadeSpinningAnimationMetaData, filename, .1f, 1, 1, {0, 428}, {11, 18}); //0, 428, 11, 18
+		grenadeSpinningAnimation = new Animation(grenadeSpinningAnimationMetaData, platformMethods);
+
 		currentAnimation = idlingAnimation;
 		currentLegAnimation = idlingLegAnimation;
 	}
@@ -122,6 +163,17 @@ public:
 		delete fallingLegAnimation;
 	}
 
+
+	float firstHopHeight = .251851f;
+	float howFarFirstHop = 0.31097f;
+	float secondHopHeight = .15f;
+	float howFarSecondHop = .4806f;
+
+	float xt = 0.0f;
+	float yt = 0.0f;
+	float grenadeSpeed = 3.0f;
+
+	Point originalGrenadePos;
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
@@ -258,6 +310,11 @@ public:
 			if (die) {
 				toDyingAnimation();
 			}
+			else if (input.pressThrowGrenade) {
+				grenadeInit();
+				toThrowingAnimation();
+			}
+
 		}break;
 
 		case AnimationState::WALKING: {
@@ -280,6 +337,11 @@ public:
 			if (die) {
 				toDyingAnimation();
 			}
+			else if (input.pressThrowGrenade) {
+				grenadeInit();
+				toThrowingAnimation();
+			}
+
 		} break;
 
 		case AnimationState::JUMPING: {
@@ -288,16 +350,25 @@ public:
 				toFallingAnimation();
 			}
 
+			if (!die && input.pressThrowGrenade) {
+				grenadeInit();
+				toThrowingAnimation();
+			}
+
 		} break;
 
 		case AnimationState::FALLING: {
 			if (physicState == PhysicState::ONGROUND) {
 				toIdlingAnimation();
 			}
+
+			if (!die && input.pressThrowGrenade) {
+				grenadeInit();
+				toThrowingAnimation();
+			}
 		} break;
 
 		case AnimationState::DYING: {
-			// TODO: 
 			// action: 
 			// event: 
 			bool doneDieAnimation = dieAnimation->finishOneCycle();
@@ -308,9 +379,115 @@ public:
 			}
 		} break;
 
+		case AnimationState::THROWING: {
+			// action: 
+			// event: 
+			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
+			if (doneThrowAnimation) {
+				// TODO: some how go to the state that it should be, one of 4:  jumping, falling, walking, idling 
+				toIdlingAnimation();
+			}
+		} break;
+
 		default: 
 			// TODO: handle error "Animation state not recoginize"
 			break;
+		}
+
+		// Grenade State Machine  
+		switch (currentGrenadePhysicState) {
+		case GrenadePhysicState::FIRST_HOP_UP: {
+			// action: 
+			xt += grenadeSpeed*dt;
+			yt += grenadeSpeed*dt;
+
+			// event: 
+			if (yt >= 1.0f) {
+				yt -= 1.0f;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_DOWN;
+				originalGrenadePos.x = grenadeRect.x;
+			}
+			else {
+				grenadeRect.x = originalGrenadePos.x + xt * howFarFirstHop / 2.0f;
+				grenadeRect.y = originalGrenadePos.y + upCurve(yt)* firstHopHeight;
+			}
+		} break;
+
+		case GrenadePhysicState::FIRST_HOP_DOWN: {
+			xt += grenadeSpeed*dt;
+			yt += grenadeSpeed*dt;
+
+			bool hitGround = false;
+			for (RectangleCollider *rect: levelData.groundColliders) {
+				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
+				if (hitGround) break;
+			}
+
+			if (hitGround) {
+				yt = 0;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_UP;
+
+				originalGrenadePos.x = grenadeRect.x;
+				originalGrenadePos.y = grenadeRect.y;
+			}
+			else {
+				grenadeRect.x = originalGrenadePos.x + xt * howFarFirstHop / 2.0f;
+				grenadeRect.y = originalGrenadePos.y + downCurve(yt)* firstHopHeight;
+			}
+
+		} break;
+
+		case GrenadePhysicState::SECOND_HOP_UP: {
+			// action: 
+			xt += grenadeSpeed*dt;
+			yt += grenadeSpeed*dt;
+
+			// event: 
+			if (yt >= 1.0f) {
+				yt -= 1.0f;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_DOWN;
+				originalGrenadePos.x = grenadeRect.x;
+			}
+			else {
+				grenadeRect.x = originalGrenadePos.x + xt * howFarSecondHop / 2.0f;
+				grenadeRect.y = originalGrenadePos.y + upCurve(yt)* secondHopHeight;
+			}
+		} break;
+
+		case GrenadePhysicState::SECOND_HOP_DOWN: {
+			xt += grenadeSpeed*dt;
+			yt += grenadeSpeed*dt;
+
+			bool hitGround = false;
+			for (RectangleCollider *rect: levelData.groundColliders) {
+				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
+				if (hitGround) break;
+			}
+
+			if (hitGround) {
+				yt = 0;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::NONE;
+
+				originalGrenadePos.x = grenadeRect.x;
+				originalGrenadePos.y = grenadeRect.y;
+			}
+			else {
+				grenadeRect.x = originalGrenadePos.x + xt * howFarSecondHop / 2.0f;
+				grenadeRect.y = originalGrenadePos.y + downCurve(yt)* secondHopHeight;
+			}
+
+		} break;
+
+		case GrenadePhysicState::ON_GROUND: {
+			// TODO: 
+			// action: 
+			// event: 
+
+		} break;
 		}
 
 		bool collided = false;
@@ -331,6 +508,14 @@ public:
 		*/
 		// @EndTest
 
+		//OutputDebugStringA(Util::MessageFormater::print(grenadeRect.x, ", ", grenadeRect.y, '\n').c_str());
+
+		if (currentGrenadeAnimation) {
+			currentGrenadeAnimation->changePos(grenadeRect.x, grenadeRect.y);
+			currentGrenadeAnimation->changeSize(grenadeRect.width, grenadeRect.height);
+			currentGrenadeAnimation->animate(camera, dt);
+		}
+
 		float legX = colliderRect.x;
 		float legY = colliderRect.y - .15f;
 
@@ -345,6 +530,7 @@ public:
 		currentAnimation->animate(camera, dt);
 	}
 
+private: 
 	void toIdlingAnimation() {
 		animationState = AnimationState::IDLING;
 		currentAnimation = idlingAnimation;
@@ -369,6 +555,28 @@ public:
 		currentLegAnimation = jumpingLegAnimation;
 	}
 
+	void toThrowingAnimation() {
+		animationState = AnimationState::THROWING;
+		currentAnimation = throwingAnimation;
+	}
+
+	float upCurve(float t) {
+		return -powf((t - 1), 2) + 1;
+	}
+
+	float downCurve(float t) {
+		return  -powf(t, 2) + 1;
+	}
+
+	void grenadeInit() {
+		currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_UP;
+		currentGrenadeAnimationState = GrenadeAnimationState::FIRST_HOP;
+		currentGrenadeAnimation = grenadeSpinningAnimation;
+		originalGrenadePos.x = colliderRect.x;
+		originalGrenadePos.y = colliderRect.y;
+	}
+
+public:
 	void moveXBy(float d) override {
 		colliderRect.x += d;
 	}
