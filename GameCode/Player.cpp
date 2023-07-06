@@ -164,9 +164,9 @@ public:
 	}
 
 	float firstHopHeight = .251851f;
-	float howFarFirstHop = 0.31097f;
+	float howFarFirstHop = .4806f;
 	float secondHopHeight = .15f;
-	float howFarSecondHop = .4806f;
+	float howFarSecondHop = 0.31097f;
 
 	float xt = 0.0f;
 	float yt = 0.0f;

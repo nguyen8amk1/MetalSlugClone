@@ -16,7 +16,7 @@ TODO:
 				the up and down action will have separate lerp 
 				goals: 
 					from 0 to a in b time 
-					first let's try linear: @Current 
+					first let's try linear: 
 						y: 
 							up 
 							down 
@@ -66,9 +66,13 @@ TODO:
 			-> Make the speed depends on the time frame instead 
 			-> Meaning the t will go from 0 to 1 in a specific time 
 
+			OR just have a function to calculate the speed needed from duration input @Dothis
+
 		grenade animation (1 frame) [X]
 
 		player throwing animation [] (can't find the animation in the image) (1 frame) 
+
+	@Reminder: Check hops how_far again 
 
 	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) []
 
