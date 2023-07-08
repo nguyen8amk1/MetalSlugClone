@@ -1,11 +1,5 @@
 TODO:  
-	CAN THROW MULTIPLE GRENADE (2h) [] 
-		-> put the grenade into another class first (1h) [X] 
-		-> everytime i press the throw button: add a grenade into the list and show it (1h) [X]
-		-> problem:	
-			can not throw a next grenade when the current grenade does not touch the ground yet (1h) [] @Current 
-			reasons: 
-				... 
+	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] @Current 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 
@@ -19,6 +13,7 @@ TODO:
 
 		how the api should be used ??: 
 			... 
+
 
 	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
 		AN ENTITY IN THE GAME INCLUDES: 
@@ -216,6 +211,15 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	CAN THROW MULTIPLE GRENADE (2h) [] 
+		-> put the grenade into another class first (1h) [X] 
+		-> everytime i press the throw button: add a grenade into the list and show it (1h) [X]
+		-> problem:	
+			can not throw a next grenade when the current grenade does not touch the ground yet (1h) [X] 
+			reasons: 
+				the throw input handling is in all the states except for the throwing state
+				so while in the throwing state you can't throw :v 
+
 	WE CAN REMOVE THE CAMERACONTROLLEDENTITY  thing now (2h) [X]
 	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [X] 
 		current state description: 

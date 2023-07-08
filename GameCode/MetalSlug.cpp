@@ -102,7 +102,6 @@ public:
 
 	PlatformDebugInfo *platformDebugInfo = NULL;
 
-
 	// NOTE: Player State Machine
 	// Player or dynamic entity in the game have 2 state machine: 
 	// Physic state machine

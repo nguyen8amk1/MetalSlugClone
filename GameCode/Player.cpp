@@ -371,6 +371,11 @@ public:
 				currentLegAnimation = fallingLegAnimation;
 			}
 
+			if (!die && input.pressThrowGrenade) {
+				throwGrenade();
+				// TODO: reset the throwing animation
+			}
+
 			// event: 
 			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
 			if (doneThrowAnimation) {
