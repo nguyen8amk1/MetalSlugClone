@@ -164,14 +164,20 @@ public:
 	}
 
 	float firstHopHeight = .251851f;
-	float howFarFirstHop = .4806f;
 	float secondHopHeight = .15f;
+
+	float grenadeXTimeAccumulator = 0.0f;
+	float grenadeYTimeAccumulator = 0.0f;
+
+	float howFarFirstHop = 0.4806f;
 	float howFarSecondHop = 0.31097f;
+
+	float firstHopDuration = 0.6f;
+	float secondHopDuration = 0.6f;
+
 
 	float xt = 0.0f;
 	float yt = 0.0f;
-	float grenadeSpeed = 3.0f;
-
 	Point originalGrenadePos;
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
@@ -397,8 +403,14 @@ public:
 		switch (currentGrenadePhysicState) {
 		case GrenadePhysicState::FIRST_HOP_UP: {
 			// action: 
-			xt += grenadeSpeed*dt;
-			yt += grenadeSpeed*dt;
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
 
 			// event: 
 			if (yt >= 1.0f) {
@@ -406,6 +418,9 @@ public:
 				xt = 0;
 				currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_DOWN;
 				originalGrenadePos.x = grenadeRect.x;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
 			}
 			else {
 				grenadeRect.x = originalGrenadePos.x + xt * howFarFirstHop / 2.0f;
@@ -414,8 +429,14 @@ public:
 		} break;
 
 		case GrenadePhysicState::FIRST_HOP_DOWN: {
-			xt += grenadeSpeed*dt;
-			yt += grenadeSpeed*dt;
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
 
 			bool hitGround = false;
 			for (RectangleCollider *rect: levelData.groundColliders) {
@@ -427,9 +448,12 @@ public:
 				yt = 0;
 				xt = 0;
 				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_UP;
-
 				originalGrenadePos.x = grenadeRect.x;
 				originalGrenadePos.y = grenadeRect.y;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
+
 			}
 			else {
 				grenadeRect.x = originalGrenadePos.x + xt * howFarFirstHop / 2.0f;
@@ -440,8 +464,14 @@ public:
 
 		case GrenadePhysicState::SECOND_HOP_UP: {
 			// action: 
-			xt += grenadeSpeed*dt;
-			yt += grenadeSpeed*dt;
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
 
 			// event: 
 			if (yt >= 1.0f) {
@@ -449,6 +479,9 @@ public:
 				xt = 0;
 				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_DOWN;
 				originalGrenadePos.x = grenadeRect.x;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
 			}
 			else {
 				grenadeRect.x = originalGrenadePos.x + xt * howFarSecondHop / 2.0f;
@@ -457,8 +490,14 @@ public:
 		} break;
 
 		case GrenadePhysicState::SECOND_HOP_DOWN: {
-			xt += grenadeSpeed*dt;
-			yt += grenadeSpeed*dt;
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
 
 			bool hitGround = false;
 			for (RectangleCollider *rect: levelData.groundColliders) {
@@ -473,6 +512,9 @@ public:
 
 				originalGrenadePos.x = grenadeRect.x;
 				originalGrenadePos.y = grenadeRect.y;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
 			}
 			else {
 				grenadeRect.x = originalGrenadePos.x + xt * howFarSecondHop / 2.0f;

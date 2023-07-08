@@ -73,5 +73,39 @@ public:
 		return { x, y, w, h };
 	}
 };
+const class Math {
+public:
+
+	// Clamp function for float values
+	static float clampf(float value, float min, float max) {
+		if (value < min) {
+			return min;
+		}
+		else if (value > max) {
+			return max;
+		}
+		else {
+			return value;
+		}
+	}
+
+	static float normalizef(float value, float range) {
+		// TODO: might need more checking before actually doing anything 
+		return value / range;
+	}
+
+	// Clamp function for int values
+	static int clampi(int value, int min, int max) {
+		if (value < min) {
+			return min;
+		}
+		else if (value > max) {
+			return max;
+		}
+		else {
+			return value;
+		}
+	}
+};
 
 }

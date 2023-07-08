@@ -209,7 +209,7 @@ private:
 
 		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
 		background = new Animation(backgroundMetaData, platformMethods);
-		Rect backgroundRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({0, 0, (float)backgroundPixelWidth, (float)backgroundPixelHeight}, backgroundPixelWidth, backgroundPixelHeight);
+		Rect backgroundRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 0, (float)backgroundPixelWidth, (float)backgroundPixelHeight }, backgroundPixelWidth, backgroundPixelHeight);
 		background->setRect(backgroundRect);
 
 		player = new Player(gravity, tempSpeed, platformMethods);
