@@ -1,21 +1,31 @@
 TODO:  
-	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [] 
-		current state description: 
-			the leg animation stuck at whatever state that throw the grenade  
-		The causes: 
-			the leg animation depends too much on the upper animation since the animation change change both of the upper to lower animation
-			but it should change them separately 
+	CAN THROW MULTIPLE GRENADE (2h) [] @Current 
 
-		Possible solution: @Current 
-			(maybe i will try both and see what's good, 
-			or maybe it's time to build a better state machine system)
+	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
+		what all the state machine have in common ??: 
+			the current state 
+			states actions 
+			the transition event 
+			the transitions works 
 
-			just separate completely 
+		What currently bundling between the states ??: 
+			...
 
-			or just manually set the leg animation on some distince animation @Dothisfirst
-			like throwing animation which the leg animation not depends on the upper animation at all 
+		how the api should be used ??: 
+			... 
 
-	CAN THROW MULTIPLE GRENADE (2h) []
+	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
+		AN ENTITY IN THE GAME INCLUDES: 
+			COLLIDER 
+			PHYSICS STATE MACHINE 	
+			ANIMATIONS
+			ANIMATION STATE MACHINE 
+
+		INJECT ALL OF THESE FROM OUTSIDE, SOMEHOW
+
+		MAYBE HAVE A CPU CONTROLLED ENTITY AND PLAYER CONTROLLED ENTITY ? 
+			CPU CONTROLLED ENTITY HAVING A UPDATE() without input
+			PLAYER CONTROLLED ENTITY HAVING A UPDATE() input
 
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
 		GRENADE ALSO HAVE 2 STATE MACHINE: 
@@ -111,19 +121,6 @@ TODO:
 
 	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) []
 
-	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
-		AN ENTITY IN THE GAME INCLUDES: 
-			COLLIDER 
-			PHYSICS STATE MACHINE 	
-			ANIMATIONS
-			ANIMATION STATE MACHINE 
-
-		INJECT ALL OF THESE FROM OUTSIDE, SOMEHOW
-
-		MAYBE HAVE A CPU CONTROLLED ENTITY AND PLAYER CONTROLLED ENTITY ? 
-			CPU CONTROLLED ENTITY HAVING A UPDATE() without input
-			PLAYER CONTROLLED ENTITY HAVING A UPDATE() input
-
 	TAKE NEW WEAPON (2h) []
 
 	ENEMY ANIMATIONS (2h) []
@@ -159,7 +156,6 @@ TODO:
 
 	ENEMY GENERATION (2h) [] 
 
-	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) []
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
@@ -214,6 +210,21 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [X] 
+		current state description: 
+			the leg animation stuck at whatever state that throw the grenade  
+		The causes: 
+			the leg animation depends too much on the upper animation since the animation change change both of the upper to lower animation
+			but it should change them separately 
+
+		Possible solution: 
+			(maybe i will try both and see what's good (or combine both),
+			or maybe it's time to build a better state machine system)
+
+			just separate completely 
+			or just manually set the leg animation on some distince animation [X] 
+			like throwing animation which the leg animation not depends on the upper animation at all 
+
 	CAN THROW THE GRENADE DEPENDS ON THE FACING (1h) [X] 
 	ENEMY PLACEMENT (2h) [X] 
 		place more enemies on to the level 

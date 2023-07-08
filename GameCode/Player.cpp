@@ -100,6 +100,8 @@ private:
 	Animation* grenadeSpinningAnimation;
 
 	Animation* currentGrenadeAnimation;
+
+	int grenadeDirection = 1;  
 	
 public: 
 	void changeGravity(float gravity) {
@@ -387,6 +389,28 @@ public:
 		case AnimationState::THROWING: {
 			// action: 
 			// TODO: check whatever leg animation and change to it
+			if (input.pressLeft) {
+				horizontalFacingDirection = -1;
+				currentLegAnimation = walkingLegAnimation;
+			}
+			else if (input.pressRight) {
+				horizontalFacingDirection = 1;
+				currentLegAnimation = walkingLegAnimation;
+			}
+
+			bool isPressingMove = input.pressLeft || input.pressRight;
+			if (!isPressingMove && 
+				physicState != PhysicState::JUMPUP && 
+				physicState != PhysicState::JUMPDOWN && 
+				physicState != PhysicState::FALL) {
+				currentLegAnimation = idlingLegAnimation;
+			}
+			else if (physicState == PhysicState::JUMPUP) {
+				currentLegAnimation = jumpingLegAnimation;
+			}
+			else if (physicState == PhysicState::FALL) {
+				currentLegAnimation = fallingLegAnimation;
+			}
 
 			// event: 
 			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
@@ -487,6 +511,7 @@ private:
 		currentGrenadeAnimation = grenadeSpinningAnimation;
 		originalGrenadePos.x = colliderRect.x;
 		originalGrenadePos.y = colliderRect.y;
+		grenadeDirection = horizontalFacingDirection;
 	}
 
 	void grenadeStateMachineUpdate(double dt, LevelData &levelData) {
@@ -516,7 +541,7 @@ private:
 			else {
 				float xd = xt * howFarFirstHop / 2.0f;
 				float yd = upCurve(yt) * firstHopHeight;
-				if (horizontalFacingDirection == -1) {
+				if (grenadeDirection == -1) {
 					xd = -xd;
 				}
 
@@ -555,7 +580,7 @@ private:
 			else {
 				float xd = xt * howFarFirstHop / 2.0f;
 				float yd = downCurve(yt) * firstHopHeight;
-				if (horizontalFacingDirection == -1) {
+				if (grenadeDirection == -1) {
 					xd = -xd;
 				}
 
@@ -589,7 +614,7 @@ private:
 			else {
 				float xd = xt * howFarSecondHop / 2.0f;
 				float yd = upCurve(yt) * secondHopHeight;
-				if (horizontalFacingDirection == -1) {
+				if (grenadeDirection == -1) {
 					xd = -xd;
 				}
 
@@ -628,7 +653,7 @@ private:
 			else {
 				float xd = xt * howFarSecondHop / 2.0f;
 				float yd = downCurve(yt) * secondHopHeight;
-				if (horizontalFacingDirection == -1) {
+				if (grenadeDirection == -1) {
 					xd = -xd;
 				}
 
