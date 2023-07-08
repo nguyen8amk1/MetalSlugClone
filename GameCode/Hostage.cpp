@@ -7,7 +7,7 @@
 
 namespace MetalSlug {
 
-class Hostage: public CameraControlledEntity {
+class Hostage {
 private: 
 	Rect hostageColliderRect;
 
@@ -118,11 +118,11 @@ public:
 		platformMethods->drawRectangle(r, testCol);
 	}
 
-	void moveXBy(float d) override {
+	void moveXBy(float d) {
 		hostageColliderRect.x += d;
 	}
 
-	void moveYBy(float d) override {
+	void moveYBy(float d) {
 		hostageColliderRect.y += d;
 	}
 };

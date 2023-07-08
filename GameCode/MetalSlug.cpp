@@ -28,7 +28,6 @@ private:
 	GameText *playerAnimationStateText = NULL;
 
 	std::vector<RectangleCollider*> groundColliders;
-	std::vector<CameraControlledEntity*> entities;
 
 	Color collidedColor = {255, 0, 0, 255};
 	Color groundColor = {255, 255, 0, 255};

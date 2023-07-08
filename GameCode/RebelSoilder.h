@@ -5,7 +5,7 @@
 #include "CollisionChecker.h"
 
 namespace MetalSlug {
-class RebelSoilder: public CameraControlledEntity {
+class RebelSoilder {
 private: 
 	// Collider 
 	Rect colliderRect;
@@ -158,11 +158,11 @@ public:
 
 	}
 
-	void moveXBy(float d) override {
+	void moveXBy(float d) {
 		colliderRect.x += d;
 	}
 
-	void moveYBy(float d) override {
+	void moveYBy(float d) {
 		colliderRect.y += d;
 	}
 

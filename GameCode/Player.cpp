@@ -9,7 +9,7 @@
 
 namespace MetalSlug {
 
-class Player: public CameraControlledEntity {
+class Player {
 private: 
 	Rect colliderRect = { -17.8f, 1.0f, .2f, .4f };
 
@@ -462,11 +462,11 @@ private:
 
 
 public:
-	void moveXBy(float d) override {
+	void moveXBy(float d) {
 		colliderRect.x += d;
 	}
 
-	void moveYBy(float d) override {
+	void moveYBy(float d) {
 		colliderRect.y += d;
 	}
 

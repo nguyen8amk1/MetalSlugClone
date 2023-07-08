@@ -4,8 +4,8 @@ TODO:
 		-> everytime i press the throw button: add a grenade into the list and show it (1h) [X]
 		-> problem:	
 			can not throw a next grenade when the current grenade does not touch the ground yet (1h) [] @Current 
-
-	WE CAN REMOVE THE CAMERACONTROLLEDENTITY  thing now (2h) []
+			reasons: 
+				... 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 
@@ -216,6 +216,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	WE CAN REMOVE THE CAMERACONTROLLEDENTITY  thing now (2h) [X]
 	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [X] 
 		current state description: 
 			the leg animation stuck at whatever state that throw the grenade  

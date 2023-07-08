@@ -102,13 +102,6 @@ public:
 };
 
 
-class CameraControlledEntity {
-public: 
-	virtual void moveXBy(float d) = 0;
-	virtual void moveYBy(float d) = 0;
-};
-
-
 class Camera {
 private: 
 	Vec2f currentPosition;
@@ -152,24 +145,12 @@ public:
 	}
 };
 
-class RectangleCollider : public CameraControlledEntity {
+class RectangleCollider {
 private: 
 	Rect rect;
 public: 
 	RectangleCollider(Rect rect) {
 		this->rect = rect;
-	}
-
-	void moveXBy(float d) override {
-		rect.x += d;
-	}
-
-	void moveYBy(float d) override {
-		rect.y += d;
-	}
-
-	void update(Camera &camera) {
-		camera.convertWorldPosToScreenPos({rect.x, rect.y});
 	}
 
 	Rect getRect() { return this->rect; }
