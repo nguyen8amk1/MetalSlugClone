@@ -1,7 +1,9 @@
 TODO:  
-	CAN THROW MULTIPLE GRENADE (2h) [] @Current 
+	CAN THROW MULTIPLE GRENADE (2h) [] 
 		-> put the grenade into another class first (1h) [X] 
-		-> what to do next ?? 
+		-> everytime i press the throw button: add a grenade into the list and show it (1h) [X]
+		-> problem:	
+			can not throw a next grenade when the current grenade does not touch the ground yet (1h) [] @Current 
 
 	WE CAN REMOVE THE CAMERACONTROLLEDENTITY  thing now (2h) []
 

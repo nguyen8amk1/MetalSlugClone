@@ -2,7 +2,6 @@
 #include "Animation.h"
 #include "MetalSlug.h"
 #include "../Util.cpp"
-#include "Windows.h"
 
 namespace MetalSlug {
 
@@ -227,9 +226,6 @@ public:
 
 		} break;
 		}
-
-
-		OutputDebugStringA(Util::MessageFormater::print(colliderRect.x, ", ", colliderRect.y, '\n').c_str());
 		
 		if (currentAnimation) {
 			currentAnimation->changePos(colliderRect.x, colliderRect.y);

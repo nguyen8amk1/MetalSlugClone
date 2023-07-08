@@ -75,8 +75,11 @@ private:
 	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
 	Rect interactionRect;
 
-	Grenade* grenade;
-	
+	std::vector<Grenade*> grenades;
+	Rect grenadeRect = { 0, 0, .1f, .1f };
+
+	PlatformSpecficMethodsCollection* platformMethods;
+
 public: 
 	void changeGravity(float gravity) {
 		this->gravity = gravity;
@@ -84,11 +87,10 @@ public:
 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
 		// test 
-		Rect grenadeRect = { 0, 0, .1f, .1f };
-		grenade = new Grenade(grenadeRect, platformMethods);
-
 		this->moveSpeed = moveSpeed;
 		this->gravity = gravity;
+
+		this->platformMethods = platformMethods;
 
 		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
 		Util::AnimationUtil::initAnimationMetaData(idlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
@@ -275,7 +277,7 @@ public:
 				toDyingAnimation();
 			}
 			else if (input.pressThrowGrenade) {
-				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+				throwGrenade();
 				toThrowingAnimation();
 			}
 
@@ -302,7 +304,7 @@ public:
 				toDyingAnimation();
 			}
 			else if (input.pressThrowGrenade) {
-				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+				throwGrenade();
 				toThrowingAnimation();
 			}
 
@@ -315,7 +317,7 @@ public:
 			}
 
 			if (!die && input.pressThrowGrenade) {
-				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+				throwGrenade();
 				toThrowingAnimation();
 			}
 
@@ -327,7 +329,7 @@ public:
 			}
 
 			if (!die && input.pressThrowGrenade) {
-				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+				throwGrenade();
 				toThrowingAnimation();
 			}
 		} break;
@@ -382,7 +384,9 @@ public:
 			break;
 		}
 
-		grenade->update(camera, dt, levelData);
+		for (Grenade *grenade: grenades) {
+			grenade->update(camera, dt, levelData);
+		}
 		
 		/*
 		bool collided = false;
@@ -448,6 +452,14 @@ private:
 		animationState = AnimationState::THROWING;
 		currentAnimation = throwingAnimation;
 	}
+
+	void throwGrenade()
+	{
+		Grenade *grenade = new Grenade(grenadeRect, platformMethods);
+		grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+		grenades.push_back(grenade);
+	}
+
 
 public:
 	void moveXBy(float d) override {
