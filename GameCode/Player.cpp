@@ -288,7 +288,7 @@ public:
 			}
 		}
 
-		// animation state machine (sometimes the animation state based on the physics state)
+		// ANIMATION STATE MACHINE (sometimes the animation state based on the physics state)
 		switch (animationState) {
 		case AnimationState::IDLING: {
 			bool onGround = physicState == PhysicState::ONGROUND;
@@ -386,6 +386,8 @@ public:
 
 		case AnimationState::THROWING: {
 			// action: 
+			// TODO: check whatever leg animation and change to it
+
 			// event: 
 			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
 			if (doneThrowAnimation) {

@@ -1,6 +1,19 @@
 TODO:  
-	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [] @Current 
-		description: ... 
+	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [] 
+		current state description: 
+			the leg animation stuck at whatever state that throw the grenade  
+		The causes: 
+			the leg animation depends too much on the upper animation since the animation change change both of the upper to lower animation
+			but it should change them separately 
+
+		Possible solution: @Current 
+			(maybe i will try both and see what's good, 
+			or maybe it's time to build a better state machine system)
+
+			just separate completely 
+
+			or just manually set the leg animation on some distince animation @Dothisfirst
+			like throwing animation which the leg animation not depends on the upper animation at all 
 
 	CAN THROW MULTIPLE GRENADE (2h) []
 
