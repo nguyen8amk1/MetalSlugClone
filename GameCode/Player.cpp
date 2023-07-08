@@ -399,138 +399,8 @@ public:
 			break;
 		}
 
-		// Grenade State Machine  
-		switch (currentGrenadePhysicState) {
-		case GrenadePhysicState::FIRST_HOP_UP: {
-			// action: 
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
-
-			// event: 
-			if (yt >= 1.0f) {
-				yt -= 1.0f;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_DOWN;
-				originalGrenadePos.x = grenadeRect.x;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-			}
-			else {
-				grenadeRect.x = originalGrenadePos.x + xt * howFarFirstHop / 2.0f;
-				grenadeRect.y = originalGrenadePos.y + upCurve(yt)* firstHopHeight;
-			}
-		} break;
-
-		case GrenadePhysicState::FIRST_HOP_DOWN: {
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
-
-			bool hitGround = false;
-			for (RectangleCollider *rect: levelData.groundColliders) {
-				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
-				if (hitGround) break;
-			}
-
-			if (hitGround) {
-				yt = 0;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_UP;
-				originalGrenadePos.x = grenadeRect.x;
-				originalGrenadePos.y = grenadeRect.y;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-
-			}
-			else {
-				grenadeRect.x = originalGrenadePos.x + xt * howFarFirstHop / 2.0f;
-				grenadeRect.y = originalGrenadePos.y + downCurve(yt)* firstHopHeight;
-			}
-
-		} break;
-
-		case GrenadePhysicState::SECOND_HOP_UP: {
-			// action: 
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
-
-			// event: 
-			if (yt >= 1.0f) {
-				yt -= 1.0f;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_DOWN;
-				originalGrenadePos.x = grenadeRect.x;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-			}
-			else {
-				grenadeRect.x = originalGrenadePos.x + xt * howFarSecondHop / 2.0f;
-				grenadeRect.y = originalGrenadePos.y + upCurve(yt)* secondHopHeight;
-			}
-		} break;
-
-		case GrenadePhysicState::SECOND_HOP_DOWN: {
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
-
-			bool hitGround = false;
-			for (RectangleCollider *rect: levelData.groundColliders) {
-				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
-				if (hitGround) break;
-			}
-
-			if (hitGround) {
-				yt = 0;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::NONE;
-
-				originalGrenadePos.x = grenadeRect.x;
-				originalGrenadePos.y = grenadeRect.y;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-			}
-			else {
-				grenadeRect.x = originalGrenadePos.x + xt * howFarSecondHop / 2.0f;
-				grenadeRect.y = originalGrenadePos.y + downCurve(yt)* secondHopHeight;
-			}
-
-		} break;
-
-		case GrenadePhysicState::ON_GROUND: {
-			// TODO: 
-			// action: 
-			// event: 
-
-		} break;
-		}
-
+		grenadeStateMachineUpdate(dt, levelData);
+		
 		bool collided = false;
 		for (RectangleCollider *ground: levelData.groundColliders) {
 			collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
@@ -615,6 +485,164 @@ private:
 		currentGrenadeAnimation = grenadeSpinningAnimation;
 		originalGrenadePos.x = colliderRect.x;
 		originalGrenadePos.y = colliderRect.y;
+	}
+
+	void grenadeStateMachineUpdate(double dt, LevelData &levelData) {
+		// Grenade State Machine  
+		switch (currentGrenadePhysicState) {
+		case GrenadePhysicState::FIRST_HOP_UP: {
+			// action: 
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
+
+			// event: 
+			if (yt >= 1.0f) {
+				yt -= 1.0f;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_DOWN;
+				originalGrenadePos.x = grenadeRect.x;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
+			}
+			else {
+				float xd = xt * howFarFirstHop / 2.0f;
+				float yd = upCurve(yt) * firstHopHeight;
+				if (horizontalFacingDirection == -1) {
+					xd = -xd;
+				}
+
+				grenadeRect.x = originalGrenadePos.x + xd;
+				grenadeRect.y = originalGrenadePos.y + yd;
+			}
+		} break;
+
+		case GrenadePhysicState::FIRST_HOP_DOWN: {
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
+
+			bool hitGround = false;
+			for (RectangleCollider *rect: levelData.groundColliders) {
+				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
+				if (hitGround) break;
+			}
+
+			if (hitGround) {
+				yt = 0;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_UP;
+				originalGrenadePos.x = grenadeRect.x;
+				originalGrenadePos.y = grenadeRect.y;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
+
+			}
+			else {
+				float xd = xt * howFarFirstHop / 2.0f;
+				float yd = downCurve(yt) * firstHopHeight;
+				if (horizontalFacingDirection == -1) {
+					xd = -xd;
+				}
+
+				grenadeRect.x = originalGrenadePos.x + xd;
+				grenadeRect.y = originalGrenadePos.y + yd;
+			}
+
+		} break;
+
+		case GrenadePhysicState::SECOND_HOP_UP: {
+			// action: 
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
+
+			// event: 
+			if (yt >= 1.0f) {
+				yt -= 1.0f;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_DOWN;
+				originalGrenadePos.x = grenadeRect.x;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
+			}
+			else {
+				float xd = xt * howFarSecondHop / 2.0f;
+				float yd = upCurve(yt) * secondHopHeight;
+				if (horizontalFacingDirection == -1) {
+					xd = -xd;
+				}
+
+				grenadeRect.x = originalGrenadePos.x + xd;
+				grenadeRect.y = originalGrenadePos.y + yd;
+			}
+		} break;
+
+		case GrenadePhysicState::SECOND_HOP_DOWN: {
+			grenadeXTimeAccumulator += dt;
+			grenadeYTimeAccumulator += dt;
+
+			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
+			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
+
+			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
+			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
+
+			bool hitGround = false;
+			for (RectangleCollider *rect: levelData.groundColliders) {
+				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
+				if (hitGround) break;
+			}
+
+			if (hitGround) {
+				yt = 0;
+				xt = 0;
+				currentGrenadePhysicState = GrenadePhysicState::NONE;
+
+				originalGrenadePos.x = grenadeRect.x;
+				originalGrenadePos.y = grenadeRect.y;
+
+				grenadeXTimeAccumulator = 0;
+				grenadeYTimeAccumulator = 0;
+			}
+			else {
+				float xd = xt * howFarSecondHop / 2.0f;
+				float yd = downCurve(yt) * secondHopHeight;
+				if (horizontalFacingDirection == -1) {
+					xd = -xd;
+				}
+
+				grenadeRect.x = originalGrenadePos.x + xd;
+				grenadeRect.y = originalGrenadePos.y + yd;
+			}
+
+		} break;
+
+		case GrenadePhysicState::ON_GROUND: {
+			// TODO: 
+			// action: 
+			// event: 
+
+		} break;
+		}
 	}
 
 public:

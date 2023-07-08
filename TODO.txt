@@ -1,4 +1,9 @@
 TODO:  
+	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) [] @Current 
+		description: ... 
+
+	CAN THROW MULTIPLE GRENADE (2h) []
+
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
 		GRENADE ALSO HAVE 2 STATE MACHINE: 
 			Physic state machine
@@ -68,20 +73,14 @@ TODO:
 				x += groundHit.x;
 				y += groundHit.y;
 
-			Currently the old jumping method that we use does not adjust the speed of the interpolation using specific time frame (1h) [X] @Current 
+			Currently the old jumping method that we use does not adjust the speed of the interpolation using specific time frame (1h) [X] 
 			but instead use the specific speed that seems good 
 
 		grenade animation (1 frame) [X]
 
-		player throwing animation [] (can't find the animation in the image) (1 frame) 
+		player throwing animation [] (can't find the animation in the image) (1 frame) @Later
 
 	@Reminder: Check hops how_far again 
-
-	THE THROWING ANIMATION SHOULD BE INDEPENDENT FROM LEG ANIMATION (2h) []
-
-	CAN THROW THE GRENADE DEPENDS ON THE FACING (1h) [] 
-
-	CAN THROW MULTIPLE GRENADE (2h) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) []
 
@@ -202,6 +201,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	CAN THROW THE GRENADE DEPENDS ON THE FACING (1h) [X] 
 	ENEMY PLACEMENT (2h) [X] 
 		place more enemies on to the level 
 
@@ -258,7 +258,7 @@ DONE:
 		
 	-> wrap them up and place them all over the map [X] 
 
-	FINISH THE BASIC SPRITESHEET ANIMATION FOR THE PLAYER IN PTS (2h) [X] @Current - the leg is still not done 
+	FINISH THE BASIC SPRITESHEET ANIMATION FOR THE PLAYER IN PTS (2h) [X] - the leg is still not done 
 
 	FULLSCREEN BUG: AFTER TOGGLE THE FULLSCREEN VS SMALLSCREEN, TEXTURE TURN BLACK
 	FIX: black background when having transparent background (2h) 
