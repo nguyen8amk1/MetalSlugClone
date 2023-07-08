@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="GameCode\Animation.h" />
     <ClInclude Include="GameCode\CollisionChecker.h" />
+    <ClInclude Include="GameCode\Grenade.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

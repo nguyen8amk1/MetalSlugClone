@@ -1,5 +1,9 @@
 TODO:  
 	CAN THROW MULTIPLE GRENADE (2h) [] @Current 
+		-> put the grenade into another class first (1h) [X] 
+		-> what to do next ?? 
+
+	WE CAN REMOVE THE CAMERACONTROLLEDENTITY  thing now (2h) []
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 

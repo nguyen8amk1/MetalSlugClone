@@ -82,5 +82,8 @@
     <ClInclude Include="GameCode\CollisionChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameCode\Grenade.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

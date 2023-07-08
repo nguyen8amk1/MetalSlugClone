@@ -4,7 +4,8 @@
 #include "CollisionChecker.h"
 #include "../Util.cpp"
 
-#include "Windows.h"
+//#include "Windows.h"
+#include "Grenade.h"
 
 namespace MetalSlug {
 
@@ -74,34 +75,7 @@ private:
 	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
 	Rect interactionRect;
 
-	// Grenade 
-	Rect grenadeRect = { 0, 0, .1f, .1f };
-
-	enum class GrenadePhysicState {
-		NONE, 
-		FIRST_HOP_UP, 
-		FIRST_HOP_DOWN, 
-		SECOND_HOP_UP, 
-		SECOND_HOP_DOWN, 
-		ON_GROUND
-	};
-
-	enum class GrenadeAnimationState {
-		NONE,
-		FIRST_HOP, 
-		SECOND_HOP, 
-		EXPLODE
-	};
-
-	GrenadePhysicState currentGrenadePhysicState = GrenadePhysicState::NONE;
-	GrenadeAnimationState currentGrenadeAnimationState = GrenadeAnimationState::NONE;
-
-	AnimationMetaData grenadeSpinningAnimationMetaData;
-	Animation* grenadeSpinningAnimation;
-
-	Animation* currentGrenadeAnimation;
-
-	int grenadeDirection = 1;  
+	Grenade* grenade;
 	
 public: 
 	void changeGravity(float gravity) {
@@ -109,6 +83,10 @@ public:
 	}
 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
+		// test 
+		Rect grenadeRect = { 0, 0, .1f, .1f };
+		grenade = new Grenade(grenadeRect, platformMethods);
+
 		this->moveSpeed = moveSpeed;
 		this->gravity = gravity;
 
@@ -145,10 +123,6 @@ public:
 		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .1f, 1, 19, {0, 200}, {43, 40});
 		throwingAnimation = new Animation(throwingAnimationMetaData, platformMethods);
 
-		//Grenade
-		Util::AnimationUtil::initAnimationMetaData(grenadeSpinningAnimationMetaData, filename, .1f, 1, 1, {0, 428}, {11, 18}); //0, 428, 11, 18
-		grenadeSpinningAnimation = new Animation(grenadeSpinningAnimationMetaData, platformMethods);
-
 		currentAnimation = idlingAnimation;
 		currentLegAnimation = idlingLegAnimation;
 	}
@@ -164,23 +138,6 @@ public:
 		delete jumpingLegAnimation;
 		delete fallingLegAnimation;
 	}
-
-	float firstHopHeight = .251851f;
-	float secondHopHeight = .15f;
-
-	float grenadeXTimeAccumulator = 0.0f;
-	float grenadeYTimeAccumulator = 0.0f;
-
-	float howFarFirstHop = 0.4806f;
-	float howFarSecondHop = 0.31097f;
-
-	float firstHopDuration = 0.6f;
-	float secondHopDuration = 0.6f;
-
-
-	float xt = 0.0f;
-	float yt = 0.0f;
-	Point originalGrenadePos;
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
@@ -318,7 +275,7 @@ public:
 				toDyingAnimation();
 			}
 			else if (input.pressThrowGrenade) {
-				grenadeInit();
+				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 				toThrowingAnimation();
 			}
 
@@ -345,7 +302,7 @@ public:
 				toDyingAnimation();
 			}
 			else if (input.pressThrowGrenade) {
-				grenadeInit();
+				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 				toThrowingAnimation();
 			}
 
@@ -358,7 +315,7 @@ public:
 			}
 
 			if (!die && input.pressThrowGrenade) {
-				grenadeInit();
+				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 				toThrowingAnimation();
 			}
 
@@ -370,7 +327,7 @@ public:
 			}
 
 			if (!die && input.pressThrowGrenade) {
-				grenadeInit();
+				grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 				toThrowingAnimation();
 			}
 		} break;
@@ -388,7 +345,7 @@ public:
 
 		case AnimationState::THROWING: {
 			// action: 
-			// TODO: check whatever leg animation and change to it
+			// FIXME: This is not how it's suppose to work, need huge refactor later since the leg transition here is wrong 
 			if (input.pressLeft) {
 				horizontalFacingDirection = -1;
 				currentLegAnimation = walkingLegAnimation;
@@ -425,13 +382,15 @@ public:
 			break;
 		}
 
-		grenadeStateMachineUpdate(dt, levelData);
+		grenade->update(camera, dt, levelData);
 		
+		/*
 		bool collided = false;
 		for (RectangleCollider *ground: levelData.groundColliders) {
 			collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
 			if (collided) break;
 		}
+		*/
 
 		/*
 		if (collided) {
@@ -444,14 +403,7 @@ public:
 		}
 		*/
 		// @EndTest
-
 		//OutputDebugStringA(Util::MessageFormater::print(grenadeRect.x, ", ", grenadeRect.y, '\n').c_str());
-
-		if (currentGrenadeAnimation) {
-			currentGrenadeAnimation->changePos(grenadeRect.x, grenadeRect.y);
-			currentGrenadeAnimation->changeSize(grenadeRect.width, grenadeRect.height);
-			currentGrenadeAnimation->animate(camera, dt);
-		}
 
 		float legX = colliderRect.x;
 		float legY = colliderRect.y - .15f;
@@ -495,181 +447,6 @@ private:
 	void toThrowingAnimation() {
 		animationState = AnimationState::THROWING;
 		currentAnimation = throwingAnimation;
-	}
-
-	float upCurve(float t) {
-		return -powf((t - 1), 2) + 1;
-	}
-
-	float downCurve(float t) {
-		return  -powf(t, 2) + 1;
-	}
-
-	void grenadeInit() {
-		currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_UP;
-		currentGrenadeAnimationState = GrenadeAnimationState::FIRST_HOP;
-		currentGrenadeAnimation = grenadeSpinningAnimation;
-		originalGrenadePos.x = colliderRect.x;
-		originalGrenadePos.y = colliderRect.y;
-		grenadeDirection = horizontalFacingDirection;
-	}
-
-	void grenadeStateMachineUpdate(double dt, LevelData &levelData) {
-		// Grenade State Machine  
-		switch (currentGrenadePhysicState) {
-		case GrenadePhysicState::FIRST_HOP_UP: {
-			// action: 
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
-
-			// event: 
-			if (yt >= 1.0f) {
-				yt -= 1.0f;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::FIRST_HOP_DOWN;
-				originalGrenadePos.x = grenadeRect.x;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-			}
-			else {
-				float xd = xt * howFarFirstHop / 2.0f;
-				float yd = upCurve(yt) * firstHopHeight;
-				if (grenadeDirection == -1) {
-					xd = -xd;
-				}
-
-				grenadeRect.x = originalGrenadePos.x + xd;
-				grenadeRect.y = originalGrenadePos.y + yd;
-			}
-		} break;
-
-		case GrenadePhysicState::FIRST_HOP_DOWN: {
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, firstHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, firstHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, firstHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, firstHopDuration/2.0f);
-
-			bool hitGround = false;
-			for (RectangleCollider *rect: levelData.groundColliders) {
-				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
-				if (hitGround) break;
-			}
-
-			if (hitGround) {
-				yt = 0;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_UP;
-				originalGrenadePos.x = grenadeRect.x;
-				originalGrenadePos.y = grenadeRect.y;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-
-			}
-			else {
-				float xd = xt * howFarFirstHop / 2.0f;
-				float yd = downCurve(yt) * firstHopHeight;
-				if (grenadeDirection == -1) {
-					xd = -xd;
-				}
-
-				grenadeRect.x = originalGrenadePos.x + xd;
-				grenadeRect.y = originalGrenadePos.y + yd;
-			}
-
-		} break;
-
-		case GrenadePhysicState::SECOND_HOP_UP: {
-			// action: 
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
-
-			// event: 
-			if (yt >= 1.0f) {
-				yt -= 1.0f;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::SECOND_HOP_DOWN;
-				originalGrenadePos.x = grenadeRect.x;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-			}
-			else {
-				float xd = xt * howFarSecondHop / 2.0f;
-				float yd = upCurve(yt) * secondHopHeight;
-				if (grenadeDirection == -1) {
-					xd = -xd;
-				}
-
-				grenadeRect.x = originalGrenadePos.x + xd;
-				grenadeRect.y = originalGrenadePos.y + yd;
-			}
-		} break;
-
-		case GrenadePhysicState::SECOND_HOP_DOWN: {
-			grenadeXTimeAccumulator += dt;
-			grenadeYTimeAccumulator += dt;
-
-			Util::Math::clampf(grenadeXTimeAccumulator, 0, secondHopDuration/2.0f);
-			Util::Math::clampf(grenadeYTimeAccumulator, 0, secondHopDuration/2.0f);
-
-			xt = Util::Math::normalizef(grenadeXTimeAccumulator, secondHopDuration/2.0f);
-			yt = Util::Math::normalizef(grenadeYTimeAccumulator, secondHopDuration/2.0f);
-
-			bool hitGround = false;
-			for (RectangleCollider *rect: levelData.groundColliders) {
-				hitGround = CollisionChecker::doesRectangleVsRectangleCollide(grenadeRect, rect->getRect());
-				if (hitGround) break;
-			}
-
-			if (hitGround) {
-				yt = 0;
-				xt = 0;
-				currentGrenadePhysicState = GrenadePhysicState::NONE;
-
-				originalGrenadePos.x = grenadeRect.x;
-				originalGrenadePos.y = grenadeRect.y;
-
-				grenadeXTimeAccumulator = 0;
-				grenadeYTimeAccumulator = 0;
-			}
-			else {
-				float xd = xt * howFarSecondHop / 2.0f;
-				float yd = downCurve(yt) * secondHopHeight;
-				if (grenadeDirection == -1) {
-					xd = -xd;
-				}
-
-				grenadeRect.x = originalGrenadePos.x + xd;
-				grenadeRect.y = originalGrenadePos.y + yd;
-			}
-
-		} break;
-
-		case GrenadePhysicState::ON_GROUND: {
-			// TODO: 
-			// action: 
-			// event: 
-
-		} break;
-		}
 	}
 
 public:
