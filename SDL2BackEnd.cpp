@@ -136,22 +136,24 @@ public:
 
 				// Get keyboard state
 				keyboardState = SDL_GetKeyboardState(NULL);
-				gameInput.pressUp = keyboardState[SDL_SCANCODE_W];
-				gameInput.pressDown = keyboardState[SDL_SCANCODE_S];
-				gameInput.pressLeft = keyboardState[SDL_SCANCODE_A];
-				gameInput.pressRight = keyboardState[SDL_SCANCODE_D];
-				gameInput.pressJump = keyboardState[SDL_SCANCODE_K];
-				gameInput.pressShoot = keyboardState[SDL_SCANCODE_J];
-				gameInput.pressThrowGrenade = keyboardState[SDL_SCANCODE_U];
+				gameInput.up.isDown = keyboardState[SDL_SCANCODE_W];
+				gameInput.down.isDown = keyboardState[SDL_SCANCODE_S];
+				gameInput.left.isDown = keyboardState[SDL_SCANCODE_A];
+				gameInput.right.isDown = keyboardState[SDL_SCANCODE_D];
+				gameInput.jump.isDown = keyboardState[SDL_SCANCODE_K];
+				gameInput.shoot.isDown = keyboardState[SDL_SCANCODE_J];
+				gameInput.throwGrenade.isDown = keyboardState[SDL_SCANCODE_U];
 
-				gameInput.pressUpArrow = keyboardState[SDL_SCANCODE_UP];
-				gameInput.pressDownArrow = keyboardState[SDL_SCANCODE_DOWN];
-				gameInput.pressLeftArrow = keyboardState[SDL_SCANCODE_LEFT];
-				gameInput.pressRightArrow = keyboardState[SDL_SCANCODE_RIGHT];
-				gameInput.pressEnter = keyboardState[SDL_SCANCODE_RETURN];
+				gameInput.upArrow.isDown = keyboardState[SDL_SCANCODE_UP];
+				gameInput.downArrow.isDown = keyboardState[SDL_SCANCODE_DOWN];
+				gameInput.leftArrow.isDown = keyboardState[SDL_SCANCODE_LEFT];
+				gameInput.rightArrow.isDown = keyboardState[SDL_SCANCODE_RIGHT];
+				gameInput.enter.isDown = keyboardState[SDL_SCANCODE_RETURN];
 
-				gameInput.pressDebugZoomInBackground = keyboardState[SDL_SCANCODE_M];
-				gameInput.pressDebugZoomOutBackground = keyboardState[SDL_SCANCODE_N];
+				gameInput.debugZoomInBackground.isDown = keyboardState[SDL_SCANCODE_M];
+				gameInput.debugZoomOutBackground.isDown = keyboardState[SDL_SCANCODE_N];
+
+				// TODO: handle the isPressed here as well 
 
 				// TODO: Handle Joystick
 			}

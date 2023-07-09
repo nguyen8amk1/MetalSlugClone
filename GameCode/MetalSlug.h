@@ -25,24 +25,28 @@ struct PlatformDebugInfo {
 	float fps;
 };
 
-struct GameInputContext {
-	bool pressLeft = false,
-		pressRight = false,
-		pressUp = false,
-		pressDown = false,
-		pressJump = false,
-		pressShoot = false,
-		pressThrowGrenade = false,
-		pressUpArrow = false,
-		pressDownArrow = false,
-		pressLeftArrow = false,
-		pressRightArrow = false,
-		pressDebugZoomInBackground = false,
-		pressDebugZoomOutBackground = false,
-		pressEnter = false;
+struct Button {
+	bool isDown = false;
+	bool wasDown = false;
+	bool isPressed = false;
+};
 
-	bool mouseRightClick = false, 
-		mouseLeftClick = false;
+struct GameInputContext {
+	Button 
+		left = {},
+		right = {},
+		up = {},
+		down = {},
+		jump = {},
+		shoot = {},
+		throwGrenade = {},
+		upArrow = {},
+		downArrow = {},
+		leftArrow = {},
+		rightArrow = {},
+		debugZoomInBackground = {},
+		debugZoomOutBackground = {},
+		enter = {};
 };
 
 struct GameText {

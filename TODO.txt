@@ -1,5 +1,7 @@
 TODO:  
-	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] @Current 
+	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
+		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
+		-> figure out how to register the pressed event [] @Current 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 

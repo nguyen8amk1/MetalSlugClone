@@ -144,14 +144,14 @@ public:
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
 		if (!die) {
-			if (input.pressLeft) {
+			if (input.left.isDown) {
 				colliderRect.x -= (float)(moveSpeed*dt); 
 			}
-			else if (input.pressRight) {
+			else if (input.right.isDown) {
 				colliderRect.x += (float)(moveSpeed*dt); 
 			}
 
-			if (input.pressShoot) {
+			if (input.shoot.isDown) {
 
 				bool facingRight = horizontalFacingDirection == 1;
 				bool facingLeft = horizontalFacingDirection == -1;
@@ -203,7 +203,7 @@ public:
 				if (!collided) {
 					physicState = PhysicState::FALL;
 				}
-				else if(!die && input.pressJump) {
+				else if(!die && input.jump.isDown) {
 					physicState = PhysicState::JUMPUP;
 					jumpT = 0;
 					originalGroundY = colliderRect.y; 
@@ -253,20 +253,20 @@ public:
 		switch (animationState) {
 		case AnimationState::IDLING: {
 			bool onGround = physicState == PhysicState::ONGROUND;
-			if (input.pressLeft) {
+			if (input.left.isDown) {
 				animationState = AnimationState::WALKING;
 				horizontalFacingDirection = -1;
 				currentAnimation = walkingAnimation;
 				currentLegAnimation = walkingLegAnimation;
 			}
-			else if (input.pressRight) {
+			else if (input.right.isDown) {
 				animationState = AnimationState::WALKING;
 				horizontalFacingDirection = 1;
 				currentAnimation = walkingAnimation;
 				currentLegAnimation = walkingLegAnimation;
 			}
 
-			if (input.pressJump) {
+			if (input.jump.isDown) {
 				toJumpingAnimation();
 			}
 			else if (!onGround) {
@@ -276,7 +276,7 @@ public:
 			if (die) {
 				toDyingAnimation();
 			}
-			else if (input.pressThrowGrenade) {
+			else if (input.throwGrenade.isDown) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -285,7 +285,7 @@ public:
 
 		case AnimationState::WALKING: {
 
-			bool isPressingMove = input.pressLeft || input.pressRight;
+			bool isPressingMove = input.left.isDown || input.right.isDown;
 			if (!isPressingMove && 
 				physicState != PhysicState::JUMPUP && 
 				physicState != PhysicState::JUMPDOWN && 
@@ -303,7 +303,7 @@ public:
 			if (die) {
 				toDyingAnimation();
 			}
-			else if (input.pressThrowGrenade) {
+			else if (input.throwGrenade.isDown) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -316,7 +316,7 @@ public:
 				toFallingAnimation();
 			}
 
-			if (!die && input.pressThrowGrenade) {
+			if (!die && input.throwGrenade.isDown) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -328,7 +328,7 @@ public:
 				toIdlingAnimation();
 			}
 
-			if (!die && input.pressThrowGrenade) {
+			if (!die && input.throwGrenade.isDown) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -348,16 +348,16 @@ public:
 		case AnimationState::THROWING: {
 			// action: 
 			// FIXME: This is not how it's suppose to work, need huge refactor later since the leg transition here is wrong 
-			if (input.pressLeft) {
+			if (input.left.isDown) {
 				horizontalFacingDirection = -1;
 				currentLegAnimation = walkingLegAnimation;
 			}
-			else if (input.pressRight) {
+			else if (input.right.isDown) {
 				horizontalFacingDirection = 1;
 				currentLegAnimation = walkingLegAnimation;
 			}
 
-			bool isPressingMove = input.pressLeft || input.pressRight;
+			bool isPressingMove = input.left.isDown || input.right.isDown;
 			if (!isPressingMove && 
 				physicState != PhysicState::JUMPUP && 
 				physicState != PhysicState::JUMPDOWN && 
@@ -371,7 +371,7 @@ public:
 				currentLegAnimation = fallingLegAnimation;
 			}
 
-			if (!die && input.pressThrowGrenade) {
+			if (!die && input.throwGrenade.isDown) {
 				throwGrenade();
 				// TODO: reset the throwing animation
 			}
