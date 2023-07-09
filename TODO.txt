@@ -1,35 +1,4 @@
 TODO:  
-	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
-		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
-		-> figure out how to register the pressed event [] @Current 
-
-	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
-		what all the state machine have in common ??: 
-			the current state 
-			states actions 
-			the transition event 
-			the transitions works 
-
-		What currently bundling between the states ??: 
-			...
-
-		how the api should be used ??: 
-			... 
-
-
-	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
-		AN ENTITY IN THE GAME INCLUDES: 
-			COLLIDER 
-			PHYSICS STATE MACHINE 	
-			ANIMATIONS
-			ANIMATION STATE MACHINE 
-
-		INJECT ALL OF THESE FROM OUTSIDE, SOMEHOW
-
-		MAYBE HAVE A CPU CONTROLLED ENTITY AND PLAYER CONTROLLED ENTITY ? 
-			CPU CONTROLLED ENTITY HAVING A UPDATE() without input
-			PLAYER CONTROLLED ENTITY HAVING A UPDATE() input
-
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
 		GRENADE ALSO HAVE 2 STATE MACHINE: 
 			Physic state machine
@@ -104,7 +73,37 @@ TODO:
 
 		grenade animation (1 frame) [X]
 
-		player throwing animation [] (can't find the animation in the image) (1 frame) @Later
+		player throwing animation [] (can't find the animation in the image) (1 frame) [] @Next
+
+	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
+		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
+		-> figure out how to register the pressed event [] @Later 
+
+	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
+		what all the state machine have in common ??: 
+			the current state 
+			states actions 
+			the transition event 
+			the transitions works 
+
+		What currently bundling between the states ??: 
+			...
+
+		how the api should be used ??: 
+			... 
+
+	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
+		AN ENTITY IN THE GAME INCLUDES: 
+			COLLIDER 
+			PHYSICS STATE MACHINE 	
+			ANIMATIONS
+			ANIMATION STATE MACHINE 
+
+		INJECT ALL OF THESE FROM OUTSIDE, SOMEHOW
+
+		MAYBE HAVE A CPU CONTROLLED ENTITY AND PLAYER CONTROLLED ENTITY ? 
+			CPU CONTROLLED ENTITY HAVING A UPDATE() without input
+			PLAYER CONTROLLED ENTITY HAVING A UPDATE() input
 
 	@Reminder: Check hops how_far again 
 

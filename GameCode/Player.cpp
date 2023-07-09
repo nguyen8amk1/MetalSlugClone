@@ -143,6 +143,7 @@ public:
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		// @StartTest: 
+		//OutputDebugStringA(Util::MessageFormater::print(input.throwGrenade.isDown, ", ", input.throwGrenade.wasDown, ", ", input.throwGrenade.isPressed, '\n').c_str());
 		if (!die) {
 			if (input.left.isDown) {
 				colliderRect.x -= (float)(moveSpeed*dt); 
@@ -276,7 +277,7 @@ public:
 			if (die) {
 				toDyingAnimation();
 			}
-			else if (input.throwGrenade.isDown) {
+			else if (input.throwGrenade.isPressed) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -303,7 +304,7 @@ public:
 			if (die) {
 				toDyingAnimation();
 			}
-			else if (input.throwGrenade.isDown) {
+			else if (input.throwGrenade.isPressed) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -316,7 +317,7 @@ public:
 				toFallingAnimation();
 			}
 
-			if (!die && input.throwGrenade.isDown) {
+			if (!die && input.throwGrenade.isPressed) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -328,7 +329,7 @@ public:
 				toIdlingAnimation();
 			}
 
-			if (!die && input.throwGrenade.isDown) {
+			if (!die && input.throwGrenade.isPressed) {
 				throwGrenade();
 				toThrowingAnimation();
 			}
@@ -371,7 +372,7 @@ public:
 				currentLegAnimation = fallingLegAnimation;
 			}
 
-			if (!die && input.throwGrenade.isDown) {
+			if (!die && input.throwGrenade.isPressed) {
 				throwGrenade();
 				// TODO: reset the throwing animation
 			}
@@ -458,8 +459,8 @@ private:
 		currentAnimation = throwingAnimation;
 	}
 
-	void throwGrenade()
-	{
+	void throwGrenade() {
+		OutputDebugStringA("A GRENADE IS CREATED \n");
 		Grenade *grenade = new Grenade(grenadeRect, platformMethods);
 		grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 		grenades.push_back(grenade);

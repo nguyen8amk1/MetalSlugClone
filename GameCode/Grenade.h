@@ -2,6 +2,7 @@
 #include "Animation.h"
 #include "MetalSlug.h"
 #include "../Util.cpp"
+#include "Windows.h"
 
 namespace MetalSlug {
 
@@ -83,6 +84,8 @@ public:
 
 			xt = Util::Math::normalizef(xTimeAccumulator, firstHopDuration/2.0f);
 			yt = Util::Math::normalizef(yTimeAccumulator, firstHopDuration/2.0f);
+
+			//OutputDebugStringA(Util::MessageFormater::print(colliderRect.x, ", ", colliderRect.y, '\n').c_str());
 
 			// event: 
 			if (yt >= 1.0f) {
