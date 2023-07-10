@@ -1,10 +1,13 @@
-TODO:  
-	ENEMY THROWING GRENADE (with animation) (2h) [] @Current 
-
-	PLAYER SHOOTING (2h) [] 
+TODAY: 
+	PLAYER SHOOTING (2h) [] @Current 
 		in all 4 directions 
+		let's clean the state machine code a little bit first (4h) []
+
+	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
 	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) []
+
+TODO:  
 
 	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
 		-> let's make the button can register 3 state -> pressed and down and wasdown [X]

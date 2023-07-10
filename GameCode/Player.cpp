@@ -26,7 +26,8 @@ private:
 		FALLING,
 		WALKING, 
 		DYING, 
-		THROWING 
+		THROWING,
+		SHOOTING // is another state that is similar to throwing, since it's not dependent on leg animation
 	}Vec2f ;
 
 	PhysicState physicState = PhysicState::ONGROUND;
