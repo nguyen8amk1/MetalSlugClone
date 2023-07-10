@@ -3,6 +3,8 @@
 #include "CollisionChecker.h"
 
 namespace MetalSlug {
+// NOTE: the physic state machine is currently reusable but not extenable 
+// since the states of the new extended system not interaction correctly with the basic state machine 
 
 struct BasicPhysicStateMachineResult {
 	Rect colliderRect;
