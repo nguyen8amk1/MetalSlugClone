@@ -3,20 +3,17 @@
 #include "Animation.h"
 #include "../Util.cpp"
 #include "CollisionChecker.h"
+#include "Physics.h"
 
 namespace MetalSlug {
+
 class RebelSoilder {
-private: 
+private:
 	// Collider 
 	Rect colliderRect;
-	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
+	Rect interactionRectDisabledRect = { 0, -5.0f, 0, 0 };
 	Rect interactionRect;
 
-	// Physic state machine  
-	enum class PhysicState {
-		ONGROUND, 
-		FALL 
-	};
 
 	// Animation
 	AnimationMetaData idleAnimationMetaData;
@@ -35,13 +32,17 @@ private:
 		THROWING_BOMB	// 0, 79, 782, 42 
 	};
 
-	PhysicState currentPhysicState = PhysicState::ONGROUND;
 	AnimationState currentAnimationState = AnimationState::IDLING;
 	Animation* currentAnimation;
 
 	PlatformSpecficMethodsCollection* platformMethods;
 	float gravity;
 	float moveSpeed;
+	BasicPhysicStateMachine* physicStateMachine;
+
+	double timeAccumulator = 0.0;
+
+	BasicPhysicStateMachineResult physicResult = {colliderRect};
 
 public: 
 	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods) {
@@ -50,6 +51,8 @@ public:
 		this->moveSpeed = moveSpeed;
 		this->platformMethods = platformMethods;
 		this->colliderRect = colliderRect;
+
+		physicStateMachine = new BasicPhysicStateMachine(gravity);
 
 		interactionRect = interactionRectDisabledRect;
 
@@ -68,39 +71,9 @@ public:
 
 	}
 
-	double timeAccumulator = 0.0;
 	void update(LevelData &levelData, Camera *camera, double dt) {
-		// NOTE: This physic state is reused from  
-		// Modularize this 
-
-		// Physic state machine 
-		switch (currentPhysicState) {
-		case PhysicState::ONGROUND: {
-			for (RectangleCollider *groundCollider: levelData.groundColliders) {
-				if (!CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, groundCollider->getRect())) {
-					currentPhysicState = PhysicState::FALL;
-					break;
-				}
-			}
-			break;
-		}
-		case PhysicState::FALL: {
-			colliderRect.y -= (float)(gravity*dt); 
-
-			for (RectangleCollider* groundCollider : levelData.groundColliders) {
-				CollisionInfo colInfo;
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, groundCollider->getRect(), colInfo);
-				if (colInfo.count > 0) {
-					currentPhysicState = PhysicState::ONGROUND;
-					colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-					colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-					break;
-				}
-			}
-			break;
-		}
-		}
-
+		physicResult = physicStateMachine->update(dt, colliderRect, levelData);
+		colliderRect = physicResult.colliderRect;
 
 		// Animation state machine 
 		switch (currentAnimationState) {
