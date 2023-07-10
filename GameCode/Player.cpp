@@ -36,20 +36,13 @@ private:
 	PlayerAnimation *animation;
 
 public: 
-	void changeGravity(float gravity) {
-		this->gravity = gravity;
-	}
-
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
-		// test 
 		this->moveSpeed = moveSpeed;
 		this->gravity = gravity;
-
 		this->platformMethods = platformMethods;
 
 		physic = new PlayerPhysic(gravity);
 		animation = new PlayerAnimation(platformMethods);
-
 	}
 
 	~Player() {

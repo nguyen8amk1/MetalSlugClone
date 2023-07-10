@@ -1,7 +1,8 @@
 TODAY: 
 	PLAYER SHOOTING (2h) [] 
 		in all 4 directions 
-		let's clean the animation state machine code (2h) [] @Current 
+		let's clean the animation state machine code (2h) [] 
+			-> refactor the transition code so that it way more comfortable to use (4h) @Current 
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
@@ -188,8 +189,12 @@ TODO:
 	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
 		-> when level1 done, have proper structure for a level, a separate file for level 
 
-		@Idea: Could we use Figma as a level editor ??  
-			-> export the json file then parse it and generate all the level data 
+		@Idea: 
+			Could we use Figma as a level editor ??  
+				-> export the json file then parse it and generate all the level data 
+
+			Write an editor using Reactjs 
+				Use Figma to design the UI
 
 	PARALAX BACKGROUND (2h) []
 
