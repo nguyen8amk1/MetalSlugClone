@@ -1,17 +1,15 @@
 TODO:  
-	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] @Current
-		what all the state machine have in common ??: 
-			the current state 
-			states actions 
-			the transition event 
-			the transitions works 
+	ENEMY THROWING GRENADE (with animation) (2h) [] @Current 
 
-		What currently bundling between the states ??: 
-			...
+	PLAYER SHOOTING (2h) [] 
+		in all 4 directions 
 
-		how the api should be used ??: 
-			i want the common behaviour can be resuse (physic state machine,...) 100%
-			for now let's just remove the physic state machine and try to get that out and put them back in the hostage and the enemy  
+	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) []
+
+	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
+		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
+		-> figure out how to register the pressed event [] @Later 
+
 
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
 		GRENADE ALSO HAVE 2 STATE MACHINE: 
@@ -89,9 +87,21 @@ TODO:
 
 		player throwing animation [] (can't find the animation in the image) (1 frame) [] @Next
 
-	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
-		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
-		-> figure out how to register the pressed event [] @Later 
+	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
+		what all the state machine have in common ??: 
+			the current state 
+			states actions 
+			the transition event 
+			the transitions works 
+
+		What currently bundling between the states ??: 
+			...
+
+		how the api should be used ??: 
+			i want the common behaviour can be resuse (physic state machine,...) 100%
+			for now let's just remove the physic state machine and try to get that out and put them back in the hostage and the enemy  
+
+		NOTE: things will emerge when time comes 
 
 	HAVE A FRAMEWORK FOR CREATING AN ENTITY IN THE GAME (4h): []
 		AN ENTITY IN THE GAME INCLUDES: 
@@ -107,13 +117,6 @@ TODO:
 			PLAYER CONTROLLED ENTITY HAVING A UPDATE() input
 
 	@Reminder: Check hops how_far again 
-
-	ENEMY THROWING GRENADE (with animation) (2h) []
-
-	PLAYER SHOOTING (2h) [] 
-		in all 4 directions 
-
-	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) []
 
 	PLAYER KNOCK BACK PHYSIC []
 		-> knock back only plays when hit by projectile (bomb, bullet,...)

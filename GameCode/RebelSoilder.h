@@ -68,7 +68,6 @@ public:
 		throwingBombAnimation = new Animation(throwingBombAnimationMetaData, platformMethods);
 
 		currentAnimation = idleAnimation;
-
 	}
 
 	void update(LevelData &levelData, Camera *camera, double dt) {
