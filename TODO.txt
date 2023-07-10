@@ -1,7 +1,7 @@
 TODAY: 
-	PLAYER SHOOTING (2h) [] @Current 
+	PLAYER SHOOTING (2h) [] 
 		in all 4 directions 
-		let's clean the state machine code a little bit first (4h) []
+		let's clean the animation state machine code (2h) [] @Current 
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 

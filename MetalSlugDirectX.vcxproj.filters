@@ -91,5 +91,8 @@
     <ClInclude Include="GameCode\PlayerPhysic.h">
       <Filter>Source Files\GameCode</Filter>
     </ClInclude>
+    <ClInclude Include="GameCode\PlayerAnimation.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

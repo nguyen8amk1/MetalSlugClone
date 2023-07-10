@@ -171,6 +171,7 @@
     <ClInclude Include="GameCode\Grenade.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />
     <ClInclude Include="GameCode\Physics.h" />
+    <ClInclude Include="GameCode\PlayerAnimation.h" />
     <ClInclude Include="GameCode\PlayerPhysic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,13 +10,13 @@ enum class PlayerPhysicState {
 	FALL
 };
 
-struct PlayerPhysicStateMachineResult {
+struct PlayerPhysicResult {
 	Rect colliderRect; 
 	PlayerPhysicState physicState;
 	bool die;
 };
 
-class PlayerPhysicStateMachine {
+class PlayerPhysic {
 private:
 	PlayerPhysicState physicState = PlayerPhysicState::ONGROUND;
 
@@ -27,11 +27,11 @@ private:
 	float gravity;
 
 public:
-	PlayerPhysicStateMachine(float gravity) {
+	PlayerPhysic(float gravity) {
 		this->gravity = gravity;
 	}
 
-	PlayerPhysicStateMachineResult update(const GameInputContext &input, double dt, Rect colliderRect, bool die, LevelData &levelData) {
+	PlayerPhysicResult update(const GameInputContext &input, double dt, Rect colliderRect, bool die, LevelData &levelData) {
 		// Physics state machine
 		if (physicState == PlayerPhysicState::FALL) {
 			colliderRect.y -= (float)(gravity*dt); 
