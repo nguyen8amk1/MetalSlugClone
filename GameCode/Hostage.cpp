@@ -4,6 +4,7 @@
 #include "Animation.h"
 #include "../Util.cpp"
 #include "CollisionChecker.h"
+#include "Physics.h"
 
 namespace MetalSlug {
 
@@ -37,12 +38,17 @@ private:
 	float gravity;
 	float moveSpeed;
 
+	BasicPhysicStateMachine *basicPhysicStateMachine;
+	BasicPhysicStateMachineResult basicPhysicResult;
+
 public: 
 	Hostage(float gravity, float moveSpeed, Rect hostageColliderRect, PlatformSpecficMethodsCollection *platformMethods) {
 		this->gravity = gravity;
 		this->moveSpeed = moveSpeed;
 		this->platformMethods = platformMethods;
 		this->hostageColliderRect = hostageColliderRect;
+
+		basicPhysicStateMachine = new BasicPhysicStateMachine(gravity);
 
 		std::string filename = "Assets/Imgs/Characters/hostage.png";
 		Util::AnimationUtil::initAnimationMetaData(hostageTiedAnimationMetaData, filename, .1f, 1, 1, {6, 26}, {30, 27});
@@ -55,33 +61,8 @@ public:
 	}
 
 	void update(LevelData &levelData, Camera *camera, double dt) {
-		// Physic state machine 
-		switch (hostageCurrentPhysicState) {
-		case HostagePhysicState::ONGROUND: {
-			for (RectangleCollider *groundCollider: levelData.groundColliders) {
-				if (!CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider->getRect())) {
-					hostageCurrentPhysicState = HostagePhysicState::FALL;
-					break;
-				}
-			}
-			break;
-		}
-		case HostagePhysicState::FALL: {
-			hostageColliderRect.y -= (float)(gravity*dt); 
-
-			for (RectangleCollider* groundCollider : levelData.groundColliders) {
-				CollisionInfo colInfo;
-				CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, groundCollider->getRect(), colInfo);
-				if (colInfo.count > 0) {
-					hostageCurrentPhysicState = HostagePhysicState::ONGROUND;
-					hostageColliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-					hostageColliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-					break;
-				}
-			}
-			break;
-		}
-		}
+		basicPhysicResult = basicPhysicStateMachine->update(dt, hostageColliderRect, levelData);
+		hostageColliderRect = basicPhysicResult.colliderRect;
 
 		// Animation state machine 
 		switch (hostageCurrentAnimationState) {
