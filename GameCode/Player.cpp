@@ -2,23 +2,16 @@
 #include "MetalSlug.h"
 #include "Animation.h"
 #include "CollisionChecker.h"
+#include "PlayerPhysic.h"
 #include "../Util.cpp"
 
 //#include "Windows.h"
 #include "Grenade.h"
 
 namespace MetalSlug {
-
 class Player {
 private: 
 	Rect colliderRect = { -17.8f, 1.0f, .2f, .4f };
-
-	enum class PhysicState {
-		ONGROUND,
-		JUMPUP,
-		JUMPDOWN,
-		FALL
-	};
 
 	enum class AnimationState {
 		IDLING,
@@ -28,16 +21,11 @@ private:
 		DYING, 
 		THROWING,
 		SHOOTING // is another state that is similar to throwing, since it's not dependent on leg animation
-	}Vec2f ;
+	}Vec2f;
 
-	PhysicState physicState = PhysicState::ONGROUND;
 	AnimationState animationState = AnimationState::IDLING;
 	float moveSpeed, gravity;
 
-	float jumpT = 0;
-	float jumpProgress = 0;
-	float originalGroundY = 0;
-	float jumpHeight = .5777f;
 	float horizontalFacingDirection = 1;
 
 	AnimationMetaData idlingAnimationMetaData;
@@ -80,6 +68,9 @@ private:
 	Rect grenadeRect = { 0, 0, .1f, .1f };
 
 	PlatformSpecficMethodsCollection* platformMethods;
+	PlayerPhysicStateMachine* physicStateMachine;
+	PlayerPhysicStateMachineResult physicStateMachineResult;
+	PlayerPhysicState physicState = PlayerPhysicState::ONGROUND;
 
 public: 
 	void changeGravity(float gravity) {
@@ -92,6 +83,8 @@ public:
 		this->gravity = gravity;
 
 		this->platformMethods = platformMethods;
+
+		physicStateMachine = new PlayerPhysicStateMachine(gravity);
 
 		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
 		Util::AnimationUtil::initAnimationMetaData(idlingAnimationMetaData, filename, .15f, 1, 4, {0, 0}, {31, 29});
@@ -173,88 +166,17 @@ public:
 			}
 		}
 
-
 		if (levelData.levelStarted) {
-			// Physics state machine
-			if (physicState == PhysicState::FALL) {
-				colliderRect.y -= (float)(gravity*dt); 
-
-				CollisionInfo colInfo;
-				for (RectangleCollider* ground : levelData.groundColliders) {
-					CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
-					if (colInfo.count > 0) {
-						break;
-					}
-				}
-
-				if (colInfo.count > 0) {
-					physicState = PhysicState::ONGROUND;
-					colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-					colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-				}
-			}
-			else if (physicState == PhysicState::ONGROUND) {
-				bool collided = false;
-				for (RectangleCollider* ground : levelData.groundColliders) {
-					collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
-					if (collided) {
-						break;
-					}
-				}
-
-				if (!collided) {
-					physicState = PhysicState::FALL;
-				}
-				else if(!die && input.jump.isDown) {
-					physicState = PhysicState::JUMPUP;
-					jumpT = 0;
-					originalGroundY = colliderRect.y; 
-				}
-
-				bool hitDangerRect = false;
-				for (Rect dangerRect: levelData.dangerRects) {
-					hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, dangerRect);
-					if (hitDangerRect) break;
-				}
-
-				if (hitDangerRect) {
-					die = true;
-				}
-			}
-			else if (physicState == PhysicState::JUMPUP) {
-				jumpT += gravity*dt;
-				jumpProgress = -pow((jumpT-1), 2) + 1;
-				colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
-
-				if (jumpT >= 1) {
-					jumpT -= 1;
-					physicState = PhysicState::JUMPDOWN;
-				}
-			}
-			else if (physicState == PhysicState::JUMPDOWN) {
-				jumpT += gravity*dt;
-				jumpProgress = -pow(jumpT, 2) + 1;
-				colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
-
-				CollisionInfo colInfo;
-				for (RectangleCollider *ground: levelData.groundColliders) {
-					CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
-					if (colInfo.count > 0) break;
-				}
-
-				if (colInfo.count > 0) {
-					physicState = PhysicState::ONGROUND;
-
-					colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-					colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-				}
-			}
+			physicStateMachineResult = physicStateMachine->update(input, dt, colliderRect, die, levelData);
+			colliderRect = physicStateMachineResult.colliderRect;
+			physicState = physicStateMachineResult.physicState;
+			die = physicStateMachineResult.die;
 		}
 
 		// ANIMATION STATE MACHINE (sometimes the animation state based on the physics state)
 		switch (animationState) {
 		case AnimationState::IDLING: {
-			bool onGround = physicState == PhysicState::ONGROUND;
+			bool onGround = physicState == PlayerPhysicState::ONGROUND;
 			if (input.left.isDown) {
 				animationState = AnimationState::WALKING;
 				horizontalFacingDirection = -1;
@@ -289,16 +211,16 @@ public:
 
 			bool isPressingMove = input.left.isDown || input.right.isDown;
 			if (!isPressingMove && 
-				physicState != PhysicState::JUMPUP && 
-				physicState != PhysicState::JUMPDOWN && 
-				physicState != PhysicState::FALL) {
+				physicState != PlayerPhysicState::JUMPUP && 
+				physicState != PlayerPhysicState::JUMPDOWN && 
+				physicState != PlayerPhysicState::FALL) {
 
 				toIdlingAnimation();
 			}
-			else if (physicState == PhysicState::JUMPUP) {
+			else if (physicState == PlayerPhysicState::JUMPUP) {
 				toJumpingAnimation();
 			}
-			else if (physicState == PhysicState::FALL) {
+			else if (physicState == PlayerPhysicState::FALL) {
 				toFallingAnimation();
 			}
 
@@ -313,8 +235,8 @@ public:
 		} break;
 
 		case AnimationState::JUMPING: {
-			if (physicState == PhysicState::JUMPDOWN ||
-				physicState == PhysicState::FALL) {
+			if (physicState == PlayerPhysicState::JUMPDOWN ||
+				physicState == PlayerPhysicState::FALL) {
 				toFallingAnimation();
 			}
 
@@ -326,7 +248,7 @@ public:
 		} break;
 
 		case AnimationState::FALLING: {
-			if (physicState == PhysicState::ONGROUND) {
+			if (physicState == PlayerPhysicState::ONGROUND) {
 				toIdlingAnimation();
 			}
 
@@ -361,15 +283,15 @@ public:
 
 			bool isPressingMove = input.left.isDown || input.right.isDown;
 			if (!isPressingMove && 
-				physicState != PhysicState::JUMPUP && 
-				physicState != PhysicState::JUMPDOWN && 
-				physicState != PhysicState::FALL) {
+				physicState != PlayerPhysicState::JUMPUP && 
+				physicState != PlayerPhysicState::JUMPDOWN && 
+				physicState != PlayerPhysicState::FALL) {
 				currentLegAnimation = idlingLegAnimation;
 			}
-			else if (physicState == PhysicState::JUMPUP) {
+			else if (physicState == PlayerPhysicState::JUMPUP) {
 				currentLegAnimation = jumpingLegAnimation;
 			}
-			else if (physicState == PhysicState::FALL) {
+			else if (physicState == PlayerPhysicState::FALL) {
 				currentLegAnimation = fallingLegAnimation;
 			}
 

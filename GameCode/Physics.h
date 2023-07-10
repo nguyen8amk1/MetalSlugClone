@@ -10,16 +10,17 @@ struct BasicPhysicStateMachineResult {
 	Rect colliderRect;
 };
 
+// Physic state machine  
+enum class BasicPhysicState {
+	ONGROUND, 
+	FALL 
+};
+
 class BasicPhysicStateMachine {
 public:
-	// Physic state machine  
-	static enum class PhysicState {
-		ONGROUND, 
-		FALL 
-	};
 
 private: 
-	PhysicState currentPhysicState = PhysicState::ONGROUND;
+	BasicPhysicState currentPhysicState = BasicPhysicState::ONGROUND;
 	float gravity;
 
 public:
@@ -30,23 +31,23 @@ public:
 	BasicPhysicStateMachineResult update(double dt, Rect colliderRect, LevelData &levelData) {
 		// Physic state machine 
 		switch (currentPhysicState) {
-		case PhysicState::ONGROUND: {
+		case BasicPhysicState::ONGROUND: {
 			for (RectangleCollider *groundCollider: levelData.groundColliders) {
 				if (!CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, groundCollider->getRect())) {
-					currentPhysicState = PhysicState::FALL;
+					currentPhysicState = BasicPhysicState::FALL;
 					break;
 				}
 			}
 			break;
 		}
-		case PhysicState::FALL: {
+		case BasicPhysicState::FALL: {
 			colliderRect.y -= (float)(gravity*dt); 
 
 			for (RectangleCollider* groundCollider : levelData.groundColliders) {
 				CollisionInfo colInfo;
 				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, groundCollider->getRect(), colInfo);
 				if (colInfo.count > 0) {
-					currentPhysicState = PhysicState::ONGROUND;
+					currentPhysicState = BasicPhysicState::ONGROUND;
 					colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
 					colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
 					break;
@@ -56,10 +57,6 @@ public:
 		}
 		}
 		return { colliderRect };
-	}
-
-	PhysicState currentState() {
-		return currentPhysicState;
 	}
 };
 
