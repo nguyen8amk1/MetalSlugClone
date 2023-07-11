@@ -1,6 +1,6 @@
 TODAY: 
 	PLAYER SHOOTING (2h) [] 
-		in all 4 directions (2h) []
+		in all 3 directions (right, left, up) (2h) []
 			pts [] 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] @Current 
@@ -90,7 +90,8 @@ TODO:
 
 		grenade animation (1 frame) [X]
 
-		player throwing animation [] (can't find the animation in the image) (1 frame) [] @Next
+		player throwing animation [] @Next
+			-> 0, 138, 36, 30 (6 frames)
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 
