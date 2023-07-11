@@ -98,10 +98,60 @@ public:
 		currentLegAnimation = idlingLegAnimation;
 	}
 
+	/*
+	class State;
+	struct StateResult{
+		State* nextState;
+	};
+
+	class State {
+	public: 
+		virtual StateResult update(const GameInputContext& input) = 0;
+	};
+
+	class TransitionSolver {
+	public:
+		State* nextState(const GameInputContext& input) {
+			if (input.left.isDown) {
+				// TODO: 
+			}
+		}
+	};
+
+	
+	class IdlingState: public State {
+	private:
+		State *nextState = NULL;
+	public:
+		StateResult update(const GameInputContext &input) override {
+			// DO STUFF 
+		}
+	};
+
+	struct AnimationStateMachineResult {
+		State *nextState;
+	};
+
+	class AnimationStateMachine {
+	private: 
+		std::vector<State*> states;
+		State* currentState;
+		TransitionSolver transitionSolver;
+	public:
+		AnimationStateMachineResult update(const GameInputContext &input) {
+			// DO stuff:
+			StateResult result = currentState->update();
+			State* nextState = result.nextState;
+
+			if (nextState) return { nextState };
+			return { transitionSolver.nextState(input) };
+		}
+	};
+	*/
+
 	PlayerAnimationResult update(const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect colliderRect, int horizontalFacingDirection, bool die) {
 		switch (animationState) {
 		case AnimationState::IDLING: {
-			bool onGround = physicState == PlayerPhysicState::ONGROUND;
 			if (input.left.isDown) {
 				animationState = AnimationState::WALKING;
 				horizontalFacingDirection = -1;
@@ -115,23 +165,7 @@ public:
 				currentLegAnimation = walkingLegAnimation;
 			}
 
-			if (input.jump.isDown) {
-				toJumpingAnimation();
-			}
-			else if (!onGround) {
-				toFallingAnimation();
-			}
-
-			if (die) {
-				toDyingAnimation();
-			}
-			else if (input.throwGrenade.isDown) {
-				grenadeIsThrow = true;
-				toThrowingAnimation();
-			}
-			else {
-				grenadeIsThrow = false;
-			}
+			commonTransition(input, die, physicState);
 
 		}break;
 
@@ -145,24 +179,8 @@ public:
 
 				toIdlingAnimation();
 			}
-			else if (physicState == PlayerPhysicState::JUMPUP) {
-				toJumpingAnimation();
-			}
-			else if (physicState == PlayerPhysicState::FALL) {
-				toFallingAnimation();
-			}
 
-			if (die) {
-				toDyingAnimation();
-			}
-			else if (input.throwGrenade.isDown) {
-				grenadeIsThrow = true;
-				toThrowingAnimation();
-			}
-			else {
-				grenadeIsThrow = false;
-			}
-
+			commonTransition(input, die, physicState);
 		} break;
 
 		case AnimationState::JUMPING: {
@@ -186,13 +204,9 @@ public:
 				toIdlingAnimation();
 			}
 
-			if (!die && input.throwGrenade.isDown) {
-				grenadeIsThrow = true;
-				toThrowingAnimation();
-			}
-			else {
-				grenadeIsThrow = false;
-			}
+			commonDieTransition(die);
+			commonThrowingBombTransition(input);
+
 		} break;
 
 		case AnimationState::DYING: {
@@ -225,20 +239,6 @@ public:
 				physicState != PlayerPhysicState::FALL) {
 				currentLegAnimation = idlingLegAnimation;
 			}
-			else if (physicState == PlayerPhysicState::JUMPUP) {
-				currentLegAnimation = jumpingLegAnimation;
-			}
-			else if (physicState == PlayerPhysicState::FALL) {
-				currentLegAnimation = fallingLegAnimation;
-			}
-
-			if (!die && input.throwGrenade.isDown) {
-				grenadeIsThrow = true;
-				// TODO: reset the throwing animation
-			}
-			else {
-				grenadeIsThrow = false;
-			}
 
 			// event: 
 			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
@@ -246,6 +246,8 @@ public:
 				// TODO: some how go to the state that it should be, one of 4:  jumping, falling, walking, idling 
 				toIdlingAnimation();
 			}
+
+			commonTransition(input, die, physicState);
 		} break;
 
 		default: 
@@ -287,6 +289,35 @@ public:
 	}
 
 private: 
+	void commonTransition(const GameInputContext &input, bool die, PlayerPhysicState physicState) {
+		//bool onGround = physicState == PlayerPhysicState::ONGROUND;
+		if (physicState == PlayerPhysicState::JUMPUP) {
+			toJumpingAnimation();
+		}
+		else if (physicState == PlayerPhysicState::FALL) {
+			toFallingAnimation();
+		}
+
+		commonDieTransition(die);
+		commonThrowingBombTransition(input);
+	}
+
+	void commonDieTransition(bool die) {
+		if (die) {
+			toDyingAnimation();
+		}
+	}
+
+	void commonThrowingBombTransition(const GameInputContext &input) {
+		if (input.throwGrenade.isDown) {
+			grenadeIsThrow = true;
+			toThrowingAnimation();
+		}
+		else {
+			grenadeIsThrow = false;
+		}
+	}
+
 	void toIdlingAnimation() {
 		animationState = AnimationState::IDLING;
 		currentAnimation = idlingAnimation;
