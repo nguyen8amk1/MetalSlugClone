@@ -36,19 +36,8 @@ public:
 		if (physicState == PlayerPhysicState::FALL) {
 			colliderRect.y -= (float)(gravity*dt); 
 
-			CollisionInfo colInfo;
-			for (RectangleCollider* ground : levelData.groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
-				if (colInfo.count > 0) {
-					break;
-				}
-			}
-
-			if (colInfo.count > 0) {
-				physicState = PlayerPhysicState::ONGROUND;
-				colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-			}
+			commonOnGroundTransition(colliderRect, levelData);
+			commonDieTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::ONGROUND) {
 			bool collided = false;
@@ -68,15 +57,7 @@ public:
 				originalGroundY = colliderRect.y; 
 			}
 
-			bool hitDangerRect = false;
-			for (Rect dangerRect: levelData.dangerRects) {
-				hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, dangerRect);
-				if (hitDangerRect) break;
-			}
-
-			if (hitDangerRect) {
-				die = true;
-			}
+			commonDieTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::JUMPUP) {
 			jumpT += gravity*dt;
@@ -87,29 +68,48 @@ public:
 				jumpT -= 1;
 				physicState = PlayerPhysicState::JUMPDOWN;
 			}
+			commonDieTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::JUMPDOWN) {
 			jumpT += gravity*dt;
 			jumpProgress = -pow(jumpT, 2) + 1;
 			colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
 
-			CollisionInfo colInfo;
-			for (RectangleCollider *ground: levelData.groundColliders) {
-				CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
-				if (colInfo.count > 0) break;
-			}
-
-			if (colInfo.count > 0) {
-				physicState = PlayerPhysicState::ONGROUND;
-
-				colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
-				colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
-			}
+			commonOnGroundTransition(colliderRect, levelData);
+			commonDieTransition(colliderRect, levelData, die);
 		}
 
 		return {colliderRect, physicState, die};
 	}
-};
 
+private: 
+	void commonOnGroundTransition(Rect &colliderRect, LevelData &levelData) {
+		CollisionInfo colInfo;
+		for (RectangleCollider* ground : levelData.groundColliders) {
+			CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
+			if (colInfo.count > 0) {
+				break;
+			}
+		}
+
+		if (colInfo.count > 0) {
+			physicState = PlayerPhysicState::ONGROUND;
+			colliderRect.x -= colInfo.normal.x * colInfo.depths[0];
+			colliderRect.y -= colInfo.normal.y * colInfo.depths[0];
+		}
+	}
+
+	void commonDieTransition(Rect &colliderRect, LevelData &levelData, bool &die) {
+		bool hitDangerRect = false;
+		for (Rect dangerRect: levelData.dangerRects) {
+			hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, dangerRect);
+			if (hitDangerRect) break;
+		}
+
+		if (hitDangerRect) {
+			die = true;
+		}
+	}
+};
 
 }

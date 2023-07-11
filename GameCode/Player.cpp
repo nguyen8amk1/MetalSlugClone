@@ -126,7 +126,7 @@ public:
 private: 
 
 	void throwGrenade() {
-		OutputDebugStringA("A GRENADE IS CREATED \n");
+		//OutputDebugStringA("A GRENADE IS CREATED \n");
 		Grenade *grenade = new Grenade(grenadeRect, platformMethods);
 		grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 		grenades.push_back(grenade);

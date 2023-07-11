@@ -1,8 +1,9 @@
 TODAY: 
 	PLAYER SHOOTING (2h) [] 
-		in all 4 directions 
-		let's clean the animation state machine code (2h) [] 
-			-> refactor the transition code so that it way more comfortable to use (4h) @Current 
+		in all 4 directions (2h) []
+			pts [] 
+		let's clean the animation state machine code (2h) [X] 
+			-> refactor the transition code so that it way more comfortable to use (4h) [X] @Current 
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 

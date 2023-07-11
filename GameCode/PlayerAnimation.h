@@ -117,14 +117,21 @@ public:
 			}
 		}
 	};
-
 	
 	class IdlingState: public State {
 	private:
 		State *nextState = NULL;
+		TransitionSolver transitionSolvers;
 	public:
+		IdlingState(TransitionSolver transitionSolver) {
+		}	
+
 		StateResult update(const GameInputContext &input) override {
 			// DO STUFF 
+			if() {
+				return ;
+			}	
+			return { transitionSolver.nextState };
 		}
 	};
 
@@ -136,41 +143,29 @@ public:
 	private: 
 		std::vector<State*> states;
 		State* currentState;
-		TransitionSolver transitionSolver;
 	public:
 		AnimationStateMachineResult update(const GameInputContext &input) {
 			// DO stuff:
 			StateResult result = currentState->update();
-			State* nextState = result.nextState;
-
-			if (nextState) return { nextState };
-			return { transitionSolver.nextState(input) };
+			return result.nextState;
 		}
 	};
 	*/
 
 	PlayerAnimationResult update(const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect colliderRect, int horizontalFacingDirection, bool die) {
+		/*
+		animationResult = animationStateMachine->update();
+		currentState = animationResult.nextState;
+		currentState->update();
+		*/
+
 		switch (animationState) {
 		case AnimationState::IDLING: {
-			if (input.left.isDown) {
-				animationState = AnimationState::WALKING;
-				horizontalFacingDirection = -1;
-				currentAnimation = walkingAnimation;
-				currentLegAnimation = walkingLegAnimation;
-			}
-			else if (input.right.isDown) {
-				animationState = AnimationState::WALKING;
-				horizontalFacingDirection = 1;
-				currentAnimation = walkingAnimation;
-				currentLegAnimation = walkingLegAnimation;
-			}
-
+			walkingTransition(input, horizontalFacingDirection);
 			commonTransition(input, die, physicState);
-
 		}break;
 
 		case AnimationState::WALKING: {
-
 			bool isPressingMove = input.left.isDown || input.right.isDown;
 			if (!isPressingMove && 
 				physicState != PlayerPhysicState::JUMPUP && 
@@ -189,14 +184,8 @@ public:
 				toFallingAnimation();
 			}
 
-			if (!die && input.throwGrenade.isDown) {
-				grenadeIsThrow = true;
-				toThrowingAnimation();
-			}
-			else {
-				grenadeIsThrow = false;
-			}
-
+			commonDieTransition(die);
+			commonThrowingBombTransition(input);
 		} break;
 
 		case AnimationState::FALLING: {
@@ -289,6 +278,22 @@ public:
 	}
 
 private: 
+
+	void walkingTransition(const GameInputContext &input, int &horizontalFacingDirection) {
+		if (input.left.isDown) {
+			animationState = AnimationState::WALKING;
+			horizontalFacingDirection = -1;
+			currentAnimation = walkingAnimation;
+			currentLegAnimation = walkingLegAnimation;
+		}
+		else if (input.right.isDown) {
+			animationState = AnimationState::WALKING;
+			horizontalFacingDirection = 1;
+			currentAnimation = walkingAnimation;
+			currentLegAnimation = walkingLegAnimation;
+		}
+	}
+
 	void commonTransition(const GameInputContext &input, bool die, PlayerPhysicState physicState) {
 		//bool onGround = physicState == PlayerPhysicState::ONGROUND;
 		if (physicState == PlayerPhysicState::JUMPUP) {
