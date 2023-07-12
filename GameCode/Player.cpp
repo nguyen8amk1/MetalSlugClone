@@ -49,8 +49,6 @@ public:
 	}
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
-		// @StartTest: 
-		//OutputDebugStringA(Util::MessageFormater::print(input.throwGrenade.isDown, ", ", input.throwGrenade.wasDown, ", ", input.throwGrenade.isPressed, '\n').c_str());
 		if (!die) {
 			if (input.left.isDown) {
 				colliderRect.x -= (float)(moveSpeed*dt); 
@@ -95,8 +93,6 @@ public:
 			throwGrenade();
 		}
 
-		// TODO: there should be another state machine or something like that to react to the animation state (throwing bomb,..)
-
 		for (Grenade *grenade: grenades) {
 			grenade->update(camera, dt, levelData);
 		}
@@ -119,8 +115,6 @@ public:
 			playerColor = {0, 0, 255, 255};
 		}
 		*/
-		// @EndTest
-		//OutputDebugStringA(Util::MessageFormater::print(grenadeRect.x, ", ", grenadeRect.y, '\n').c_str());
 	}
 
 private: 

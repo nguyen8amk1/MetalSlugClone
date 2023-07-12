@@ -1,19 +1,19 @@
 TODAY: 
-	PLAYER SHOOTING (2h) [] 
+	PLAYER SHOOTING (4h) [] 
 		in all 3 directions (right, left, up) (2h) [] 
 			pts [] @Current 
 			bullet sprite []
 			add the animation into the player animation [X] 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
-
+TODO:  
 	LET THE THROWING ANIMATION FINISH (1h) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
-TODO:  
 	Idea: should all the input handling in the player.cpp file and then transfered to other files 
 		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
+		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 
