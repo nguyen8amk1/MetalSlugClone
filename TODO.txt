@@ -1,15 +1,13 @@
 TODAY: 
 	PLAYER SHOOTING (2h) [] 
-		in all 3 directions (right, left, up) (2h) []
-			pts [X] 
-			add the animation into the player animation () [] @Current 
+		in all 3 directions (right, left, up) (2h) [] @Later 
+			pts [] @Current 
+			add the animation into the player animation [X] 
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
-
-	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) []
 
 TODO:  
 
@@ -153,6 +151,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) [X] 
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
 		GRENADE ALSO HAVE 2 STATE MACHINE: 
 			Physic state machine

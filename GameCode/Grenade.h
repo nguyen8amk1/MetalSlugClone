@@ -99,7 +99,7 @@ public:
 			}
 			else {
 				float xd = xt * howFarFirstHop / 2.0f;
-				float yd = upCurve(yt) * firstHopHeight;
+				float yd = Util::Math::upCurve(yt) * firstHopHeight;
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -138,7 +138,7 @@ public:
 			}
 			else {
 				float xd = xt * howFarFirstHop / 2.0f;
-				float yd = downCurve(yt) * firstHopHeight;
+				float yd = Util::Math::downCurve(yt) * firstHopHeight;
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -172,7 +172,7 @@ public:
 			}
 			else {
 				float xd = xt * howFarSecondHop / 2.0f;
-				float yd = upCurve(yt) * secondHopHeight;
+				float yd = Util::Math::upCurve(yt) * secondHopHeight;
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -211,7 +211,7 @@ public:
 			}
 			else {
 				float xd = xt * howFarSecondHop / 2.0f;
-				float yd = downCurve(yt) * secondHopHeight;
+				float yd = Util::Math::downCurve(yt) * secondHopHeight;
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -236,15 +236,6 @@ public:
 			currentAnimation->animate(camera, dt);
 		}
 
-	}
-
-private: 
-	float upCurve(float t) {
-		return -powf((t - 1), 2) + 1;
-	}
-
-	float downCurve(float t) {
-		return  -powf(t, 2) + 1;
 	}
 };
 

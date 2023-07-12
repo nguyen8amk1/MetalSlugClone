@@ -106,6 +106,14 @@ public:
 			return value;
 		}
 	}
+
+	static float upCurve(float t) {
+		return -powf((t - 1), 2) + 1;
+	}
+
+	static float downCurve(float t) {
+		return  -powf(t, 2) + 1;
+	}
 };
 
 }

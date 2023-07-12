@@ -1,6 +1,7 @@
 #pragma once
 #include "MetalSlug.h"
 #include "CollisionChecker.h"
+#include "../Util.cpp"
 
 namespace MetalSlug {
 enum class PlayerPhysicState {
@@ -20,8 +21,10 @@ class PlayerPhysic {
 private:
 	PlayerPhysicState physicState = PlayerPhysicState::ONGROUND;
 
+	float jumpTotalTime = 1.0f;
 	float jumpT = 0;
-	float jumpProgress = 0;
+	float jumpTimeAccumulator = 0;
+
 	float originalGroundY = 0;
 	float jumpHeight = .5777f;
 	float gravity;
@@ -54,26 +57,35 @@ public:
 			else if(!die && input.jump.isDown) {
 				physicState = PlayerPhysicState::JUMPUP;
 				jumpT = 0;
+				jumpTimeAccumulator = 0;
 				originalGroundY = colliderRect.y; 
 			}
 
 			commonDieTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::JUMPUP) {
-			jumpT += gravity*dt;
-			jumpProgress = -pow((jumpT-1), 2) + 1;
-			colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
 
-			if (jumpT >= 1) {
-				jumpT -= 1;
+			jumpTimeAccumulator += dt;
+			Util::Math::clampf(jumpTimeAccumulator, 0, jumpTotalTime/2.0f);
+			jumpT = Util::Math::normalizef(jumpTimeAccumulator, jumpTotalTime/2.0f);
+
+			if (jumpT >= 1.0f) {
+				jumpT -= 1.0f;
+				jumpTimeAccumulator = 0;
 				physicState = PlayerPhysicState::JUMPDOWN;
+			}
+			else {
+				float yd = Util::Math::upCurve(jumpT)* jumpHeight;
+				colliderRect.y = originalGroundY + yd;
 			}
 			commonDieTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::JUMPDOWN) {
-			jumpT += gravity*dt;
-			jumpProgress = -pow(jumpT, 2) + 1;
-			colliderRect.y = originalGroundY + (jumpHeight)*jumpProgress; 
+			jumpTimeAccumulator += dt;
+			Util::Math::clampf(jumpTimeAccumulator, 0, jumpTotalTime/2.0f);
+			jumpT = Util::Math::normalizef(jumpTimeAccumulator, jumpTotalTime/2.0f);
+			float yd = Util::Math::downCurve(jumpT) * jumpHeight;
+			colliderRect.y = originalGroundY + yd;
 
 			commonOnGroundTransition(colliderRect, levelData);
 			commonDieTransition(colliderRect, levelData, die);
