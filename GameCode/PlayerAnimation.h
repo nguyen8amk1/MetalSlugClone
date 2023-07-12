@@ -90,8 +90,7 @@ public:
 		Util::AnimationUtil::initAnimationMetaData(dieAnimationMetaData, filename, .1f, 1, 19, {0, 97}, {43, 40});
 		dieAnimation = new Animation(dieAnimationMetaData, platformMethods);
 
-		// TODO: need the animation in the file 
-		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .1f, 1, 19, {0, 200}, {43, 40});
+		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .1f, 1, 6, {0, 138}, {36, 30});
 		throwingAnimation = new Animation(throwingAnimationMetaData, platformMethods);
 
 		currentAnimation = idlingAnimation;
@@ -100,6 +99,7 @@ public:
 
 	/*
 	class State;
+
 	struct StateResult{
 		State* nextState;
 	};
@@ -109,7 +109,7 @@ public:
 		virtual StateResult update(const GameInputContext& input) = 0;
 	};
 
-	class TransitionSolver {
+	class Transition {
 	public:
 		State* nextState(const GameInputContext& input) {
 			if (input.left.isDown) {
@@ -121,9 +121,9 @@ public:
 	class IdlingState: public State {
 	private:
 		State *nextState = NULL;
-		TransitionSolver transitionSolvers;
+		Transition transition;
 	public:
-		IdlingState(TransitionSolver transitionSolver) {
+		IdlingState(Transition transition) {
 		}	
 
 		StateResult update(const GameInputContext &input) override {
@@ -131,7 +131,7 @@ public:
 			if() {
 				return ;
 			}	
-			return { transitionSolver.nextState };
+			return { transition.nextState };
 		}
 	};
 

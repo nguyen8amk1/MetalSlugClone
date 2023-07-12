@@ -1,9 +1,11 @@
 TODAY: 
 	PLAYER SHOOTING (2h) [] 
 		in all 3 directions (right, left, up) (2h) []
-			pts [] 
+			pts [X] 
+			add the animation into the player animation () [] @Current 
+
 		let's clean the animation state machine code (2h) [X] 
-			-> refactor the transition code so that it way more comfortable to use (4h) [X] @Current 
+			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
@@ -14,84 +16,6 @@ TODO:
 	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
 		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
 		-> figure out how to register the pressed event [] @Later 
-
-
-	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
-		GRENADE ALSO HAVE 2 STATE MACHINE: 
-			Physic state machine
-				First hop
-				Second hop
-			Animation state machine  
-				Rotating
-				Explode 
-			
-		how the grenade moves ?? [X] 
-			total 2 hop 
-			total time: (284 - 249  + 1) = 36 frames (30fps)
-			separate the lerp into 2 axes x, y:  
-				each controlled by it's own t 
-				the up and down action will have separate lerp 
-				goals: 
-					from 0 to a in b time 
-					first let's try linear: 
-						y: 
-							up 
-							down 
-						x: 
-
-			define (use for player as well): 
-				upCurve:-(yt - 1)^2 + 1  
-				downCurve: -yt^2 + 1
-
-			first hop:
-				Idea: 
-					the hop gonna be a parabolla from 
-						throw base to peak being half 
-
-				peak = (1017, 513);
-				throw base = (798, 648)
-
-				time: (266 - 249 + 1) = 18 frames -> .6s 
-				height (from throw base to peak): (513 - 648) + 1 = 136 pixels; -> 136/1080 *2  = .251851
-				how far: 1600 - 1261 + 1 =  340/1920 * 2.714 = .4806
-
-				i need this to go from 0 to .4806/2 in .3s -> the speed is 
-
-				y: 
-					up: upCurve * height
-					down: downCurve * height
-				x: xt * how_far/2
-
-				x += playerPos.x;
-				y += playerPos.y;
-
-				What i need to do:
-					have an accumulator for the time: 
-						from 0 to the time we want -> normalize it to range 0 -> 1, accumulatortime/wantedtime
-
-			second hop:
-				peak = (1418, 662)
-				bounce base = (1261, 742)
-				time: (284 - 267 + 1) = 18 frames -> .6s
-				height: 742 - 662 + 1 = 81 -> 81/1080 *2 = .15
-				how far (half): (1017 - 798) + 1 = 220; -> 220/1920 * 2.714 = 0.31097;
-
-
-				y: 
-					up: upCurve * height
-					down: downCurve * height
-				x: xt * how_far/2
-
-				x += groundHit.x;
-				y += groundHit.y;
-
-			Currently the old jumping method that we use does not adjust the speed of the interpolation using specific time frame (1h) [X] 
-			but instead use the specific speed that seems good 
-
-		grenade animation (1 frame) [X]
-
-		player throwing animation [] @Next
-			-> 0, 138, 36, 30 (6 frames)
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 
@@ -227,6 +151,80 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
+		GRENADE ALSO HAVE 2 STATE MACHINE: 
+			Physic state machine
+				First hop
+				Second hop
+			Animation state machine  
+				Rotating
+				Explode 
+			
+		how the grenade moves ?? [X] 
+			total 2 hop 
+			total time: (284 - 249  + 1) = 36 frames (30fps)
+			separate the lerp into 2 axes x, y:  
+				each controlled by it's own t 
+				the up and down action will have separate lerp 
+				goals: 
+					from 0 to a in b time 
+					first let's try linear: 
+						y: 
+							up 
+							down 
+						x: 
+
+			define (use for player as well): 
+				upCurve:-(yt - 1)^2 + 1  
+				downCurve: -yt^2 + 1
+
+			first hop:
+				Idea: 
+					the hop gonna be a parabolla from 
+						throw base to peak being half 
+
+				peak = (1017, 513);
+				throw base = (798, 648)
+
+				time: (266 - 249 + 1) = 18 frames -> .6s 
+				height (from throw base to peak): (513 - 648) + 1 = 136 pixels; -> 136/1080 *2  = .251851
+				how far: 1600 - 1261 + 1 =  340/1920 * 2.714 = .4806
+
+				i need this to go from 0 to .4806/2 in .3s -> the speed is 
+
+				y: 
+					up: upCurve * height
+					down: downCurve * height
+				x: xt * how_far/2
+
+				x += playerPos.x;
+				y += playerPos.y;
+
+				What i need to do:
+					have an accumulator for the time: 
+						from 0 to the time we want -> normalize it to range 0 -> 1, accumulatortime/wantedtime
+
+			second hop:
+				peak = (1418, 662)
+				bounce base = (1261, 742)
+				time: (284 - 267 + 1) = 18 frames -> .6s
+				height: 742 - 662 + 1 = 81 -> 81/1080 *2 = .15
+				how far (half): (1017 - 798) + 1 = 220; -> 220/1920 * 2.714 = 0.31097;
+
+
+				y: 
+					up: upCurve * height
+					down: downCurve * height
+				x: xt * how_far/2
+
+				x += groundHit.x;
+				y += groundHit.y;
+
+			Currently the old jumping method that we use does not adjust the speed of the interpolation using specific time frame (1h) [X] 
+			but instead use the specific speed that seems good 
+
+		grenade animation (1 frame) [X]
+		player throwing animation [X] 
 	CAN THROW MULTIPLE GRENADE (2h) [] 
 		-> put the grenade into another class first (1h) [X] 
 		-> everytime i press the throw button: add a grenade into the list and show it (1h) [X]
