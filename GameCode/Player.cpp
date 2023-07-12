@@ -86,7 +86,7 @@ public:
 			die = physicResult.die;
 		}
 
-		animationResult = animation->update(input, dt, camera, levelData, physicState	, colliderRect, horizontalFacingDirection, die);
+		animationResult = animation->update(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 		colliderRect = animationResult.colliderRect;
 		horizontalFacingDirection = animationResult.horizontalFacingDirection;
 		die = animationResult.die;
