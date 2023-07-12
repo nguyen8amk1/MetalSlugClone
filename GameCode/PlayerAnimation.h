@@ -168,97 +168,9 @@ public:
 		currentState->update();
 		*/
 
-		// TODO: now it's apparent that the leg animation and the body animation should be controlled completely separate
-		// -> there should be 2 different state machine for each of them  
-
-		// LEG STATE MACHINE ANIMATION
-		switch (legAnimationState) {
-		case LegAnimationState::IDLING: {
-			toWalkingLegAnimation(input, horizontalFacingDirection);
-			commonLegTransition(input, die, physicState);
-		}break;
-
-		case LegAnimationState::WALKING: {
-			bool isPressingMove = input.left.isDown || input.right.isDown;
-			if (!isPressingMove && 
-				physicState != PlayerPhysicState::JUMPUP && 
-				physicState != PlayerPhysicState::JUMPDOWN && 
-				physicState != PlayerPhysicState::FALL) {
-
-				toLegIdlingAnimation();
-			}
-
-			commonLegTransition(input, die, physicState);
-		} break;
-
-		case LegAnimationState::JUMPING: {
-			if (physicState == PlayerPhysicState::JUMPDOWN ||
-				physicState == PlayerPhysicState::FALL) {
-				toLegFallingAnimation();
-			}
-
-			commonLegDieTransition(die);
-		} break;
-
-		case LegAnimationState::FALLING: {
-			if (physicState == PlayerPhysicState::ONGROUND) {
-				toLegIdlingAnimation();
-			}
-
-			commonLegDieTransition(die);
-		} break;
-
-		case LegAnimationState::DYING: {
-			// action: 
-			// event: 
-			bool doneDieAnimation = dieAnimation->finishOneCycle();
-			if (doneDieAnimation) {
-				toLegIdlingAnimation();
-				colliderRect.x -= .2f;
-				die = false;
-			}
-		} break;
-
-		/*
-		case LegAnimationState::THROWING: {
-			// action: 
-			// FIXME: This is not how it's suppose to work, need huge refactor later since the leg transition here is wrong 
-			if (input.left.isDown) {
-				horizontalFacingDirection = -1;
-				currentLegAnimation = walkingLegAnimation;
-			}
-			else if (input.right.isDown) {
-				horizontalFacingDirection = 1;
-				currentLegAnimation = walkingLegAnimation;
-			}
-
-			bool isPressingMove = input.left.isDown || input.right.isDown;
-			if (!isPressingMove && 
-				physicState != PlayerPhysicState::JUMPUP && 
-				physicState != PlayerPhysicState::JUMPDOWN && 
-				physicState != PlayerPhysicState::FALL) {
-				currentLegAnimation = idlingLegAnimation;
-			}
-
-			// event: 
-			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
-			if (doneThrowAnimation) {
-				// TODO: some how go to the state that it should be, one of 4:  jumping, falling, walking, idling 
-				toIdlingAnimation();
-			}
-
-			commonTransition(input, die, physicState);
-		} break;
-		*/
-
-		default: 
-			// TODO: handle error "Animation state not recoginize"
-			break;
-		}
-
-
-		// TODO: BODY STATE MACHINE ANIMATION 
-
+		legAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
+		bodyAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
+		
 		float legX = colliderRect.x;
 		float legY = colliderRect.y - .15f;
 
@@ -344,14 +256,14 @@ private:
 
 	}
 
-	void toWalkingBodyAnimation(const GameInputContext &input, int &horizontalFacingDirection) {
+	void commonBodyWalkingTransition(const GameInputContext &input) {
 		if (input.left.isDown || input.right.isDown) {
 			bodyAnimationState = BodyAnimationState::WALKING;
 			currentBodyAnimation = walkingAnimation;
 		}
 	}
 
-	void toWalkingLegAnimation(const GameInputContext &input, int &horizontalFacingDirection) {
+	void commonWalkingLegTransition(const GameInputContext &input, int &horizontalFacingDirection) {
 		if (input.left.isDown) {
 			legAnimationState = LegAnimationState::WALKING;
 			horizontalFacingDirection = -1;
@@ -408,6 +320,139 @@ private:
 	void toThrowingAnimation() {
 		bodyAnimationState = BodyAnimationState::THROWING;
 		currentBodyAnimation = throwingAnimation;
+	}
+
+	void legAnimationStateMachineUpdate(const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect colliderRect, int &horizontalFacingDirection, bool &die) {
+		switch (legAnimationState) {
+		case LegAnimationState::IDLING: {
+			commonWalkingLegTransition(input, horizontalFacingDirection);
+			commonLegTransition(input, die, physicState);
+		}break;
+
+		case LegAnimationState::WALKING: {
+			bool isPressingMove = input.left.isDown || input.right.isDown;
+			if (!isPressingMove && 
+				physicState != PlayerPhysicState::JUMPUP && 
+				physicState != PlayerPhysicState::JUMPDOWN && 
+				physicState != PlayerPhysicState::FALL) {
+
+				toLegIdlingAnimation();
+			}
+
+			commonLegTransition(input, die, physicState);
+		} break;
+
+		case LegAnimationState::JUMPING: {
+			if (physicState == PlayerPhysicState::JUMPDOWN ||
+				physicState == PlayerPhysicState::FALL) {
+				toLegFallingAnimation();
+			}
+
+			commonLegDieTransition(die);
+		} break;
+
+		case LegAnimationState::FALLING: {
+			if (physicState == PlayerPhysicState::ONGROUND) {
+				toLegIdlingAnimation();
+			}
+
+			commonLegDieTransition(die);
+		} break;
+
+		case LegAnimationState::DYING: {
+			// action: 
+			// event: 
+			bool doneDieAnimation = dieAnimation->finishOneCycle();
+			if (doneDieAnimation) {
+				toLegIdlingAnimation();
+				/*
+				colliderRect.x -= .2f;
+				die = false;
+				*/
+			}
+		} break;
+		}
+	}
+
+	void bodyAnimationStateMachineUpdate (const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect &colliderRect, int horizontalFacingDirection, bool &die) {
+		switch (bodyAnimationState) {
+		case BodyAnimationState::IDLING: {
+			commonBodyWalkingTransition(input);
+			commonThrowingBombTransition(input);
+			commonBodyTransition(input, die, physicState);
+		}break;
+
+		case BodyAnimationState::WALKING: {
+			bool isPressingMove = input.left.isDown || input.right.isDown;
+			if (!isPressingMove && 
+				physicState != PlayerPhysicState::JUMPUP && 
+				physicState != PlayerPhysicState::JUMPDOWN && 
+				physicState != PlayerPhysicState::FALL) {
+
+				toBodyIdlingAnimation();
+			}
+
+			commonBodyTransition(input, die, physicState);
+			commonThrowingBombTransition(input);
+		} break;
+
+		case BodyAnimationState::JUMPING: {
+			if (physicState == PlayerPhysicState::JUMPDOWN ||
+				physicState == PlayerPhysicState::FALL) {
+				toBodyFallingAnimation();
+			}
+
+			commonBodyDieTransition(die);
+			commonThrowingBombTransition(input);
+		} break;
+
+		case BodyAnimationState::FALLING: {
+			if (physicState == PlayerPhysicState::ONGROUND) {
+				toBodyIdlingAnimation();
+			}
+
+			commonBodyDieTransition(die);
+			commonThrowingBombTransition(input);
+		} break;
+
+		case BodyAnimationState::DYING: {
+			// action: 
+			// event: 
+			bool doneDieAnimation = dieAnimation->finishOneCycle();
+			if (doneDieAnimation) {
+				toBodyIdlingAnimation();
+				colliderRect.x -= .2f;
+				die = false;
+			}
+		} break;
+		case BodyAnimationState::THROWING: {
+			// FIXME: 
+			// it's still be able to die but can't shift back anymore
+			// can't throw 
+
+			commonBodyWalkingTransition(input);
+
+			bool isPressingMove = input.left.isDown || input.right.isDown;
+			if (!isPressingMove && 
+				physicState != PlayerPhysicState::JUMPUP && 
+				physicState != PlayerPhysicState::JUMPDOWN && 
+				physicState != PlayerPhysicState::FALL) {
+				currentBodyAnimation = idlingAnimation;
+			}
+
+			// event: 
+			bool doneThrowAnimation = throwingAnimation->finishOneCycle();
+			if (doneThrowAnimation) {
+				// TODO: some how go to the state that it should be, one of 4:  jumping, falling, walking, idling 
+				toBodyIdlingAnimation();
+			}
+
+			commonThrowingBombTransition(input);
+			commonBodyTransition(input, die, physicState);
+		} break;
+		}
+
+
 	}
 };
 

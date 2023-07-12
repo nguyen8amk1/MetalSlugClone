@@ -134,6 +134,8 @@ TODO:
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 BUG: 
+	FIXME: the shifting x after die is having bug (why the finish oneccycle doesn't set to true ??)
+
 	FIXME: collision on the hortizontal side not working ?? 
 		-> this happens because the game only checking a single collision at a time  
 
