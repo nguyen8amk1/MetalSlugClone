@@ -91,7 +91,6 @@ TODO:
 
 	ENEMY GENERATION (2h) [] 
 
-
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
 
 	REBELS AI (4h) []
@@ -132,8 +131,6 @@ TODO:
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 BUG: 
-	FIXME: the shifting x after die is having bug (why the finish oneccycle doesn't set to true ??) (2h) []
-
 	FIXME: collision on the hortizontal side not working ?? 
 		-> this happens because the game only checking a single collision at a time  
 
@@ -151,6 +148,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	FIXME: the shifting x after die is having bug (why the finish oneccycle doesn't set to true ??) (2h) [X]
 	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) [X] 
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []
 		GRENADE ALSO HAVE 2 STATE MACHINE: 

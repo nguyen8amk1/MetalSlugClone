@@ -4,6 +4,7 @@
 #include "CollisionChecker.h"
 #include "PlayerPhysic.h"
 #include "../Util.cpp"
+#include "Windows.h"
 
 namespace MetalSlug {
 struct PlayerAnimationResult {
@@ -67,6 +68,7 @@ private:
 	Animation* currentLegAnimation;
 
 	bool grenadeIsThrow = false; 
+	bool doneDieAnimation = false;
 
 public: 
 	PlayerAnimation(PlatformSpecficMethodsCollection *platformMethods) {
@@ -168,8 +170,8 @@ public:
 		currentState->update();
 		*/
 
-		legAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 		bodyAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
+		legAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 		
 		float legX = colliderRect.x;
 		float legY = colliderRect.y - .15f;
@@ -245,7 +247,6 @@ private:
 		case LegAnimationState::DYING: {
 			// action: 
 			// event: 
-			bool doneDieAnimation = dieAnimation->finishOneCycle();
 			if (doneDieAnimation) {
 				toLegIdlingAnimation();
 				/*
@@ -301,8 +302,9 @@ private:
 		case BodyAnimationState::DYING: {
 			// action: 
 			// event: 
-			bool doneDieAnimation = dieAnimation->finishOneCycle();
+			doneDieAnimation = dieAnimation->finishOneCycle();
 			if (doneDieAnimation) {
+				OutputDebugStringA("ONE DIE ANIMATION\n");
 				toBodyIdlingAnimation();
 				colliderRect.x -= .2f;
 				die = false;
