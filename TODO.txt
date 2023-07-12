@@ -2,18 +2,18 @@ TODAY:
 	PLAYER SHOOTING (2h) [] 
 		in all 3 directions (right, left, up) (2h) [] 
 			pts [] @Current 
+			bullet sprite []
 			add the animation into the player animation [X] 
-
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
+
+	LET THE THROWING ANIMATION FINISH (1h) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
 TODO:  
-
-	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [] 
-		-> let's make the button can register 3 state -> pressed and down and wasdown [X]
-		-> figure out how to register the pressed event [] @Later 
+	Idea: should all the input handling in the player.cpp file and then transfered to other files 
+		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 
@@ -148,6 +148,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [X] 
 	FIXME: the shifting x after die is having bug (why the finish oneccycle doesn't set to true ??) (2h) [X]
 	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) [X] 
 	BASIC PLAYER THROWING GRENADE (with animation) (2h) []

@@ -6,6 +6,61 @@
 #include "../Util.cpp"
 #include "Windows.h"
 
+/*
+class State;
+
+struct StateResult{
+	State* nextState;
+};
+
+class State {
+public: 
+	virtual StateResult update(const GameInputContext& input) = 0;
+};
+
+class Transition {
+public:
+	State* nextState(const GameInputContext& input) {
+		if (input.left.isDown) {
+			// TODO: 
+		}
+	}
+};
+
+class IdlingState: public State {
+private:
+	State *nextState = NULL;
+	Transition transition;
+public:
+	IdlingState(Transition transition) {
+	}	
+
+	StateResult update(const GameInputContext &input) override {
+		// DO STUFF 
+		if() {
+			return ;
+		}	
+		return { transition.nextState };
+	}
+};
+
+struct AnimationStateMachineResult {
+	State *nextState;
+};
+
+class AnimationStateMachine {
+private: 
+	std::vector<State*> states;
+	State* currentState;
+public:
+	AnimationStateMachineResult update(const GameInputContext &input) {
+		// DO stuff:
+		StateResult result = currentState->update();
+		return result.nextState;
+	}
+};
+*/
+
 namespace MetalSlug {
 struct PlayerAnimationResult {
 	Rect colliderRect;
@@ -108,61 +163,6 @@ public:
 		currentLegAnimation = idlingLegAnimation;
 	}
 
-	/*
-	class State;
-
-	struct StateResult{
-		State* nextState;
-	};
-
-	class State {
-	public: 
-		virtual StateResult update(const GameInputContext& input) = 0;
-	};
-
-	class Transition {
-	public:
-		State* nextState(const GameInputContext& input) {
-			if (input.left.isDown) {
-				// TODO: 
-			}
-		}
-	};
-	
-	class IdlingState: public State {
-	private:
-		State *nextState = NULL;
-		Transition transition;
-	public:
-		IdlingState(Transition transition) {
-		}	
-
-		StateResult update(const GameInputContext &input) override {
-			// DO STUFF 
-			if() {
-				return ;
-			}	
-			return { transition.nextState };
-		}
-	};
-
-	struct AnimationStateMachineResult {
-		State *nextState;
-	};
-
-	class AnimationStateMachine {
-	private: 
-		std::vector<State*> states;
-		State* currentState;
-	public:
-		AnimationStateMachineResult update(const GameInputContext &input) {
-			// DO stuff:
-			StateResult result = currentState->update();
-			return result.nextState;
-		}
-	};
-	*/
-
 	PlayerAnimationResult update(const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect colliderRect, int horizontalFacingDirection, bool die) {
 		/*
 		animationResult = animationStateMachine->update();
@@ -249,10 +249,6 @@ private:
 			// event: 
 			if (doneDieAnimation) {
 				toLegIdlingAnimation();
-				/*
-				colliderRect.x -= .2f;
-				die = false;
-				*/
 			}
 		} break;
 		}
@@ -304,7 +300,6 @@ private:
 			// event: 
 			doneDieAnimation = dieAnimation->finishOneCycle();
 			if (doneDieAnimation) {
-				OutputDebugStringA("ONE DIE ANIMATION\n");
 				toBodyIdlingAnimation();
 				colliderRect.x -= .2f;
 				die = false;
@@ -372,7 +367,7 @@ private:
 	}
 
 	void commonThrowingBombTransition(const GameInputContext &input) {
-		if (input.throwGrenade.isDown) {
+		if (input.throwGrenade.isPressed) {
 			grenadeIsThrow = true;
 			toThrowingAnimation();
 		}

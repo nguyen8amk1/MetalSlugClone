@@ -134,43 +134,6 @@ public:
 					}
 				}
 
-				// Get keyboard state
-				keyboardState = SDL_GetKeyboardState(NULL);
-				/*
-				gameInput.up = updateButton(gameInput.up, keyboardState[SDL_SCANCODE_W]);
-				gameInput.down = updateButton(gameInput.down, keyboardState[SDL_SCANCODE_S]);
-				gameInput.left = updateButton(gameInput.left, keyboardState[SDL_SCANCODE_A]);
-				gameInput.right = updateButton(gameInput.right, keyboardState[SDL_SCANCODE_D]);
-				gameInput.jump = updateButton(gameInput.jump, keyboardState[SDL_SCANCODE_K]);
-				gameInput.shoot = updateButton(gameInput.shoot, keyboardState[SDL_SCANCODE_J]);
-				gameInput.throwGrenade = updateButton(gameInput.throwGrenade,  keyboardState[SDL_SCANCODE_U]);
-
-				gameInput.upArrow = updateButton(gameInput.upArrow, keyboardState[SDL_SCANCODE_UP]);
-				gameInput.downArrow = updateButton(gameInput.downArrow,  keyboardState[SDL_SCANCODE_DOWN]);
-				gameInput.leftArrow = updateButton(gameInput.leftArrow,  keyboardState[SDL_SCANCODE_LEFT]);
-				gameInput.rightArrow = updateButton(gameInput.rightArrow,  keyboardState[SDL_SCANCODE_RIGHT]);
-				gameInput.enter = updateButton(gameInput.enter,  keyboardState[SDL_SCANCODE_RETURN]);
-
-				gameInput.debugZoomInBackground = updateButton(gameInput.debugZoomInBackground,  keyboardState[SDL_SCANCODE_M]);
-				gameInput.debugZoomOutBackground = updateButton(gameInput.debugZoomOutBackground,  keyboardState[SDL_SCANCODE_N]);
-				*/
-
-				gameInput.up.isDown = keyboardState[SDL_SCANCODE_W];
-				gameInput.down.isDown = keyboardState[SDL_SCANCODE_S];
-				gameInput.left.isDown = keyboardState[SDL_SCANCODE_A];
-				gameInput.right.isDown = keyboardState[SDL_SCANCODE_D];
-				gameInput.jump.isDown = keyboardState[SDL_SCANCODE_K];
-				gameInput.shoot.isDown = keyboardState[SDL_SCANCODE_J];
-				gameInput.throwGrenade.isDown = keyboardState[SDL_SCANCODE_U];
-				gameInput.upArrow.isDown = keyboardState[SDL_SCANCODE_UP];
-				gameInput.downArrow.isDown = keyboardState[SDL_SCANCODE_DOWN];
-				gameInput.leftArrow.isDown = keyboardState[SDL_SCANCODE_LEFT];
-				gameInput.rightArrow.isDown = keyboardState[SDL_SCANCODE_RIGHT];
-				gameInput.enter.isDown = keyboardState[SDL_SCANCODE_RETURN];
-				gameInput.debugZoomInBackground.isDown = keyboardState[SDL_SCANCODE_M];
-				gameInput.debugZoomOutBackground.isDown = keyboardState[SDL_SCANCODE_N];
-
-				// TODO: Handle Joystick
 			}
 
 
@@ -189,6 +152,23 @@ public:
 				}
 			}
 
+			keyboardState = SDL_GetKeyboardState(NULL);
+			updateButton(gameInput.up, keyboardState[SDL_SCANCODE_W]);
+			updateButton(gameInput.down, keyboardState[SDL_SCANCODE_S]);
+			updateButton(gameInput.left, keyboardState[SDL_SCANCODE_A]);
+			updateButton(gameInput.right, keyboardState[SDL_SCANCODE_D]);
+			updateButton(gameInput.jump, keyboardState[SDL_SCANCODE_K]);
+			updateButton(gameInput.shoot, keyboardState[SDL_SCANCODE_J]);
+			updateButton(gameInput.throwGrenade,  keyboardState[SDL_SCANCODE_U]);
+			updateButton(gameInput.upArrow, keyboardState[SDL_SCANCODE_UP]);
+			updateButton(gameInput.downArrow,  keyboardState[SDL_SCANCODE_DOWN]);
+			updateButton(gameInput.leftArrow,  keyboardState[SDL_SCANCODE_LEFT]);
+			updateButton(gameInput.rightArrow,  keyboardState[SDL_SCANCODE_RIGHT]);
+			updateButton(gameInput.enter,  keyboardState[SDL_SCANCODE_RETURN]);
+			updateButton(gameInput.debugZoomInBackground,  keyboardState[SDL_SCANCODE_M]);
+			updateButton(gameInput.debugZoomOutBackground,  keyboardState[SDL_SCANCODE_N]);
+
+			// TODO: Handle Joystick
 
 			// Get this before SDLUpdateWindow() so that we don't keep missing VBlanks.
 			int64_t EndCounter = SDL_GetPerformanceCounter();
@@ -245,19 +225,11 @@ public:
 		return 0;
 	}
 
-	// Function to update the button state
-	/*
-	MetalSlug::Button updateButton(MetalSlug::Button& button, bool isKeyDown) {
-		MetalSlug::Button newButton;
-		newButton.wasDown = button.isDown;
-		newButton.isDown = isKeyDown;
-
-		// Check if the newButton was just pressed
-		newButton.isPressed = newButton.isDown && !newButton.wasDown;
-		return newButton;
+	void updateButton(MetalSlug::Button &button, bool keyIsDown) {
+		button.wasDown = button.isDown;
+		button.isDown = keyIsDown;
+		button.isPressed = button.isDown && !button.wasDown;
 	}
-	*/
-
 };
 
 }
