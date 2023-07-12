@@ -156,7 +156,7 @@ public:
 		Util::AnimationUtil::initAnimationMetaData(dieAnimationMetaData, filename, .1f, 1, 19, {0, 97}, {43, 40});
 		dieAnimation = new Animation(dieAnimationMetaData, platformMethods);
 
-		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .2f, 1, 6, {0, 138}, {36, 30});
+		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .1f, 1, 6, {0, 138}, {36, 30});
 		throwingAnimation = new Animation(throwingAnimationMetaData, platformMethods);
 
 		currentBodyAnimation = idlingAnimation;
@@ -306,7 +306,6 @@ private:
 			}
 		} break;
 		case BodyAnimationState::THROWING: {
-			commonBodyWalkingTransition(input);
 
 			bool isPressingMove = input.left.isDown || input.right.isDown;
 			if (!isPressingMove && 
@@ -323,8 +322,10 @@ private:
 				toBodyIdlingAnimation();
 			}
 
-			commonThrowingBombTransition(input);
+			commonBodyWalkingTransition(input);
 			commonBodyTransition(input, die, physicState);
+			commonThrowingBombTransition(input);
+
 		} break;
 		}
 
