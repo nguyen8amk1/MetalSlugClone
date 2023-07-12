@@ -6,13 +6,19 @@ TODAY:
 				up - 0, 197, 30, 65
 			bullet sprite [X] - 74, 476, 12, 11
 			add the animation into the player animation [] @Current
+				Problem: 
+					state transition flickering between states (ex: walking and shooting at the same time)
+					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset)
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
-TODO:  
 	LET THE THROWING ANIMATION FINISH (1h) []
+		something wrong with the throwing animation when trying to make it complete the animation
+		-> there are some dependencies and obscurity going on in here 
 
+
+TODO:  
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
 	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? 

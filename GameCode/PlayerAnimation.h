@@ -77,7 +77,8 @@ private:
 		WALKING,
 		DYING,
 		THROWING,
-		SHOOTING 
+		HORIZONTAL_SHOOTING, 
+		UP_SHOOTING
 	};
 
 	enum class LegAnimationState {
@@ -119,6 +120,15 @@ private:
 	AnimationMetaData throwingAnimationMetaData; 
 	Animation* throwingAnimation;
 
+	AnimationMetaData horizontalShootingAnimationMetaData; 
+	Animation* horizontalShootingAnimation;
+
+	AnimationMetaData upShootingAnimationMetaData; 
+	Animation* upShootingAnimation;
+
+	AnimationMetaData bulletMetaData; 
+	Animation* bullet;
+
 	Animation* currentBodyAnimation;
 	Animation* currentLegAnimation;
 
@@ -158,6 +168,15 @@ public:
 
 		Util::AnimationUtil::initAnimationMetaData(throwingAnimationMetaData, filename, .1f, 1, 6, {0, 138}, {36, 30});
 		throwingAnimation = new Animation(throwingAnimationMetaData, platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(horizontalShootingAnimationMetaData, filename, .1f, 1, 10, {0, 168}, {52, 29});
+		horizontalShootingAnimation = new Animation(horizontalShootingAnimationMetaData, platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(upShootingAnimationMetaData, filename, .1f, 1, 10, {0, 197}, {30, 65});
+		upShootingAnimation = new Animation(upShootingAnimationMetaData, platformMethods);
+
+		Util::AnimationUtil::initAnimationMetaData(bulletMetaData, filename, .1f, 1, 1, {74, 476}, {12, 11});
+		bullet = new Animation(bulletMetaData, platformMethods);
 
 		currentBodyAnimation = idlingAnimation;
 		currentLegAnimation = idlingLegAnimation;
@@ -210,8 +229,8 @@ private:
 	void legAnimationStateMachineUpdate(const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect colliderRect, int &horizontalFacingDirection, bool &die) {
 		switch (legAnimationState) {
 		case LegAnimationState::IDLING: {
-			commonWalkingLegTransition(input, horizontalFacingDirection);
-			commonLegTransition(input, die, physicState);
+			commonWalkingLegEventTransition(input, horizontalFacingDirection);
+			commonLegEventTransition(input, die, physicState);
 		}break;
 
 		case LegAnimationState::WALKING: {
@@ -224,7 +243,7 @@ private:
 				toLegIdlingAnimation();
 			}
 
-			commonLegTransition(input, die, physicState);
+			commonLegEventTransition(input, die, physicState);
 		} break;
 
 		case LegAnimationState::JUMPING: {
@@ -233,7 +252,7 @@ private:
 				toLegFallingAnimation();
 			}
 
-			commonLegDieTransition(die);
+			commonLegDieEventTransition(die);
 		} break;
 
 		case LegAnimationState::FALLING: {
@@ -241,7 +260,7 @@ private:
 				toLegIdlingAnimation();
 			}
 
-			commonLegDieTransition(die);
+			commonLegDieEventTransition(die);
 		} break;
 
 		case LegAnimationState::DYING: {
@@ -257,9 +276,10 @@ private:
 	void bodyAnimationStateMachineUpdate (const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect &colliderRect, int horizontalFacingDirection, bool &die) {
 		switch (bodyAnimationState) {
 		case BodyAnimationState::IDLING: {
-			commonBodyWalkingTransition(input);
-			commonThrowingBombTransition(input);
-			commonBodyTransition(input, die, physicState);
+			commonBodyWalkingEventTransition(input);
+			commonThrowingBombEventTransition(input);
+			commonShootingEventTransition(input);
+			commonBodyEventTransition(input, die, physicState);
 		}break;
 
 		case BodyAnimationState::WALKING: {
@@ -272,8 +292,9 @@ private:
 				toBodyIdlingAnimation();
 			}
 
-			commonBodyTransition(input, die, physicState);
-			commonThrowingBombTransition(input);
+			commonBodyEventTransition(input, die, physicState);
+			commonThrowingBombEventTransition(input);
+			commonShootingEventTransition(input);
 		} break;
 
 		case BodyAnimationState::JUMPING: {
@@ -282,8 +303,9 @@ private:
 				toBodyFallingAnimation();
 			}
 
-			commonBodyDieTransition(die);
-			commonThrowingBombTransition(input);
+			commonBodyDieEventTransition(die);
+			commonThrowingBombEventTransition(input);
+			commonShootingEventTransition(input);
 		} break;
 
 		case BodyAnimationState::FALLING: {
@@ -291,8 +313,9 @@ private:
 				toBodyIdlingAnimation();
 			}
 
-			commonBodyDieTransition(die);
-			commonThrowingBombTransition(input);
+			commonBodyDieEventTransition(die);
+			commonThrowingBombEventTransition(input);
+			commonShootingEventTransition(input);
 		} break;
 
 		case BodyAnimationState::DYING: {
@@ -322,17 +345,38 @@ private:
 				toBodyIdlingAnimation();
 			}
 
-			commonBodyWalkingTransition(input);
-			commonBodyTransition(input, die, physicState);
-			commonThrowingBombTransition(input);
-
+			commonBodyWalkingEventTransition(input);
+			commonBodyEventTransition(input, die, physicState);
+			commonThrowingBombEventTransition(input);
+			commonShootingEventTransition(input);
 		} break;
+
+		case BodyAnimationState::HORIZONTAL_SHOOTING: {
+			bool doneShootingAnimation = horizontalShootingAnimation->finishOneCycle();
+			if (doneShootingAnimation) {
+				toBodyIdlingAnimation();
+			}
+			commonBodyWalkingEventTransition(input);
+			commonBodyEventTransition(input, die, physicState);
+			commonThrowingBombEventTransition(input);
+		} break;
+
+		case BodyAnimationState::UP_SHOOTING: {
+			bool doneShootingAnimation = upShootingAnimation->finishOneCycle();
+			if (doneShootingAnimation) {
+				toBodyIdlingAnimation();
+			}
+			commonBodyWalkingEventTransition(input);
+			commonBodyEventTransition(input, die, physicState);
+			commonThrowingBombEventTransition(input);
+		} break;
+
 		}
 
 
 	}
 
-	void commonLegTransition(const GameInputContext &input, bool die, PlayerPhysicState physicState) {
+	void commonLegEventTransition(const GameInputContext &input, bool die, PlayerPhysicState physicState) {
 		//bool onGround = physicState == PlayerPhysicState::ONGROUND;
 		if (physicState == PlayerPhysicState::JUMPUP) {
 			toLegJumpingAnimation();
@@ -341,10 +385,10 @@ private:
 			toLegFallingAnimation();
 		}
 
-		commonLegDieTransition(die);
+		commonLegDieEventTransition(die);
 	}
 
-	void commonBodyTransition(const GameInputContext &input, bool die, PlayerPhysicState physicState) {
+	void commonBodyEventTransition(const GameInputContext &input, bool die, PlayerPhysicState physicState) {
 		if (physicState == PlayerPhysicState::JUMPUP) {
 			toBodyJumpingAnimation();
 		}
@@ -352,22 +396,22 @@ private:
 			toBodyFallingAnimation();
 		}
 
-		commonBodyDieTransition(die);
+		commonBodyDieEventTransition(die);
 	}
 
-	void commonLegDieTransition(bool die) {
+	void commonLegDieEventTransition(bool die) {
 		if (die) {
 			toLegDyingAnimation();
 		}
 	}
 
-	void commonBodyDieTransition(bool die) {
+	void commonBodyDieEventTransition(bool die) {
 		if (die) {
 			toBodyDyingAnimation();
 		}
 	}
 
-	void commonThrowingBombTransition(const GameInputContext &input) {
+	void commonThrowingBombEventTransition(const GameInputContext &input) {
 		if (input.throwGrenade.isPressed) {
 			grenadeIsThrow = true;
 			toThrowingAnimation();
@@ -377,19 +421,26 @@ private:
 		}
 	}
 
-	void commonShootingTransition() {
-		// TODO: do shooting transition
+	void commonShootingEventTransition(const GameInputContext &input) {
+		bool verticalInputIsDown = input.up.isDown && input.down.isDown;
+		if (!verticalInputIsDown && input.shoot.isDown) {
+			toHorizontalShootingAnimation();
+		}
 
+		if (input.up.isDown && input.shoot.isDown) {
+			toUpShootingAnimation();
+
+		}
 	}
 
-	void commonBodyWalkingTransition(const GameInputContext &input) {
+	void commonBodyWalkingEventTransition(const GameInputContext &input) {
 		if (input.left.isDown || input.right.isDown) {
 			bodyAnimationState = BodyAnimationState::WALKING;
 			currentBodyAnimation = walkingAnimation;
 		}
 	}
 
-	void commonWalkingLegTransition(const GameInputContext &input, int &horizontalFacingDirection) {
+	void commonWalkingLegEventTransition(const GameInputContext &input, int &horizontalFacingDirection) {
 		if (input.left.isDown) {
 			legAnimationState = LegAnimationState::WALKING;
 			horizontalFacingDirection = -1;
@@ -401,6 +452,8 @@ private:
 			currentLegAnimation = walkingLegAnimation;
 		}
 	}
+
+
 
 	void toBodyIdlingAnimation() {
 		bodyAnimationState = BodyAnimationState::IDLING;
@@ -448,6 +501,15 @@ private:
 		currentBodyAnimation = throwingAnimation;
 	}
 
+	void toHorizontalShootingAnimation() {
+		bodyAnimationState = BodyAnimationState::HORIZONTAL_SHOOTING;
+		currentBodyAnimation = horizontalShootingAnimation;
+	}
+
+	void toUpShootingAnimation() {
+		bodyAnimationState = BodyAnimationState::UP_SHOOTING;
+		currentBodyAnimation = upShootingAnimation;
+	}
 };
 
 }
