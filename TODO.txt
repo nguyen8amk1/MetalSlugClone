@@ -14,6 +14,9 @@ TODAY:
 			shoot multiple bullets [X] 
 
 			enemy get hit by the bullet (with animation, die, blood,..)	[] @Current 
+				-> the bullet should be in level data and the enemies should check that on its own and change state 
+				-> have enemy die sprite sheet []
+				-> 
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
@@ -27,11 +30,16 @@ TODAY:
 	SHOULD REALLY MAKE THE TIME ACCURATE LERPING A CLASS OR SOMETHING LIKE THAT, SINCE I CAN'T REMEMBER HOW TO REWRITE ONE MOST OF THE TIME (2h) []
 		-> figure out how could we abtract and reuse the code of Jumping and Grenade and Bullet 
 
+
 	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
 		something wrong with the throwing animation when trying to make it complete the animation
 		-> there are some dependencies and obscurity going on in here 
 
 TODO:  
+	Idea: HOW ABOUT HAVING A GLOBAL GAME DATA THAT CONTAINS ALL RESOURCES (BULLETS, ENEMIES,...) so that it can be call to release at any where in the game (2h) []
+
+	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) []
+
 	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
@@ -75,7 +83,6 @@ TODO:
 
 	THE X AXIS CONVERSION SEEMS NOT SUPER ACCURATE (The background thing is off my a few pixels ?) (2h) []
 
-	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) []
 
 	TAKE NEW WEAPON (2h) []
 

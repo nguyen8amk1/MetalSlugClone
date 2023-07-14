@@ -21,6 +21,7 @@ private:
 	float howFarTheGoes = .5f;
 	float timeAccumulator = 0;
 	float timeToGoFromAToB = .5f;
+	bool hitEnemy = false;
 
 public: 
 	Bullet(PlatformSpecficMethodsCollection *platformMethods) {
@@ -36,13 +37,14 @@ public:
 			t = Util::Math::normalizef(timeAccumulator, timeToGoFromAToB);
 			float xd = Util::Math::lerp(0, howFarTheGoes, t);
 			colliderRect.x = originalX + xd;
-			OutputDebugStringA(Util::MessageFormater::print(" x: ", colliderRect.x, '\n').c_str());
+			//OutputDebugStringA(Util::MessageFormater::print(" x: ", colliderRect.x, '\n').c_str());
 
-			bool hitEnemy = false;
+			/*
 			if (hitEnemy) {
 				currentState = State::HIT;
 				reset(colliderRect.x, colliderRect.y);
 			}
+			*/
 		} break;
 
 		case State::HIT: {
@@ -71,6 +73,9 @@ public:
 		reset(playerX, playerY);
 	}
 
+	Rect getColliderRect() {
+		return colliderRect;
+	}
 };
 
 

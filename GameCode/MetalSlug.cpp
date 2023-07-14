@@ -435,6 +435,7 @@ private:
 		}
 
 		levelData.groundColliders = groundColliders;
+		levelData.bulletRects = player->getBulletRects();
 
 		background->animate(camera, dt);
 		waterFallAnimation->animate(camera, dt);

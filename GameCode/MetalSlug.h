@@ -2,9 +2,7 @@
 #include<string>
 #include<vector>
 
-
 namespace MetalSlug {
-
 
 struct Rect {
 	float x, y, width, height;
@@ -166,6 +164,7 @@ struct LevelData {
 	Rect playerInteractionRect;
 
 	std::vector<Rect> dangerRects;
+	std::vector<Rect> bulletRects;
 
 	bool levelStarted = false;
 };

@@ -153,6 +153,20 @@ public:
 		colliderRect.y += d;
 	}
 
+	// FIXME: this is too slow 
+	// FIXME: this is too slow 
+	// FIXME: this is too slow 
+	// FIXME: this is too slow 
+	// FIXME: this is too slow 
+	// FIXME: this is too slow 
+	std::vector<Rect> getBulletRects() {
+		std::vector<Rect> bulletRects;
+		for(Bullet *bullet: bullets) {
+			bulletRects.push_back(bullet->getColliderRect());
+		}
+		return bulletRects;
+	}
+
 	Rect getRect() { return colliderRect; }
 
 	Rect getInteractionRect() { return interactionRect; }
