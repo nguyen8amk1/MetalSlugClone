@@ -35,7 +35,7 @@ private:
 	PlayerAnimationResult animationResult;
 	PlayerAnimation *animation;
 
-	Bullet* bullet;
+	std::vector<Bullet*> bullets;
 
 public: 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
@@ -43,7 +43,6 @@ public:
 		this->gravity = gravity;
 		this->platformMethods = platformMethods;
 
-		bullet = new Bullet(platformMethods);
  
 		physic = new PlayerPhysic(gravity);
 		animation = new PlayerAnimation(platformMethods);
@@ -92,7 +91,9 @@ public:
 			grenade->update(camera, dt, levelData);
 		}
 		
-		bullet->update(dt, levelData, camera);
+		for (Bullet* bullet : bullets) {
+			bullet->update(dt, levelData, camera);
+		}
 
 		/*
 		bool collided = false;
@@ -131,7 +132,9 @@ private:
 	}
 
 	void shootBullet() {
+		Bullet *bullet = new Bullet(platformMethods);
 		bullet->shoot(colliderRect.x, colliderRect.y);
+		bullets.push_back(bullet);
 	}
 
 	void throwGrenade() {

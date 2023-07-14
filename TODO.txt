@@ -11,9 +11,9 @@ TODAY:
 					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset) []
 
 			shoot a bullet out [X] 
-			shoot multiple bullets [] @Current 
+			shoot multiple bullets [X] 
 
-			enemy get hit by the bullet (with animation, die, blood,..)	[]
+			enemy get hit by the bullet (with animation, die, blood,..)	[] @Current 
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
@@ -31,8 +31,9 @@ TODAY:
 		something wrong with the throwing animation when trying to make it complete the animation
 		-> there are some dependencies and obscurity going on in here 
 
-
 TODO:  
+	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
+
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 

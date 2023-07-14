@@ -20,7 +20,7 @@ private:
 	float originalX, originalY;
 	float howFarTheGoes = .5f;
 	float timeAccumulator = 0;
-	float timeToGoFromAToB = 1;
+	float timeToGoFromAToB = .5f;
 
 public: 
 	Bullet(PlatformSpecficMethodsCollection *platformMethods) {
