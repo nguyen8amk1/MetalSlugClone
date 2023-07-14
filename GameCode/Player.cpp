@@ -8,9 +8,9 @@
 
 //#include "Windows.h"
 #include "Grenade.h"
+#include "Bullet.h"
 
 namespace MetalSlug {
-
 class Player {
 private: 
 	Rect colliderRect = { -17.8f, 1.0f, .2f, .4f };
@@ -35,18 +35,23 @@ private:
 	PlayerAnimationResult animationResult;
 	PlayerAnimation *animation;
 
+	Bullet* bullet;
+
 public: 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
 		this->moveSpeed = moveSpeed;
 		this->gravity = gravity;
 		this->platformMethods = platformMethods;
 
+		bullet = new Bullet(platformMethods);
+ 
 		physic = new PlayerPhysic(gravity);
 		animation = new PlayerAnimation(platformMethods);
 	}
 
 	~Player() {
 	}
+
 
 	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
 		if (!die) {
@@ -58,24 +63,14 @@ public:
 			}
 
 			if (input.shoot.isDown) {
-
-				bool facingRight = horizontalFacingDirection == 1;
-				bool facingLeft = horizontalFacingDirection == -1;
-				if (facingRight) {
-					interactionRect.x = colliderRect.x + colliderRect.width/2;
-				}
-				else if(facingLeft){
-					interactionRect.x = colliderRect.x - colliderRect.width/2;
-				}
-
-				interactionRect.y = colliderRect.y;
-				interactionRect.width = colliderRect.width/2;
-				interactionRect.height = colliderRect.height/2;
+				interactionRectInit();
+				shootBullet();
 			}
 			else {
 				interactionRect = interactionRectDisabledRect;
 			}
 		}
+
 
 		if (levelData.levelStarted) {
 			physicResult = physic->update(input, dt, colliderRect, die, levelData);
@@ -97,6 +92,8 @@ public:
 			grenade->update(camera, dt, levelData);
 		}
 		
+		bullet->update(dt, levelData, camera);
+
 		/*
 		bool collided = false;
 		for (RectangleCollider *ground: levelData.groundColliders) {
@@ -118,9 +115,26 @@ public:
 	}
 
 private: 
+	void interactionRectInit() {
+		bool facingRight = horizontalFacingDirection == 1;
+		bool facingLeft = horizontalFacingDirection == -1;
+		if (facingRight) {
+			interactionRect.x = colliderRect.x + colliderRect.width/2;
+		}
+		else if(facingLeft){
+			interactionRect.x = colliderRect.x - colliderRect.width/2;
+		}
+
+		interactionRect.y = colliderRect.y;
+		interactionRect.width = colliderRect.width/2;
+		interactionRect.height = colliderRect.height/2;
+	}
+
+	void shootBullet() {
+		bullet->shoot(colliderRect.x, colliderRect.y);
+	}
 
 	void throwGrenade() {
-		//OutputDebugStringA("A GRENADE IS CREATED \n");
 		Grenade *grenade = new Grenade(grenadeRect, platformMethods);
 		grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 		grenades.push_back(grenade);

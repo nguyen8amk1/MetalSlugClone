@@ -183,12 +183,6 @@ public:
 	}
 
 	PlayerAnimationResult update(const GameInputContext &input, double dt, Camera *camera, LevelData &levelData, PlayerPhysicState physicState, Rect colliderRect, int horizontalFacingDirection, bool die) {
-		/*
-		animationResult = animationStateMachine->update();
-		currentState = animationResult.nextState;
-		currentState->update();
-		*/
-
 		bodyAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 		legAnimationStateMachineUpdate(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 		

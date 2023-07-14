@@ -5,27 +5,35 @@ TODAY:
 				right/left - 0, 168, 52, 29
 				up - 0, 197, 30, 65
 			bullet sprite [X] - 74, 476, 12, 11
-			add the animation into the player animation [] @Current
+			add the animation into the player animation [] 
 				Problem: 
-					state transition flickering between states (ex: walking and shooting at the same time)
-					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset)
+					state transition flickering between states (ex: walking and shooting at the same time) []
+					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset) []
+
+			shoot a bullet out [X] 
+			shoot multiple bullets [] @Current 
+
+			enemy get hit by the bullet (with animation, die, blood,..)	[]
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
-	LET THE THROWING ANIMATION FINISH (1h) []
+	Idea: should all the input handling in the player.cpp file and then transfered to other files @Next 
+		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
+		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
+
+	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? 
+
+	SHOULD REALLY MAKE THE TIME ACCURATE LERPING A CLASS OR SOMETHING LIKE THAT, SINCE I CAN'T REMEMBER HOW TO REWRITE ONE MOST OF THE TIME (2h) []
+		-> figure out how could we abtract and reuse the code of Jumping and Grenade and Bullet 
+
+	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
 		something wrong with the throwing animation when trying to make it complete the animation
 		-> there are some dependencies and obscurity going on in here 
 
 
 TODO:  
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
-
-	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? 
-
-	Idea: should all the input handling in the player.cpp file and then transfered to other files 
-		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
-		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 

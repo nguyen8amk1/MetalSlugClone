@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCode\Animation.h" />
+    <ClInclude Include="GameCode\Bullet.h" />
     <ClInclude Include="GameCode\CollisionChecker.h" />
     <ClInclude Include="GameCode\Grenade.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />

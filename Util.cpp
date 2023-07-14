@@ -107,6 +107,11 @@ public:
 		}
 	}
 
+	static float lerp(float start, float end, float t) {
+		return start + t * (end - start);
+	}
+
+
 	static float upCurve(float t) {
 		return -powf((t - 1), 2) + 1;
 	}

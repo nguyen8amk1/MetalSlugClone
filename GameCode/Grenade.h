@@ -2,7 +2,7 @@
 #include "Animation.h"
 #include "MetalSlug.h"
 #include "../Util.cpp"
-#include "Windows.h"
+//#include "Windows.h"
 
 namespace MetalSlug {
 
@@ -79,8 +79,10 @@ public:
 			xTimeAccumulator += dt;
 			yTimeAccumulator += dt;
 
-			Util::Math::clampf(xTimeAccumulator, 0, firstHopDuration/2.0f);
-			Util::Math::clampf(yTimeAccumulator, 0, firstHopDuration/2.0f);
+			/*
+			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, firstHopDuration/2.0f);
+			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, firstHopDuration/2.0f);
+			*/
 
 			xt = Util::Math::normalizef(xTimeAccumulator, firstHopDuration/2.0f);
 			yt = Util::Math::normalizef(yTimeAccumulator, firstHopDuration/2.0f);
@@ -98,8 +100,9 @@ public:
 				yTimeAccumulator = 0;
 			}
 			else {
-				float xd = xt * howFarFirstHop / 2.0f;
-				float yd = Util::Math::upCurve(yt) * firstHopHeight;
+				float xd = Util::Math::lerp(0, howFarFirstHop / 2.0f, xt);
+				float yd = Util::Math::lerp(0, firstHopHeight, Util::Math::upCurve(yt));
+
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -113,8 +116,10 @@ public:
 			xTimeAccumulator += dt;
 			yTimeAccumulator += dt;
 
-			Util::Math::clampf(xTimeAccumulator, 0, firstHopDuration/2.0f);
-			Util::Math::clampf(yTimeAccumulator, 0, firstHopDuration/2.0f);
+			/*
+			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, firstHopDuration/2.0f);
+			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, firstHopDuration/2.0f);
+			*/
 
 			xt = Util::Math::normalizef(xTimeAccumulator, firstHopDuration/2.0f);
 			yt = Util::Math::normalizef(yTimeAccumulator, firstHopDuration/2.0f);
@@ -137,8 +142,9 @@ public:
 
 			}
 			else {
-				float xd = xt * howFarFirstHop / 2.0f;
-				float yd = Util::Math::downCurve(yt) * firstHopHeight;
+				float xd = Util::Math::lerp(0, howFarFirstHop / 2.0f, xt);
+				float yd = Util::Math::lerp(0, firstHopHeight, Util::Math::downCurve(yt));
+
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -154,8 +160,10 @@ public:
 			xTimeAccumulator += dt;
 			yTimeAccumulator += dt;
 
-			Util::Math::clampf(xTimeAccumulator, 0, secondHopDuration/2.0f);
-			Util::Math::clampf(yTimeAccumulator, 0, secondHopDuration/2.0f);
+			/*
+			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, secondHopDuration/2.0f);
+			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, secondHopDuration/2.0f);
+			*/
 
 			xt = Util::Math::normalizef(xTimeAccumulator, secondHopDuration/2.0f);
 			yt = Util::Math::normalizef(yTimeAccumulator, secondHopDuration/2.0f);
@@ -171,8 +179,9 @@ public:
 				yTimeAccumulator = 0;
 			}
 			else {
-				float xd = xt * howFarSecondHop / 2.0f;
-				float yd = Util::Math::upCurve(yt) * secondHopHeight;
+				float xd = Util::Math::lerp(0, howFarSecondHop / 2.0f, xt);
+				float yd = Util::Math::lerp(0, secondHopHeight, Util::Math::upCurve(yt));
+
 				if (direction == -1) {
 					xd = -xd;
 				}
@@ -186,8 +195,10 @@ public:
 			xTimeAccumulator += dt;
 			yTimeAccumulator += dt;
 
-			Util::Math::clampf(xTimeAccumulator, 0, secondHopDuration/2.0f);
-			Util::Math::clampf(yTimeAccumulator, 0, secondHopDuration/2.0f);
+			/*
+			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, secondHopDuration/2.0f);
+			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, secondHopDuration/2.0f);
+			*/
 
 			xt = Util::Math::normalizef(xTimeAccumulator, secondHopDuration/2.0f);
 			yt = Util::Math::normalizef(yTimeAccumulator, secondHopDuration/2.0f);
@@ -210,8 +221,9 @@ public:
 				yTimeAccumulator = 0;
 			}
 			else {
-				float xd = xt * howFarSecondHop / 2.0f;
-				float yd = Util::Math::downCurve(yt) * secondHopHeight;
+				float xd = Util::Math::lerp(0, howFarSecondHop / 2.0f, xt);
+				float yd = Util::Math::lerp(0, secondHopHeight, Util::Math::downCurve(yt));
+
 				if (direction == -1) {
 					xd = -xd;
 				}
