@@ -21,25 +21,22 @@ TODAY:
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
 	@Current: Finish all of the Ideas first, the following one first  
-	Idea: HOW ABOUT HAVING A GLOBAL GAME DATA THAT CONTAINS ALL RESOURCES (BULLETS, ENEMIES,...) so that it can be call to release at any where in the game (2h) []
-		-> GLOBAL SINGLETON ()
-		-> the singleton updates is going to be constantly running in the game mainloop
-		-> to check for events such as enemy killed (with index), bullets hit/remove, load new assets,..., 
-		-> or just have api that do all of these things and get called inside the entities objects ?
-
-	Idea: should all the input handling in the player.cpp file and then transfered to other files 
+	Idea: should all the input handling in the player.cpp file and then transfered to other files  @Current 
 		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
 		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
 
+	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) []
+
 	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? 
 
-	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) []
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) []
 
 	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
 		something wrong with the throwing animation when trying to make it complete the animation
 		-> there are some dependencies and obscurity going on in here 
 
 TODO:  
+
 	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
@@ -176,6 +173,11 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	Idea: HOW ABOUT HAVING A GLOBAL GAME DATA THAT CONTAINS ALL RESOURCES (BULLETS, ENEMIES,...) so that it can be call to release at any where in the game (2h) [X]
+		-> GLOBAL SINGLETON ()
+		-> the singleton updates is going to be constantly running in the game mainloop
+		-> to check for events such as enemy killed (with index), bullets hit/remove, load new assets,..., 
+		-> or just have api that do all of these things and get called inside the entities objects ?
 	FIXBUG: HAVE A LITTLE BUG IN THE SECOND HOP DOWN IN GRENADE WHEN USING THE NEW TIMEBOUNDEDLERP CLASS 
 	SHOULD REALLY MAKE THE TIME ACCURATE LERPING A CLASS OR SOMETHING LIKE THAT, SINCE I CAN'T REMEMBER HOW TO REWRITE ONE MOST OF THE TIME (2h) [X]
 		-> figure out how could we abtract and reuse the code of Jumping and Grenade and Bullet 
