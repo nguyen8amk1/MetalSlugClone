@@ -1,5 +1,5 @@
 TODAY: 
-	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? @Current 
+	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [] @Current 
 
 	PLAYER SHOOTING (4h) [] 
 		in all 3 directions (right, left, up) (2h) [] 
@@ -22,7 +22,6 @@ TODAY:
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
-	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [] 
 
 	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) []
 
@@ -168,6 +167,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) [X] ?? 
 	Idea: should all the input handling in the player.cpp file and then transfered to other files [X] 
 		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
 		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 

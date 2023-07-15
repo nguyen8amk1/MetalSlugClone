@@ -224,7 +224,8 @@ private:
 		switch (legAnimationState) {
 		case LegAnimationState::IDLING: {
 			commonWalkingLegEventTransition(event, horizontalFacingDirection);
-			commonLegEventTransition(event, die, physicState);
+			commonLegJumpFallEventTransition(physicState);
+			commonLegDieEventTransition(die);
 		}break;
 
 		case LegAnimationState::WALKING: {
@@ -237,7 +238,8 @@ private:
 				toLegIdlingAnimation();
 			}
 
-			commonLegEventTransition(event, die, physicState);
+			commonLegJumpFallEventTransition(physicState);
+			commonLegDieEventTransition(die);
 		} break;
 
 		case LegAnimationState::JUMPING: {
@@ -273,7 +275,8 @@ private:
 			commonBodyWalkingEventTransition(event);
 			commonThrowingBombEventTransition(event);
 			commonShootingEventTransition(event);
-			commonBodyEventTransition(event, die, physicState);
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyDieEventTransition(die);
 		}break;
 
 		case BodyAnimationState::WALKING: {
@@ -286,7 +289,8 @@ private:
 				toBodyIdlingAnimation();
 			}
 
-			commonBodyEventTransition(event, die, physicState);
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyDieEventTransition(die);
 			commonThrowingBombEventTransition(event);
 			commonShootingEventTransition(event);
 		} break;
@@ -340,7 +344,9 @@ private:
 			}
 
 			commonBodyWalkingEventTransition(event);
-			commonBodyEventTransition(event, die, physicState);
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyDieEventTransition(die);
+
 			commonThrowingBombEventTransition(event);
 			commonShootingEventTransition(event);
 		} break;
@@ -351,7 +357,10 @@ private:
 				toBodyIdlingAnimation();
 			}
 			commonBodyWalkingEventTransition(event);
-			commonBodyEventTransition(event, die, physicState);
+
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyDieEventTransition(die);
+
 			commonThrowingBombEventTransition(event);
 		} break;
 
@@ -361,7 +370,10 @@ private:
 				toBodyIdlingAnimation();
 			}
 			commonBodyWalkingEventTransition(event);
-			commonBodyEventTransition(event, die, physicState);
+
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyDieEventTransition(die);
+
 			commonThrowingBombEventTransition(event);
 		} break;
 
@@ -370,19 +382,16 @@ private:
 
 	}
 
-	void commonLegEventTransition(PlayerEvent &event, bool die, PlayerPhysicState physicState) {
-		//bool onGround = physicState == PlayerPhysicState::ONGROUND;
+	void commonLegJumpFallEventTransition(PlayerPhysicState physicState) {
 		if (physicState == PlayerPhysicState::JUMPUP) {
 			toLegJumpingAnimation();
 		}
 		else if (physicState == PlayerPhysicState::FALL) {
 			toLegFallingAnimation();
 		}
-
-		commonLegDieEventTransition(die);
 	}
 
-	void commonBodyEventTransition(PlayerEvent &event, bool die, PlayerPhysicState physicState) {
+	void commonBodyJumpFallEventTransition(PlayerPhysicState physicState) {
 		if (physicState == PlayerPhysicState::JUMPUP) {
 			toBodyJumpingAnimation();
 		}
@@ -390,7 +399,6 @@ private:
 			toBodyFallingAnimation();
 		}
 
-		commonBodyDieEventTransition(die);
 	}
 
 	void commonLegDieEventTransition(bool die) {

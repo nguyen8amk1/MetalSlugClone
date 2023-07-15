@@ -48,8 +48,8 @@ public:
 		if (physicState == PlayerPhysicState::FALL) {
 			colliderRect.y -= (float)(gravity*dt); 
 
-			commonOnGroundTransition(colliderRect, levelData);
-			commonDieTransition(colliderRect, levelData, die);
+			commonOnGroundEventTransition(colliderRect, levelData);
+			commonDieEventTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::ONGROUND) {
 			bool collided = false;
@@ -71,7 +71,7 @@ public:
 				originalGroundY = colliderRect.y; 
 			}
 
-			commonDieTransition(colliderRect, levelData, die);
+			commonDieEventTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::JUMPUP) {
 
@@ -88,7 +88,7 @@ public:
 				float yd = Util::Math::upCurve(jumpT)* jumpHeight;
 				colliderRect.y = originalGroundY + yd;
 			}
-			commonDieTransition(colliderRect, levelData, die);
+			commonDieEventTransition(colliderRect, levelData, die);
 		}
 		else if (physicState == PlayerPhysicState::JUMPDOWN) {
 			jumpTimeAccumulator += dt;
@@ -97,15 +97,15 @@ public:
 			float yd = Util::Math::downCurve(jumpT) * jumpHeight;
 			colliderRect.y = originalGroundY + yd;
 
-			commonOnGroundTransition(colliderRect, levelData);
-			commonDieTransition(colliderRect, levelData, die);
+			commonOnGroundEventTransition(colliderRect, levelData);
+			commonDieEventTransition(colliderRect, levelData, die);
 		}
 
 		return {colliderRect, physicState, die};
 	}
 
 private: 
-	void commonOnGroundTransition(Rect &colliderRect, LevelData &levelData) {
+	void commonOnGroundEventTransition(Rect &colliderRect, LevelData &levelData) {
 		CollisionInfo colInfo;
 		for (RectangleCollider* ground : levelData.groundColliders) {
 			CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
@@ -121,7 +121,7 @@ private:
 		}
 	}
 
-	void commonDieTransition(Rect &colliderRect, LevelData &levelData, bool &die) {
+	void commonDieEventTransition(Rect &colliderRect, LevelData &levelData, bool &die) {
 		bool hitDangerRect = false;
 		for (Rect dangerRect: levelData.dangerRects) {
 			hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, dangerRect);
