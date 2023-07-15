@@ -174,6 +174,7 @@
     <ClInclude Include="GameCode\Physics.h" />
     <ClInclude Include="GameCode\PlayerAnimation.h" />
     <ClInclude Include="GameCode\PlayerPhysic.h" />
+    <ClInclude Include="GameCode\TimeBoundedLerp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

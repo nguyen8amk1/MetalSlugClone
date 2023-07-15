@@ -97,5 +97,8 @@
     <ClInclude Include="GameCode\Bullet.h">
       <Filter>Source Files\GameCode</Filter>
     </ClInclude>
+    <ClInclude Include="GameCode\TimeBoundedLerp.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

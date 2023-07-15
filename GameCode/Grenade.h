@@ -2,10 +2,10 @@
 #include "Animation.h"
 #include "MetalSlug.h"
 #include "../Util.cpp"
+#include "TimeBoundedLerp.h"
 //#include "Windows.h"
 
 namespace MetalSlug {
-
 class Grenade {
 private: 
 	Rect colliderRect = { 0, 0, .1f, .1f };
@@ -37,26 +37,25 @@ private:
 	int direction = 1;  
 
 	float firstHopHeight = .251851f;
-	float secondHopHeight = .15f;
-
-	float xTimeAccumulator = 0.0f;
-	float yTimeAccumulator = 0.0f;
-
+	float firstHopDuration = 0.6f;
 	float howFarFirstHop = 0.4806f;
+
+	float secondHopHeight = .15f;
+	float secondHopDuration = 0.6f;
 	float howFarSecondHop = 0.31097f;
 
-	float firstHopDuration = 0.6f;
-	float secondHopDuration = 0.6f;
+	TimeBoundedLerp *xLerp;
+	TimeBoundedLerp *yLerp;
 
 
-	float xt = 0.0f;
-	float yt = 0.0f;
 	Point originalPos;
 
 public:
 
 	Grenade(const Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods) {
 		this->colliderRect = colliderRect;
+		xLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
+		yLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 
 		std::string filename = "Assets/Imgs/Characters/marco_messi.png";
 		Util::AnimationUtil::initAnimationMetaData(spinningAnimationMetaData, filename, .1f, 1, 1, {0, 428}, {11, 18}); //0, 428, 11, 18
@@ -76,32 +75,36 @@ public:
 		//  State Machine  
 		switch (currentPhysicState) {
 		case PhysicState::FIRST_HOP_UP: {
-			xTimeAccumulator += dt;
-			yTimeAccumulator += dt;
-
-			/*
-			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, firstHopDuration/2.0f);
-			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, firstHopDuration/2.0f);
-			*/
-
-			xt = Util::Math::normalizef(xTimeAccumulator, firstHopDuration/2.0f);
-			yt = Util::Math::normalizef(yTimeAccumulator, firstHopDuration/2.0f);
+			xLerp->update(dt, false);
+			yLerp->update(dt, false);
 
 			//OutputDebugStringA(Util::MessageFormater::print(colliderRect.x, ", ", colliderRect.y, '\n').c_str());
 
 			// event: 
-			if (yt >= 1.0f) {
+			if (yLerp->getCurrentT() >= 1.0f) {
+				xLerp->resetHard();
+				yLerp->resetSmooth();
+
+				/*
 				yt -= 1.0f;
 				xt = 0;
-				currentPhysicState = PhysicState::FIRST_HOP_DOWN;
-				originalPos.x = colliderRect.x;
-
 				xTimeAccumulator = 0;
 				yTimeAccumulator = 0;
+				*/
+
+				currentPhysicState = PhysicState::FIRST_HOP_DOWN;
+				originalPos.x = colliderRect.x;
+				OutputDebugStringA("MOVE TO FIRST HOP DOWN\n");
+
 			}
 			else {
-				float xd = Util::Math::lerp(0, howFarFirstHop / 2.0f, xt);
+				float xd = Util::Math::lerp(0, howFarFirstHop / 2.0f, xLerp->getCurrentT());
+				float yd = Util::Math::lerp(0, firstHopHeight, Util::Math::upCurve(yLerp->getCurrentT()));
+
+				/*
+				float xd = //xLerp->getCurrentValue(0, howFarFirstHop/2.0f);
 				float yd = Util::Math::lerp(0, firstHopHeight, Util::Math::upCurve(yt));
+				*/
 
 				if (direction == -1) {
 					xd = -xd;
@@ -113,16 +116,8 @@ public:
 		} break;
 
 		case PhysicState::FIRST_HOP_DOWN: {
-			xTimeAccumulator += dt;
-			yTimeAccumulator += dt;
-
-			/*
-			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, firstHopDuration/2.0f);
-			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, firstHopDuration/2.0f);
-			*/
-
-			xt = Util::Math::normalizef(xTimeAccumulator, firstHopDuration/2.0f);
-			yt = Util::Math::normalizef(yTimeAccumulator, firstHopDuration/2.0f);
+			xLerp->update(dt, false);
+			yLerp->update(dt, false);
 
 			bool hitGround = false;
 			for (RectangleCollider *rect: levelData.groundColliders) {
@@ -131,19 +126,21 @@ public:
 			}
 
 			if (hitGround) {
-				yt = 0;
-				xt = 0;
+				xLerp->resetHard();
+				yLerp->resetSmooth();
+
+				xLerp->setDuration(secondHopDuration/2.0f);
+				yLerp->setDuration(secondHopDuration/2.0f);
+
 				currentPhysicState = PhysicState::SECOND_HOP_UP;
+
 				originalPos.x = colliderRect.x;
 				originalPos.y = colliderRect.y;
 
-				xTimeAccumulator = 0;
-				yTimeAccumulator = 0;
-
 			}
 			else {
-				float xd = Util::Math::lerp(0, howFarFirstHop / 2.0f, xt);
-				float yd = Util::Math::lerp(0, firstHopHeight, Util::Math::downCurve(yt));
+				float xd = Util::Math::lerp(0, howFarFirstHop / 2.0f, xLerp->getCurrentT());
+				float yd = Util::Math::lerp(0, firstHopHeight, Util::Math::downCurve(yLerp->getCurrentT()));
 
 				if (direction == -1) {
 					xd = -xd;
@@ -157,30 +154,20 @@ public:
 
 		case PhysicState::SECOND_HOP_UP: {
 			// action: 
-			xTimeAccumulator += dt;
-			yTimeAccumulator += dt;
-
-			/*
-			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, secondHopDuration/2.0f);
-			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, secondHopDuration/2.0f);
-			*/
-
-			xt = Util::Math::normalizef(xTimeAccumulator, secondHopDuration/2.0f);
-			yt = Util::Math::normalizef(yTimeAccumulator, secondHopDuration/2.0f);
+			xLerp->update(dt, false);
+			yLerp->update(dt, false);
 
 			// event: 
-			if (yt >= 1.0f) {
-				yt -= 1.0f;
-				xt = 0;
+			if (yLerp->getCurrentT() >= 1.0f) {
+				xLerp->resetHard();
+				yLerp->resetSmooth();
+
 				currentPhysicState = PhysicState::SECOND_HOP_DOWN;
 				originalPos.x = colliderRect.x;
-
-				xTimeAccumulator = 0;
-				yTimeAccumulator = 0;
 			}
 			else {
-				float xd = Util::Math::lerp(0, howFarSecondHop / 2.0f, xt);
-				float yd = Util::Math::lerp(0, secondHopHeight, Util::Math::upCurve(yt));
+				float xd = Util::Math::lerp(0, howFarSecondHop / 2.0f, xLerp->getCurrentT());
+				float yd = Util::Math::lerp(0, secondHopHeight, Util::Math::upCurve(yLerp->getCurrentT()));
 
 				if (direction == -1) {
 					xd = -xd;
@@ -192,16 +179,8 @@ public:
 		} break;
 
 		case PhysicState::SECOND_HOP_DOWN: {
-			xTimeAccumulator += dt;
-			yTimeAccumulator += dt;
-
-			/*
-			xTimeAccumulator = Util::Math::clampf(xTimeAccumulator, 0, secondHopDuration/2.0f);
-			yTimeAccumulator = Util::Math::clampf(yTimeAccumulator, 0, secondHopDuration/2.0f);
-			*/
-
-			xt = Util::Math::normalizef(xTimeAccumulator, secondHopDuration/2.0f);
-			yt = Util::Math::normalizef(yTimeAccumulator, secondHopDuration/2.0f);
+			xLerp->update(dt, false);
+			yLerp->update(dt, false);
 
 			bool hitGround = false;
 			for (RectangleCollider *rect: levelData.groundColliders) {
@@ -210,19 +189,17 @@ public:
 			}
 
 			if (hitGround) {
-				yt = 0;
-				xt = 0;
+				xLerp->resetHard();
+				yLerp->resetHard();
+
 				currentPhysicState = PhysicState::NONE;
 
 				originalPos.x = colliderRect.x;
 				originalPos.y = colliderRect.y;
-
-				xTimeAccumulator = 0;
-				yTimeAccumulator = 0;
 			}
 			else {
-				float xd = Util::Math::lerp(0, howFarSecondHop / 2.0f, xt);
-				float yd = Util::Math::lerp(0, secondHopHeight, Util::Math::downCurve(yt));
+				float xd = Util::Math::lerp(0, howFarSecondHop / 2.0f, xLerp->getCurrentT());
+				float yd = Util::Math::lerp(0, secondHopHeight, Util::Math::downCurve(yLerp->getCurrentT()));
 
 				if (direction == -1) {
 					xd = -xd;

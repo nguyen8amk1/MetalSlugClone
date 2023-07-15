@@ -16,7 +16,6 @@ TODAY:
 			enemy get hit by the bullet (with animation, die, blood,..)	[] @Current 
 				-> the bullet should be in level data and the enemies should check that on its own and change state 
 				-> have enemy die sprite sheet []
-				-> 
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
@@ -26,10 +25,6 @@ TODAY:
 		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
 
 	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? 
-
-	SHOULD REALLY MAKE THE TIME ACCURATE LERPING A CLASS OR SOMETHING LIKE THAT, SINCE I CAN'T REMEMBER HOW TO REWRITE ONE MOST OF THE TIME (2h) []
-		-> figure out how could we abtract and reuse the code of Jumping and Grenade and Bullet 
-
 
 	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
 		something wrong with the throwing animation when trying to make it complete the animation
@@ -176,6 +171,10 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	FIXBUG: HAVE A LITTLE BUG IN THE SECOND HOP DOWN IN GRENADE WHEN USING THE NEW TIMEBOUNDEDLERP CLASS 
+	SHOULD REALLY MAKE THE TIME ACCURATE LERPING A CLASS OR SOMETHING LIKE THAT, SINCE I CAN'T REMEMBER HOW TO REWRITE ONE MOST OF THE TIME (2h) [X]
+		-> figure out how could we abtract and reuse the code of Jumping and Grenade and Bullet 
+
 	SINGLE PRESS BUTTON (for the grenade throw button) (2h) [X] 
 	FIXME: the shifting x after die is having bug (why the finish oneccycle doesn't set to true ??) (2h) [X]
 	CHANGE THE PLAYER JUMPING MECHANISM WITH THE NEW MECHANISM (GRENADE BOUNCE) (1h) [X] 
