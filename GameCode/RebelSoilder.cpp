@@ -45,7 +45,7 @@ void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
 			toThrowingBombAnimation();
 		}
 
-		dieEventTransition(levelData.bulletRects);
+		dieEventTransition();
 	} break;
 
 	case AnimationState::SLASHING: {
@@ -62,7 +62,7 @@ void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
 		}
 		// transition: to idling or throwing bomb 
 		// event: ...
-		dieEventTransition(levelData.bulletRects);
+		dieEventTransition();
 	} break;
 
 	case AnimationState::THROWING_BOMB: {
@@ -70,7 +70,7 @@ void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
 		// action:...
 		// transition: to idling or slashing  
 		// event: ...
-		dieEventTransition(levelData.bulletRects);
+		dieEventTransition();
 	} break;
 
 	case AnimationState::DIE: {
@@ -94,4 +94,19 @@ void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
 	platformMethods->drawRectangle(r, testCol);
 
 }
+
+void RebelSoilder::dieEventTransition() {
+	for (int i = 0; i < globalGameData->getBullets()->size(); i++) {
+		Bullet* bullet = (*globalGameData->getBullets())[i];
+		bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, bullet->getColliderRect());
+		if (bulletHit) {
+			// TODO: need some mechanism that can do this 
+			//globalGameData->removeBulletAt(i);
+			OutputDebugStringA(Util::MessageFormater::print("TODO: Remove bullet at index: ", i, '\n').c_str());
+			toDieAnimation();
+			break;
+		}
+	}
+}
+
 }

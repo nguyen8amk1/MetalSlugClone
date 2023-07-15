@@ -4,13 +4,15 @@
 #include "CollisionChecker.h"
 #include "PlayerPhysic.h"
 #include "PlayerAnimation.h"
+#include "GlobalGameData.h"
 
 //#include "Windows.h"
 #include "Grenade.h"
-#include "Bullet.h"
 #include "Camera.h"
 
 namespace MetalSlug {
+class GlobalGameData;
+
 class Player {
 private: 
 	Rect colliderRect = { -17.8f, 1.0f, .2f, .4f };
@@ -35,7 +37,7 @@ private:
 	PlayerAnimationResult animationResult;
 	PlayerAnimation *animation;
 
-	std::vector<Bullet*> bullets;
+	GlobalGameData* globalGameData;
 
 public: 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection* platformMethods);
@@ -59,14 +61,6 @@ public:
 	void moveYBy(float d) {
 		colliderRect.y += d;
 	}
-
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	std::vector<Rect> getBulletRects();
 
 	Rect getRect() { return colliderRect; }
 

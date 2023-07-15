@@ -8,7 +8,7 @@ Player::Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection 
 	this->moveSpeed = moveSpeed;
 	this->gravity = gravity;
 	this->platformMethods = platformMethods;
-
+	globalGameData = GlobalGameData::getInstance();
 
 	physic = new PlayerPhysic(gravity);
 	animation = new PlayerAnimation(platformMethods);
@@ -57,7 +57,7 @@ void Player::update(const GameInputContext &input, LevelData &levelData, Camera 
 		grenade->update(camera, dt, levelData);
 	}
 	
-	for (Bullet* bullet : bullets) {
+	for (Bullet* bullet : *(globalGameData->getBullets())) {
 		bullet->update(dt, levelData, camera);
 	}
 
@@ -99,27 +99,14 @@ void Player::interactionRectInit() {
 void Player::shootBullet() {
 	Bullet *bullet = new Bullet(platformMethods);
 	bullet->shoot(colliderRect.x, colliderRect.y);
-	bullets.push_back(bullet);
+
+	globalGameData->getBullets()->push_back(bullet);
 }
 
 void Player::throwGrenade() {
 	Grenade *grenade = new Grenade(grenadeRect, platformMethods);
 	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 	grenades.push_back(grenade);
-}
-
-// FIXME: this is too slow 
-// FIXME: this is too slow 
-// FIXME: this is too slow 
-// FIXME: this is too slow 
-// FIXME: this is too slow 
-// FIXME: this is too slow 
-std::vector<Rect> Player::getBulletRects() {
-	std::vector<Rect> bulletRects;
-	for(Bullet *bullet: bullets) {
-		bulletRects.push_back(bullet->getColliderRect());
-	}
-	return bulletRects;
 }
 
 }

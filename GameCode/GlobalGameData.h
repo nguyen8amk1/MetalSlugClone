@@ -14,9 +14,10 @@ class GlobalGameData {
 	// TODO: this suppose to be a singleton, will contains everything that should be access globally 
 	// and this suppose to replace the LevelData struct as well 
 	// for now, it's gonna contain: 
-	// bullets []
-	// enemies []
+	// bullets [X]
+	// enemies [X]
 	// and have coresponse methods to release them as well  
+
 private: 
 	std::vector<RebelSoilder*> rebelSoilders;
 	std::vector<Bullet*> bullets;

@@ -110,7 +110,7 @@ struct LevelData {
 	//Rect playerInteractionRect;
 
 	std::vector<Rect> dangerRects;
-	std::vector<Rect> bulletRects;
+	//std::vector<Rect> bulletRects;
 
 	bool levelStarted = false;
 };

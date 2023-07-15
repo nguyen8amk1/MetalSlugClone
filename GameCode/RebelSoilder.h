@@ -76,20 +76,10 @@ private:
 
 	void toDieAnimation() {
 		// TODO: die animation
-		OutputDebugStringA("ENEMY DIEEEEEEE\n");
+		//OutputDebugStringA("ENEMY DIEEEEEEE\n");
 	}
 
-	void dieEventTransition(std::vector<Rect> &bulletRects) {
-		for (Rect bulletRect: bulletRects) {
-			bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, bulletRect);
-			if (bulletHit) {
-				// TODO: need some mechanism that can do this 
-				// player->bulletHitEnemy(bulletIndex); -> for removing the bullet 
-				toDieAnimation();
-				break;
-			}
-		}
-	}
+	void dieEventTransition();
 
 };
 

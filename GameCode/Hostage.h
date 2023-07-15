@@ -81,7 +81,7 @@ public:
 		}
 		case HostageAnimationState::UNTIED: {
 			// TODO: 
-			hostageColliderRect.x -= moveSpeed*.5f*dt;
+			hostageColliderRect.x -= moveSpeed *.5f*dt;
 
 			bool outOfScreen = hostageColliderRect.x < -1.45f;
 			if (outOfScreen) {
