@@ -1,5 +1,5 @@
 #pragma once 
-#include "../Util.cpp"
+#include "../Util.h"
 
 namespace MetalSlug {
 class TimeBoundedLerp {

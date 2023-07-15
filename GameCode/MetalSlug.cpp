@@ -2,13 +2,15 @@
 
 #include<iostream>
 #include<vector>
-#include "../Util.cpp"
+#include "../Util.h"
 #include "../SDL2PlatformMethodsCollection.cpp"
 #include "Animation.h"
+#include "Camera.h"
 #include "CollisionChecker.h"
+#include "GlobalGameData.h"
 
-#include "Hostage.cpp"
-#include "Player.cpp"
+#include "Hostage.h"
+#include "Player.h"
 #include "RebelSoilder.h"
 
 namespace MetalSlug {
@@ -86,17 +88,17 @@ private:
 
 	LevelData levelData;
 
-	std::vector<RebelSoilder*> rebelSoilders;
 	//RebelSoilder *rebelSoilder;
 
 	// TODO: I need a template class that takes  
 	// Collider 
 	// PhysicStateMachine 
 	// AnimationStateMachine 
-
+	GlobalGameData *globalGameData = GlobalGameData::getInstance();
+	std::vector<RebelSoilder*> *rebelSoilders;
 
 public:
-	MetalSlug(PlatformSpecficMethodsCollection *platformMethods) {
+	MetalSlug(PlatformSpecficMethodsCollection* platformMethods) {
 		this->platformMethods = platformMethods;
 	}
 
@@ -211,6 +213,8 @@ private:
 		background->setRect(backgroundRect);
 
 		player = new Player(gravity, tempSpeed, platformMethods);
+		rebelSoilders = globalGameData->getRebelSoilders();
+		globalGameData->setPlayer(player);
 
 		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 1, 8, {0, 0}, {430, 272});
 		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
@@ -284,19 +288,20 @@ private:
 		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+
+		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
 
 		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({630, 100 ,18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
 
 		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({870, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
 
-		for (RebelSoilder *rebelSoilder: rebelSoilders) {
+		for (RebelSoilder *rebelSoilder: *rebelSoilders) {
 			levelData.dangerRects.push_back(rebelSoilder->getInteractionRect());
 		}
 	}
@@ -311,19 +316,21 @@ private:
 			platformMethods->drawText(fps);
 		}
 
-		Rect r = levelData.playerColliderRect;
+		Player* player = globalGameData->getPlayer();
+
+		Rect r = globalGameData->getPlayer()->getRect();
 		Vec2f t = camera->convertWorldPosToScreenPos({r.x, r.y});
 		r.x = t.x;
 		r.y = t.y;
 		platformMethods->drawRectangle(r, playerColor);
 
-		r = levelData.playerInteractionRect;
+		r = globalGameData->getPlayer()->getInteractionRect();
 		t = camera->convertWorldPosToScreenPos({r.x, r.y});
 		r.x = t.x;
 		r.y = t.y;
 		platformMethods->drawRectangle(r, playerColor);
 
-		for (RebelSoilder *rebelSoilder: rebelSoilders) {
+		for (RebelSoilder *rebelSoilder: *rebelSoilders) {
 			r = rebelSoilder->getInteractionRect();
 			t = camera->convertWorldPosToScreenPos({r.x, r.y});
 			r.x = t.x;
@@ -348,7 +355,7 @@ private:
 		*/
 
 
-		playerXY->setText(Util::MessageFormater::print("Player pos: ", levelData.playerColliderRect.x, ", ", levelData.playerColliderRect.y));
+		playerXY->setText(Util::MessageFormater::print("Player pos: ", player->getRect().x, ", ", player->getRect().y));
 		platformMethods->drawText(playerXY);
 
 		/*
@@ -397,12 +404,10 @@ private:
 		player->moveYBy(-gravity*.2f*dt);
 		player->update(i, levelData, camera, dt);
 
-		levelData.playerColliderRect = player->getRect();
-
 		// event: once touch the ground will: 
 			// switch the level state to playing mode 
 		CollisionInfo colInfo;
-		CollisionChecker::doesRectangleVsRectangleCollide(levelData.playerColliderRect, groundColliders[0]->getRect(), colInfo);
+		CollisionChecker::doesRectangleVsRectangleCollide(player->getRect(), groundColliders[0]->getRect(), colInfo);
 		if (colInfo.count > 0) {
 			player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
 			player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
@@ -412,8 +417,8 @@ private:
 	}
 
 	void doLevelPlayingState(GameInputContext &input, double dt) {
-		Vec2f t = camera->convertWorldPosToScreenPos({ levelData.playerColliderRect.x, levelData.playerColliderRect.y });
-		Rect r = levelData.playerColliderRect;
+		Vec2f t = camera->convertWorldPosToScreenPos({ player->getRect().x, player->getRect().y});
+		Rect r = player->getRect();
 		r.x = t.x;
 		r.y = t.y;
 
@@ -445,18 +450,14 @@ private:
 			hostage->update(levelData, camera, dt);
 		}
 
-		for (int i = 0; i < rebelSoilders.size(); i++) {
-			RebelSoilder* rebelSoilder = rebelSoilders[i];
+		for (int i = 0; i < rebelSoilders->size(); i++) {
+			RebelSoilder* rebelSoilder = (*rebelSoilders)[i];
 			rebelSoilder->update(levelData, camera, dt);
 			levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
 		}
 
 
 		player->update(input, levelData, camera, dt);
-
-		levelData.playerColliderRect = player->getRect();
-		levelData.playerInteractionRect = player->getInteractionRect();
-
 	}
 
 	void doCameraOpeningState() {

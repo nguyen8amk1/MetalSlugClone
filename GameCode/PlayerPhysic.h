@@ -1,7 +1,7 @@
 #pragma once
 #include "MetalSlug.h"
 #include "CollisionChecker.h"
-#include "../Util.cpp"
+#include "../Util.h"
 
 namespace MetalSlug {
 enum class PlayerPhysicState {

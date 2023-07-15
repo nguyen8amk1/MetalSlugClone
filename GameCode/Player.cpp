@@ -1,175 +1,125 @@
 #pragma once 
-#include "MetalSlug.h"
-#include "Animation.h"
-#include "CollisionChecker.h"
-#include "PlayerPhysic.h"
-#include "PlayerAnimation.h"
-#include "../Util.cpp"
-
-//#include "Windows.h"
-#include "Grenade.h"
-#include "Bullet.h"
-
-namespace MetalSlug {
-class Player {
-private: 
-	Rect colliderRect = { -17.8f, 1.0f, .2f, .4f };
-
-	float moveSpeed, gravity;
-
-	bool die = false;
-
-	Rect interactionRectDisabledRect = {0, -5.0f, 0, 0};
-	Rect interactionRect;
-
-	float horizontalFacingDirection = 1;
-
-	std::vector<Grenade*> grenades;
-	Rect grenadeRect = { 0, 0, .1f, .1f };
-
-	PlatformSpecficMethodsCollection* platformMethods;
-	PlayerPhysic* physic;
-	PlayerPhysicResult physicResult;
-	PlayerPhysicState physicState = PlayerPhysicState::ONGROUND;
-
-	PlayerAnimationResult animationResult;
-	PlayerAnimation *animation;
-
-	std::vector<Bullet*> bullets;
-
-public: 
-	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
-		this->moveSpeed = moveSpeed;
-		this->gravity = gravity;
-		this->platformMethods = platformMethods;
-
- 
-		physic = new PlayerPhysic(gravity);
-		animation = new PlayerAnimation(platformMethods);
-	}
-
-	~Player() {
-	}
+#include "Player.h"
 
 
-	void update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
-		if (!die) {
-			if (input.left.isDown) {
-				colliderRect.x -= (float)(moveSpeed*dt); 
-			}
-			else if (input.right.isDown) {
-				colliderRect.x += (float)(moveSpeed*dt); 
-			}
+namespace MetalSlug { 
 
-			if (input.shoot.isDown) {
-				interactionRectInit();
-				shootBullet();
-			}
-			else {
-				interactionRect = interactionRectDisabledRect;
-			}
+Player::Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection *platformMethods) {
+	this->moveSpeed = moveSpeed;
+	this->gravity = gravity;
+	this->platformMethods = platformMethods;
+
+
+	physic = new PlayerPhysic(gravity);
+	animation = new PlayerAnimation(platformMethods);
+}
+
+Player::~Player() {
+}
+
+
+void Player::update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
+	if (!die) {
+		if (input.left.isDown) {
+			colliderRect.x -= (float)(moveSpeed*dt); 
+		}
+		else if (input.right.isDown) {
+			colliderRect.x += (float)(moveSpeed*dt); 
 		}
 
-
-		if (levelData.levelStarted) {
-			physicResult = physic->update(input, dt, colliderRect, die, levelData);
-			colliderRect = physicResult.colliderRect;
-			physicState = physicResult.physicState;
-			die = physicResult.die;
-		}
-
-		animationResult = animation->update(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
-		colliderRect = animationResult.colliderRect;
-		horizontalFacingDirection = animationResult.horizontalFacingDirection;
-		die = animationResult.die;
-
-		if (animation->isThrowGrenade()) {
-			throwGrenade();
-		}
-
-		for (Grenade *grenade: grenades) {
-			grenade->update(camera, dt, levelData);
-		}
-		
-		for (Bullet* bullet : bullets) {
-			bullet->update(dt, levelData, camera);
-		}
-
-		/*
-		bool collided = false;
-		for (RectangleCollider *ground: levelData.groundColliders) {
-			collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
-			if (collided) break;
-		}
-		*/
-
-		/*
-		if (collided) {
-			groundColor = collidedColor;
-			playerColor = collidedColor;
+		if (input.shoot.isDown) {
+			interactionRectInit();
+			shootBullet();
 		}
 		else {
-			groundColor = {255, 255, 0, 255};
-			playerColor = {0, 0, 255, 255};
+			interactionRect = interactionRectDisabledRect;
 		}
-		*/
-	}
-
-private: 
-	void interactionRectInit() {
-		bool facingRight = horizontalFacingDirection == 1;
-		bool facingLeft = horizontalFacingDirection == -1;
-		if (facingRight) {
-			interactionRect.x = colliderRect.x + colliderRect.width/2;
-		}
-		else if(facingLeft){
-			interactionRect.x = colliderRect.x - colliderRect.width/2;
-		}
-
-		interactionRect.y = colliderRect.y;
-		interactionRect.width = colliderRect.width/2;
-		interactionRect.height = colliderRect.height/2;
-	}
-
-	void shootBullet() {
-		Bullet *bullet = new Bullet(platformMethods);
-		bullet->shoot(colliderRect.x, colliderRect.y);
-		bullets.push_back(bullet);
-	}
-
-	void throwGrenade() {
-		Grenade *grenade = new Grenade(grenadeRect, platformMethods);
-		grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
-		grenades.push_back(grenade);
 	}
 
 
-public:
-	void moveXBy(float d) {
-		colliderRect.x += d;
+	if (levelData.levelStarted) {
+		physicResult = physic->update(input, dt, colliderRect, die, levelData);
+		colliderRect = physicResult.colliderRect;
+		physicState = physicResult.physicState;
+		die = physicResult.die;
 	}
 
-	void moveYBy(float d) {
-		colliderRect.y += d;
+	animationResult = animation->update(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
+	colliderRect = animationResult.colliderRect;
+	horizontalFacingDirection = animationResult.horizontalFacingDirection;
+	die = animationResult.die;
+
+	if (animation->isThrowGrenade()) {
+		throwGrenade();
 	}
 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	// FIXME: this is too slow 
-	std::vector<Rect> getBulletRects() {
-		std::vector<Rect> bulletRects;
-		for(Bullet *bullet: bullets) {
-			bulletRects.push_back(bullet->getColliderRect());
-		}
-		return bulletRects;
+	for (Grenade *grenade: grenades) {
+		grenade->update(camera, dt, levelData);
+	}
+	
+	for (Bullet* bullet : bullets) {
+		bullet->update(dt, levelData, camera);
 	}
 
-	Rect getRect() { return colliderRect; }
+	/*
+	bool collided = false;
+	for (RectangleCollider *ground: levelData.groundColliders) {
+		collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
+		if (collided) break;
+	}
+	*/
 
-	Rect getInteractionRect() { return interactionRect; }
-};
+	/*
+	if (collided) {
+		groundColor = collidedColor;
+		playerColor = collidedColor;
+	}
+	else {
+		groundColor = {255, 255, 0, 255};
+		playerColor = {0, 0, 255, 255};
+	}
+	*/
+}
+
+void Player::interactionRectInit() {
+	bool facingRight = horizontalFacingDirection == 1;
+	bool facingLeft = horizontalFacingDirection == -1;
+	if (facingRight) {
+		interactionRect.x = colliderRect.x + colliderRect.width/2;
+	}
+	else if(facingLeft){
+		interactionRect.x = colliderRect.x - colliderRect.width/2;
+	}
+
+	interactionRect.y = colliderRect.y;
+	interactionRect.width = colliderRect.width/2;
+	interactionRect.height = colliderRect.height/2;
+}
+
+void Player::shootBullet() {
+	Bullet *bullet = new Bullet(platformMethods);
+	bullet->shoot(colliderRect.x, colliderRect.y);
+	bullets.push_back(bullet);
+}
+
+void Player::throwGrenade() {
+	Grenade *grenade = new Grenade(grenadeRect, platformMethods);
+	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+	grenades.push_back(grenade);
+}
+
+// FIXME: this is too slow 
+// FIXME: this is too slow 
+// FIXME: this is too slow 
+// FIXME: this is too slow 
+// FIXME: this is too slow 
+// FIXME: this is too slow 
+std::vector<Rect> Player::getBulletRects() {
+	std::vector<Rect> bulletRects;
+	for(Bullet *bullet: bullets) {
+		bulletRects.push_back(bullet->getColliderRect());
+	}
+	return bulletRects;
+}
 
 }

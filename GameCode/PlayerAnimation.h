@@ -3,7 +3,7 @@
 #include "Animation.h"
 #include "CollisionChecker.h"
 #include "PlayerPhysic.h"
-#include "../Util.cpp"
+#include "../Util.h"
 #include "Windows.h"
 
 /*

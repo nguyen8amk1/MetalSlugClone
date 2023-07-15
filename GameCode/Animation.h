@@ -1,5 +1,6 @@
 #pragma once
 #include "MetalSlug.h"
+#include "Camera.h"
 
 namespace MetalSlug {
 

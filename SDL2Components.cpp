@@ -3,7 +3,7 @@
 #include<SDL_ttf.h>
 #include<string>
 #include<Windows.h>
-#include"Util.cpp"
+#include"Util.h"
 #include"SDL2Util.cpp"
 #include"GameCode/MetalSlug.h"
 

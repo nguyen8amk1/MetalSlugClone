@@ -1,8 +1,9 @@
 #pragma once 
 #include "Animation.h"
 #include "MetalSlug.h"
-#include "../Util.cpp"
+#include "../Util.h"
 #include "TimeBoundedLerp.h"
+#include "Camera.h"
 //#include "Windows.h"
 
 namespace MetalSlug {

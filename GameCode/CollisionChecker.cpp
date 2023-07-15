@@ -3,7 +3,7 @@
 #include "CollisionChecker.h"
 #include<iostream>
 #include<math.h>
-#include "Tinyc2CollisionChecker.cpp"
+#include "Tinyc2CollisionChecker.h"
 
 namespace MetalSlug {
 

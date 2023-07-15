@@ -36,7 +36,7 @@
     <ClCompile Include="GameCode\Animation.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
-    <ClCompile Include="Util.cpp">
+    <ClCompile Include="Util.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -48,7 +48,7 @@
     <ClCompile Include="GameCode\CollisionChecker.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
-    <ClCompile Include="GameCode\Tinyc2CollisionChecker.cpp">
+    <ClCompile Include="GameCode\Tinyc2CollisionChecker.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SDL2SandBox.cpp">
@@ -57,10 +57,19 @@
     <ClCompile Include="GameCode\Player.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
-    <ClCompile Include="GameCode\Hostage.cpp">
+    <ClCompile Include="GameCode\Hostage.h">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
     <ClCompile Include="GameCode\RebelSoilder.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\RebelSoilder.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\Bullet.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\GlobalGameData.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,6 +107,15 @@
       <Filter>Source Files\GameCode</Filter>
     </ClInclude>
     <ClInclude Include="GameCode\TimeBoundedLerp.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\Player.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\GlobalGameData.h">
+      <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\Camera.h">
       <Filter>Source Files\GameCode</Filter>
     </ClInclude>
   </ItemGroup>

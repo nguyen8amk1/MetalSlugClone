@@ -2,9 +2,11 @@
 
 #include "MetalSlug.h"
 #include "Animation.h"
-#include "../Util.cpp"
+#include "../Util.h"
 #include "CollisionChecker.h"
 #include "Physics.h"
+#include "Camera.h"
+#include "GlobalGameData.h"
 
 namespace MetalSlug {
 
@@ -41,6 +43,8 @@ private:
 	BasicPhysicStateMachine *basicPhysicStateMachine;
 	BasicPhysicStateMachineResult basicPhysicResult;
 
+	GlobalGameData *globalGameData = GlobalGameData::getInstance();
+
 public: 
 	Hostage(float gravity, float moveSpeed, Rect hostageColliderRect, PlatformSpecficMethodsCollection *platformMethods) {
 		this->gravity = gravity;
@@ -68,7 +72,7 @@ public:
 		switch (hostageCurrentAnimationState) {
 		case HostageAnimationState::TIED: {
 			// TODO: 
-			bool playerUntied = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, levelData.playerInteractionRect);
+			bool playerUntied = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, globalGameData->getPlayer()->getRect());
 			if (playerUntied) {
 				hostageCurrentAnimationState = HostageAnimationState::UNTIED;
 				hostageCurrentAnimation = hostageUntiedAnimation;

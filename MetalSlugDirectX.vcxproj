@@ -145,19 +145,22 @@
   <ItemGroup>
     <ClCompile Include="DirectX9BackEnd.cpp" />
     <ClCompile Include="GameCode\Animation.cpp" />
+    <ClCompile Include="GameCode\Bullet.cpp" />
     <ClCompile Include="GameCode\CollisionChecker.cpp" />
-    <ClCompile Include="GameCode\Hostage.cpp" />
+    <ClCompile Include="GameCode\GlobalGameData.cpp" />
+    <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="GameCode\Player.cpp" />
+    <ClCompile Include="GameCode\RebelSoilder.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.h" />
-    <ClCompile Include="GameCode\Tinyc2CollisionChecker.cpp" />
+    <ClCompile Include="GameCode\Tinyc2CollisionChecker.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SDL2BackEnd.cpp" />
     <ClCompile Include="SDL2Components.cpp" />
     <ClCompile Include="SDL2PlatformMethodsCollection.cpp" />
     <ClCompile Include="SDL2SandBox.cpp" />
     <ClCompile Include="SDL2Util.cpp" />
-    <ClCompile Include="Util.cpp" />
+    <ClCompile Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
@@ -168,10 +171,13 @@
   <ItemGroup>
     <ClInclude Include="GameCode\Animation.h" />
     <ClInclude Include="GameCode\Bullet.h" />
+    <ClInclude Include="GameCode\Camera.h" />
     <ClInclude Include="GameCode\CollisionChecker.h" />
+    <ClInclude Include="GameCode\GlobalGameData.h" />
     <ClInclude Include="GameCode\Grenade.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />
     <ClInclude Include="GameCode\Physics.h" />
+    <ClInclude Include="GameCode\Player.h" />
     <ClInclude Include="GameCode\PlayerAnimation.h" />
     <ClInclude Include="GameCode\PlayerPhysic.h" />
     <ClInclude Include="GameCode\TimeBoundedLerp.h" />
