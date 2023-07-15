@@ -115,8 +115,14 @@ struct LevelData {
 	bool levelStarted = false;
 };
 
-class PlayerInputInfo {
-
+struct PlayerEvent {
+	bool jump = false;
+	bool moveLeft = false;
+	bool moveRight = false;
+	bool up = false;
+	bool down = false;
+	bool throwGrenade = false;
+	bool shoot = false;
 };
 
 

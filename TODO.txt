@@ -1,4 +1,6 @@
 TODAY: 
+	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? @Current 
+
 	PLAYER SHOOTING (4h) [] 
 		in all 3 directions (right, left, up) (2h) [] 
 			pts [X] 
@@ -20,14 +22,7 @@ TODAY:
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
-	@Current: Finish all of the Ideas first, the following one first  
-	Idea: should all the input handling in the player.cpp file and then transfered to other files  @Current 
-		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
-		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
-
-	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) []
-
-	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) ?? 
+	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [] 
 
 	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) []
 
@@ -173,6 +168,9 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	Idea: should all the input handling in the player.cpp file and then transfered to other files [X] 
+		so that we don't often miss understand between the throwing bomb input in the playerAnimation 
+		-> THERE ARE TOO MANY PLACES THAT HANDLES INPUT -> Player.cpp should be the only player file that handle input 
 	Idea: HOW ABOUT HAVING A GLOBAL GAME DATA THAT CONTAINS ALL RESOURCES (BULLETS, ENEMIES,...) so that it can be call to release at any where in the game (2h) [X]
 		-> GLOBAL SINGLETON ()
 		-> the singleton updates is going to be constantly running in the game mainloop

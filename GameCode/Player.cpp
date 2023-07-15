@@ -10,7 +10,7 @@ Player::Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection 
 	this->platformMethods = platformMethods;
 	globalGameData = GlobalGameData::getInstance();
 
-	physic = new PlayerPhysic(gravity);
+	physic = new PlayerPhysic(moveSpeed, gravity);
 	animation = new PlayerAnimation(platformMethods);
 }
 
@@ -19,32 +19,34 @@ Player::~Player() {
 
 
 void Player::update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
-	if (!die) {
-		if (input.left.isDown) {
-			colliderRect.x -= (float)(moveSpeed*dt); 
-		}
-		else if (input.right.isDown) {
-			colliderRect.x += (float)(moveSpeed*dt); 
-		}
 
-		if (input.shoot.isDown) {
-			interactionRectInit();
-			shootBullet();
-		}
-		else {
-			interactionRect = interactionRectDisabledRect;
-		}
-	}
-
+	PlayerEvent event;
+	event.jump = input.jump.isDown;
+	event.moveLeft = input.left.isDown;
+	event.moveRight = input.right.isDown;
+	event.up = input.up.isDown;
+	event.down = input.down.isDown;
+	event.throwGrenade = input.throwGrenade.isPressed;
+	event.shoot = input.shoot.isDown;
 
 	if (levelData.levelStarted) {
-		physicResult = physic->update(input, dt, colliderRect, die, levelData);
+		if (!die) {
+			if (event.shoot) {
+				interactionRectInit();
+				shootBullet();
+			}
+			else {
+				interactionRect = interactionRectDisabledRect;
+			}
+		}
+
+		physicResult = physic->update(event, dt, colliderRect, die, levelData);
 		colliderRect = physicResult.colliderRect;
 		physicState = physicResult.physicState;
 		die = physicResult.die;
 	}
 
-	animationResult = animation->update(input, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
+	animationResult = animation->update(event, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 	colliderRect = animationResult.colliderRect;
 	horizontalFacingDirection = animationResult.horizontalFacingDirection;
 	die = animationResult.die;

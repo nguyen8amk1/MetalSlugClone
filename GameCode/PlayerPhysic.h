@@ -28,13 +28,22 @@ private:
 	float originalGroundY = 0;
 	float jumpHeight = .5777f;
 	float gravity;
+	float moveSpeed;
 
 public:
-	PlayerPhysic(float gravity) {
+	PlayerPhysic(float moveSpeed, float gravity) {
 		this->gravity = gravity;
+		this->moveSpeed = moveSpeed;
 	}
 
-	PlayerPhysicResult update(const GameInputContext &input, double dt, Rect colliderRect, bool die, LevelData &levelData) {
+	PlayerPhysicResult update(PlayerEvent &event, double dt, Rect colliderRect, bool die, LevelData &levelData) {
+		if (event.moveLeft) {
+			colliderRect.x -= (float)(moveSpeed*dt); 
+		}
+		else if (event.moveRight) {
+			colliderRect.x += (float)(moveSpeed*dt); 
+		}
+
 		// Physics state machine
 		if (physicState == PlayerPhysicState::FALL) {
 			colliderRect.y -= (float)(gravity*dt); 
@@ -54,7 +63,8 @@ public:
 			if (!collided) {
 				physicState = PlayerPhysicState::FALL;
 			}
-			else if(!die && input.jump.isDown) {
+
+			else if(!die && event.jump) {
 				physicState = PlayerPhysicState::JUMPUP;
 				jumpT = 0;
 				jumpTimeAccumulator = 0;

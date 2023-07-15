@@ -11,6 +11,7 @@
 #include "Camera.h"
 
 namespace MetalSlug {
+
 class GlobalGameData;
 
 class Player {
