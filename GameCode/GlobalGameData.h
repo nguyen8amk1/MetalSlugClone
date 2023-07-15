@@ -32,6 +32,7 @@ public:
 	std::vector<RebelSoilder*>* getRebelSoilders();
 
 	std::vector<Bullet*>* getBullets();
+	void removeBulletAt(int index);
 
 	void setPlayer(Player* player);
 

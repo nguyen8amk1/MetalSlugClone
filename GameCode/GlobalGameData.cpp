@@ -23,4 +23,12 @@ Player* GlobalGameData::getPlayer() {
 	return player;
 }
 
+void GlobalGameData::removeBulletAt(int index) {
+	/*
+	Bullet *address = bullets[index];
+	delete address;
+	*/
+	bullets.erase(bullets.begin() + index); // Deleting the fourth element
+}
+
 }

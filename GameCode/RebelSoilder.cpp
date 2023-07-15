@@ -100,8 +100,7 @@ void RebelSoilder::dieEventTransition() {
 		Bullet* bullet = (*globalGameData->getBullets())[i];
 		bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, bullet->getColliderRect());
 		if (bulletHit) {
-			// TODO: need some mechanism that can do this 
-			//globalGameData->removeBulletAt(i);
+			globalGameData->removeBulletAt(i);
 			OutputDebugStringA(Util::MessageFormater::print("TODO: Remove bullet at index: ", i, '\n').c_str());
 			toDieAnimation();
 			break;
