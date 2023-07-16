@@ -71,8 +71,7 @@ public:
 		// Animation state machine 
 		switch (hostageCurrentAnimationState) {
 		case HostageAnimationState::TIED: {
-			// TODO: 
-			bool playerUntied = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, globalGameData->getPlayer()->getRect());
+			bool playerUntied = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, globalGameData->getPlayer()->getInteractionRect());
 			if (playerUntied) {
 				hostageCurrentAnimationState = HostageAnimationState::UNTIED;
 				hostageCurrentAnimation = hostageUntiedAnimation;
@@ -80,12 +79,11 @@ public:
 			break;
 		}
 		case HostageAnimationState::UNTIED: {
-			// TODO: 
 			hostageColliderRect.x -= moveSpeed *.5f*dt;
 
 			bool outOfScreen = hostageColliderRect.x < -1.45f;
 			if (outOfScreen) {
-				// TODO: handle hostage out of screen 
+				// TODO: handle hostage out of screen -> put them back into the pool 
 			}
 			break;
 		}
