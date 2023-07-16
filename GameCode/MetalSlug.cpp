@@ -113,6 +113,7 @@ public:
 	void setup() {
 		initLevel1();
 
+
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
 		playerXY  = platformMethods->createText(0, 30, 10);
@@ -207,7 +208,11 @@ private:
 		Vec2f cameraPosition = {cameraOpeningRect.x, cameraOpeningRect.y}; // 17.12425 = bggamewidth/2 - half_world_size (1.43) 
 		camera = new Camera(cameraPosition);
 
-		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png", 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
+		loadAssets();
+		PlatformSpecificImage *mission1BackgroundSpriteSheet = globalGameData->getSpriteSheet("MISSION_1_BACKGROUND");
+		PlatformSpecificImage *mission1SpriteSheet = globalGameData->getSpriteSheet("MISSION_1");
+
+		Util::AnimationUtil::initAnimationMetaData(backgroundMetaData, mission1BackgroundSpriteSheet, 0, 1, 1, {0, 0}, {(float)backgroundPixelWidth, (float)backgroundPixelHeight});
 		background = new Animation(backgroundMetaData, platformMethods);
 		Rect backgroundRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 0, (float)backgroundPixelWidth, (float)backgroundPixelHeight }, backgroundPixelWidth, backgroundPixelHeight);
 		background->setRect(backgroundRect);
@@ -216,12 +221,12 @@ private:
 		rebelSoilders = globalGameData->getRebelSoilders();
 		globalGameData->setPlayer(player);
 
-		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 1, 8, {0, 0}, {430, 272});
+		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, mission1SpriteSheet, .1f, 1, 8, {0, 0}, {430, 272});
 		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
 		Rect waterFallRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
 		waterFallAnimation->setRect(waterFallRect);
 
-		Util::AnimationUtil::initAnimationMetaData(waterFall2AnimationMetaData, "Assets/Imgs/LevelsRawImage/level1_sprites.png", .1f, 2, 4, {0, 346}, {832, 304});
+		Util::AnimationUtil::initAnimationMetaData(waterFall2AnimationMetaData, mission1SpriteSheet, .1f, 2, 4, {0, 346}, {832, 304});
 		waterFall2Animation = new Animation(waterFall2AnimationMetaData, platformMethods);
 		Rect waterFall2Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
 		waterFall2Animation->setRect(waterFall2Rect);
@@ -394,6 +399,21 @@ private:
 		platformMethods->drawText(playerAnimationStateText);
 		*/
 
+	}
+
+	void loadAssets() {
+		loadSpriteSheet("MISSION_1_BACKGROUND", "Assets/Imgs/LevelsRawImage/metalslug_mission1_blank.png");
+		loadSpriteSheet("MISSION_1", "Assets/Imgs/LevelsRawImage/level1_sprites.png");
+		loadSpriteSheet("REBEL_SOILDER", "Assets/Imgs/Characters/rebel_soilder.png");
+		loadSpriteSheet("MARCO_ROSSI", "Assets/Imgs/Characters/marco_messi.png");
+		loadSpriteSheet("HOSTAGE", "Assets/Imgs/Characters/hostage.png");
+	}
+
+	void loadSpriteSheet(std::string name, std::string path) {
+		std::pair<std::string, std::string> pair;
+		pair.first = name;
+		pair.second = path;
+		globalGameData->addNewSpriteSheet(pair, platformMethods);
 	}
 
 	void doLevelOpeningState(GameInputContext &input, double dt) {

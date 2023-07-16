@@ -54,11 +54,11 @@ public:
 
 		basicPhysicStateMachine = new BasicPhysicStateMachine(gravity);
 
-		std::string filename = "Assets/Imgs/Characters/hostage.png";
-		Util::AnimationUtil::initAnimationMetaData(hostageTiedAnimationMetaData, filename, .1f, 1, 1, {6, 26}, {30, 27});
+		PlatformSpecificImage *spriteSheet = globalGameData->getSpriteSheet("HOSTAGE");
+		Util::AnimationUtil::initAnimationMetaData(hostageTiedAnimationMetaData, spriteSheet, .1f, 1, 1, {6, 26}, {30, 27});
 		hostageTiedAnimation = new Animation(hostageTiedAnimationMetaData, platformMethods);
 
-		Util::AnimationUtil::initAnimationMetaData(hostageUntiedAnimationMetaData, filename, .1f, 1, 1, {6, 248}, {33, 38});
+		Util::AnimationUtil::initAnimationMetaData(hostageUntiedAnimationMetaData, spriteSheet, .1f, 1, 1, {6, 248}, {33, 38});
 		hostageUntiedAnimation  = new Animation(hostageUntiedAnimationMetaData, platformMethods);
 
 		hostageCurrentAnimation = hostageTiedAnimation;

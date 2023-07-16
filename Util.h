@@ -43,9 +43,9 @@ public:
 
 const class AnimationUtil {
 public:
-	static void initAnimationMetaData(MetalSlug::AnimationMetaData &metaData, const std::string &spriteSheetFilename, float animDelay, int rows, int columns, const MetalSlug::Vec2f &relativeCorner, const MetalSlug::Vec2f &framePixelSize) {
+	static void initAnimationMetaData(MetalSlug::AnimationMetaData &metaData, MetalSlug::PlatformSpecificImage *spriteSheet, float animDelay, int rows, int columns, const MetalSlug::Vec2f &relativeCorner, const MetalSlug::Vec2f &framePixelSize) {
 		metaData.animDelay = animDelay;
-		metaData.tiledSheetFileName = spriteSheetFilename;
+		metaData.spriteSheet = spriteSheet;
 		metaData.rows = rows;
 		metaData.columns = columns;
 		metaData.relativeCorner = relativeCorner;

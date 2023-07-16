@@ -12,7 +12,8 @@ Animation::Animation(AnimationMetaData &metaData, PlatformSpecficMethodsCollecti
 	this->animDelay = metaData.animDelay;
 	this->rect = metaData.rect;
 
-	spriteSheet = this->platformMethods->loadImage(metaData.tiledSheetFileName);
+	//spriteSheet = this->platformMethods->loadImage(metaData.tiledSheetFileName);
+	spriteSheet = metaData.spriteSheet;
 
 	for (int i = 0; i < metaData.rows; i++) {
 		for (int j = 0; j < metaData.columns; j++) {

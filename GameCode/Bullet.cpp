@@ -3,7 +3,9 @@
 namespace MetalSlug {
 
 Bullet::Bullet(PlatformSpecficMethodsCollection *platformMethods) {
-	Util::AnimationUtil::initAnimationMetaData(animMetaData, "Assets/Imgs/Characters/marco_messi.png", .1f, 1, 1, {74, 476}, {12, 11});
+	globalGameData = GlobalGameData::getInstance();
+
+	Util::AnimationUtil::initAnimationMetaData(animMetaData, globalGameData->getSpriteSheet("MARCO_ROSSI"), .1f, 1, 1, {74, 476}, {12, 11});
 	anim = new Animation(animMetaData, platformMethods);
 }
 

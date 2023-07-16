@@ -1,6 +1,8 @@
 #pragma once 
 #include<string>
 #include<vector>
+#include<assert.h>
+#include<unordered_map>
 #include "RebelSoilder.h"
 #include "Bullet.h"
 #include "Player.h"
@@ -21,6 +23,16 @@ class GlobalGameData {
 private: 
 	std::vector<RebelSoilder*> rebelSoilders;
 	std::vector<Bullet*> bullets;
+
+	// TODO: let's have a output of a hash map of (string, PlatformSpecificImage) in here 
+	// with the input of a hash map (string, string) means file path and name 
+	std::unordered_map<std::string, PlatformSpecificImage*> spriteSheets;
+
+	/*
+	PlatformSpecificImage* marcoRessiSpriteSheet;
+	PlatformSpecificImage* rebelSoilderSpriteSheet;
+	*/
+
 	Player* player;
 
 	GlobalGameData() {
@@ -37,6 +49,17 @@ public:
 	void setPlayer(Player* player);
 
 	Player* getPlayer();
+
+	void addNewSpriteSheet(std::pair<std::string, std::string> spriteSheetInfo, PlatformSpecficMethodsCollection *platformMethods) {
+		PlatformSpecificImage* spriteSheet = platformMethods->loadImage(spriteSheetInfo.second);
+		assert(spriteSheet);
+		spriteSheets[spriteSheetInfo.first] = spriteSheet;
+	}
+
+	PlatformSpecificImage* getSpriteSheet(const std::string &name) {
+		return spriteSheets[name];
+	}
+
 };
 
 }

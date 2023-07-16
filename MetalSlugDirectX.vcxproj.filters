@@ -72,6 +72,12 @@
     <ClCompile Include="GameCode\GlobalGameData.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
+    <ClCompile Include="GameCode\PlayerAnimation.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\Grenade.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

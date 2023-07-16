@@ -12,7 +12,9 @@
 
 namespace MetalSlug {
 
+class Grenade;
 class GlobalGameData;
+class PlayerAnimation;
 
 class Player {
 private: 
@@ -35,7 +37,7 @@ private:
 	PlayerPhysicResult physicResult;
 	PlayerPhysicState physicState = PlayerPhysicState::ONGROUND;
 
-	PlayerAnimationResult animationResult;
+	//PlayerAnimationResult animationResult;
 	PlayerAnimation *animation;
 
 	GlobalGameData* globalGameData;

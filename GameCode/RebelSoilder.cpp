@@ -3,25 +3,23 @@
 namespace MetalSlug {
 
 RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods) {
-	// TODO: 
 	this->gravity = gravity;
 	this->moveSpeed = moveSpeed;
 	this->platformMethods = platformMethods;
 	this->colliderRect = colliderRect;
 
 	physicStateMachine = new BasicPhysicStateMachine(gravity);
-
 	interactionRect = interactionRectDisabledRect;
+	globalGameData = GlobalGameData::getInstance();
 
-	std::string filename = "Assets/Imgs/Characters/rebel_soilder.png";
-
-	Util::AnimationUtil::initAnimationMetaData(idleAnimationMetaData, filename, .1f, 1, 4, {0, 4}, {108/4, 38});
+	PlatformSpecificImage *spriteSheet = globalGameData->getSpriteSheet("REBEL_SOILDER");
+	Util::AnimationUtil::initAnimationMetaData(idleAnimationMetaData, spriteSheet, .1f, 1, 4, {0, 4}, {108/4, 38});
 	idleAnimation = new Animation(idleAnimationMetaData, platformMethods);
 
-	Util::AnimationUtil::initAnimationMetaData(slashingAnimationMetaData, filename, .1f, 1, 15, {0, 42}, {735/15, 37});
+	Util::AnimationUtil::initAnimationMetaData(slashingAnimationMetaData, spriteSheet, .1f, 1, 15, {0, 42}, {735/15, 37});
 	slashingAnimation = new Animation(slashingAnimationMetaData, platformMethods);
 
-	Util::AnimationUtil::initAnimationMetaData(throwingBombAnimationMetaData, filename, .1f, 1, 17, {0, 79}, {782/17, 42});
+	Util::AnimationUtil::initAnimationMetaData(throwingBombAnimationMetaData, spriteSheet, .1f, 1, 17, {0, 79}, {782/17, 42});
 	throwingBombAnimation = new Animation(throwingBombAnimationMetaData, platformMethods);
 
 	currentAnimation = idleAnimation;

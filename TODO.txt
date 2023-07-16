@@ -1,5 +1,7 @@
 TODAY: 
-	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [] @Current 
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Current 
+
+	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
 
 	PLAYER SHOOTING (4h) [] 
 		in all 3 directions (right, left, up) (2h) [] 
@@ -22,17 +24,11 @@ TODAY:
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
-
-	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) []
-
 	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
 		something wrong with the throwing animation when trying to make it complete the animation
 		-> there are some dependencies and obscurity going on in here 
 
-TODO:  
-
-	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
-
+TODO:
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
@@ -167,6 +163,7 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
 	
 DONE: 
+	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [X] 
 	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) [X] ?? 
 	Idea: should all the input handling in the player.cpp file and then transfered to other files [X] 
 		so that we don't often miss understand between the throwing bomb input in the playerAnimation 

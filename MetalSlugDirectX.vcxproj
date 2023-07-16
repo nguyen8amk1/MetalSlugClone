@@ -148,9 +148,11 @@
     <ClCompile Include="GameCode\Bullet.cpp" />
     <ClCompile Include="GameCode\CollisionChecker.cpp" />
     <ClCompile Include="GameCode\GlobalGameData.cpp" />
+    <ClCompile Include="GameCode\Grenade.cpp" />
     <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="GameCode\Player.cpp" />
+    <ClCompile Include="GameCode\PlayerAnimation.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.h" />
     <ClCompile Include="GameCode\Tinyc2CollisionChecker.h" />

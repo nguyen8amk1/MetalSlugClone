@@ -6,7 +6,7 @@ namespace MetalSlug {
 
 struct AnimationMetaData {
 	float animDelay;
-	std::string tiledSheetFileName;
+	PlatformSpecificImage *spriteSheet;
 	Rect rect; 
 	Vec2f relativeCorner;
 	Vec2f framePixelSize;

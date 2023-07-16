@@ -1,9 +1,11 @@
 #pragma once 
 #include "Animation.h"
 #include "MetalSlug.h"
+#include "GlobalGameData.h"
 #include "../Util.h"
 
 namespace MetalSlug {
+class GlobalGameData;
 
 class Bullet {
 private: 
@@ -22,6 +24,8 @@ private:
 	float timeAccumulator = 0;
 	float timeToGoFromAToB = .5f;
 	bool hitEnemy = false;
+
+	GlobalGameData* globalGameData;
 
 public: 
 	Bullet(PlatformSpecficMethodsCollection* platformMethods);

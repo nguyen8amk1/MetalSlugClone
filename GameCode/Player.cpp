@@ -46,7 +46,7 @@ void Player::update(const GameInputContext &input, LevelData &levelData, Camera 
 		die = physicResult.die;
 	}
 
-	animationResult = animation->update(event, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
+	PlayerAnimationResult animationResult = animation->update(event, dt, camera, levelData, physicState, colliderRect, horizontalFacingDirection, die);
 	colliderRect = animationResult.colliderRect;
 	horizontalFacingDirection = animationResult.horizontalFacingDirection;
 	die = animationResult.die;
