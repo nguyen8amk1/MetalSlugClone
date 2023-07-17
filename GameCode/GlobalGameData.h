@@ -4,6 +4,7 @@
 #include<assert.h>
 #include<unordered_map>
 #include "RebelSoilder.h"
+#include "Hostage.h"
 #include "Bullet.h"
 #include "Player.h"
 
@@ -11,6 +12,7 @@ namespace MetalSlug {
 class RebelSoilder;
 class Bullet;
 class Player;
+class Hostage;
 
 class GlobalGameData { 
 	// TODO: this suppose to be a singleton, will contains everything that should be access globally 
@@ -18,22 +20,16 @@ class GlobalGameData {
 	// for now, it's gonna contain: 
 	// bullets [X]
 	// enemies [X]
+	// hostages [X] 
 	// and have coresponse methods to release them as well  
 
 private: 
 	std::vector<RebelSoilder*> rebelSoilders;
 	std::vector<Bullet*> bullets;
-
-	// TODO: let's have a output of a hash map of (string, PlatformSpecificImage) in here 
-	// with the input of a hash map (string, string) means file path and name 
-	std::unordered_map<std::string, PlatformSpecificImage*> spriteSheets;
-
-	/*
-	PlatformSpecificImage* marcoRessiSpriteSheet;
-	PlatformSpecificImage* rebelSoilderSpriteSheet;
-	*/
-
+	std::vector<Hostage*> hostages;
 	Player* player;
+
+	std::unordered_map<std::string, PlatformSpecificImage*> spriteSheets;
 
 	GlobalGameData() {
 	}
@@ -44,6 +40,9 @@ public:
 	std::vector<RebelSoilder*>* getRebelSoilders();
 
 	std::vector<Bullet*>* getBullets();
+
+	std::vector<Hostage*>* getHostages();
+
 	void removeBulletAt(int index);
 
 	void setPlayer(Player* player);

@@ -149,6 +149,7 @@
     <ClCompile Include="GameCode\CollisionChecker.cpp" />
     <ClCompile Include="GameCode\GlobalGameData.cpp" />
     <ClCompile Include="GameCode\Grenade.cpp" />
+    <ClCompile Include="GameCode\Hostage.cpp" />
     <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="GameCode\Player.cpp" />

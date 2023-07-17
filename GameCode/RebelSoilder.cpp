@@ -23,8 +23,6 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 	throwingBombAnimation = new Animation(throwingBombAnimationMetaData, platformMethods);
 
 	currentAnimation = idleAnimation;
-
-	globalGameData = GlobalGameData::getInstance();
 }
 
 void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
@@ -91,6 +89,21 @@ void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
 	r.y = t.y;
 	platformMethods->drawRectangle(r, testCol);
 
+}
+
+void RebelSoilder::toThrowingBombAnimation() {
+	currentAnimationState = AnimationState::THROWING_BOMB;
+	currentAnimation = throwingBombAnimation;
+}
+
+void RebelSoilder::toSlashingAnimation() {
+	currentAnimationState = AnimationState::SLASHING;
+	currentAnimation = slashingAnimation;
+}
+
+void RebelSoilder::toDieAnimation() {
+	// TODO: die animation
+	//OutputDebugStringA("ENEMY DIEEEEEEE\n");
 }
 
 void RebelSoilder::dieEventTransition() {

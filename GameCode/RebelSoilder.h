@@ -64,20 +64,11 @@ public:
 	Rect getInteractionRect() { return interactionRect; }
 
 private: 
-	void toThrowingBombAnimation() {
-		currentAnimationState = AnimationState::THROWING_BOMB;
-		currentAnimation = throwingBombAnimation;
-	}
+	void toThrowingBombAnimation();
 
-	void toSlashingAnimation() {
-		currentAnimationState = AnimationState::SLASHING;
-		currentAnimation = slashingAnimation;
-	}
+	void toSlashingAnimation();
 
-	void toDieAnimation() {
-		// TODO: die animation
-		//OutputDebugStringA("ENEMY DIEEEEEEE\n");
-	}
+	void toDieAnimation();
 
 	void dieEventTransition();
 

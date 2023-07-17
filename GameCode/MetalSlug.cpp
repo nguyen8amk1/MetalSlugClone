@@ -46,7 +46,6 @@ private:
 	// Level code
 	float cameraMovePointX = -.42f;
 	Rect preventGoingBackBlock = {-1.357f - .05f, 0, .1f, 2};
-	std::vector<Hostage*> hostages;
 	float endOfMapX = 0;
 	bool cameraGoesOutsideOfMap = false; 
 
@@ -94,8 +93,9 @@ private:
 	// Collider 
 	// PhysicStateMachine 
 	// AnimationStateMachine 
-	GlobalGameData *globalGameData = GlobalGameData::getInstance();
+	GlobalGameData *globalGameData;
 	std::vector<RebelSoilder*> *rebelSoilders;
+	std::vector<Hostage*>* hostages;
 
 public:
 	MetalSlug(PlatformSpecficMethodsCollection* platformMethods) {
@@ -111,6 +111,7 @@ public:
 	// The animation state machine will sometimes based on the state of the physics state machine 
 
 	void setup() {
+		globalGameData = GlobalGameData::getInstance();
 		initLevel1();
 
 
@@ -219,6 +220,8 @@ private:
 
 		player = new Player(gravity, tempSpeed, platformMethods);
 		rebelSoilders = globalGameData->getRebelSoilders();
+		hostages = globalGameData->getHostages();
+
 		globalGameData->setPlayer(player);
 
 		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, mission1SpriteSheet, .1f, 1, 8, {0, 0}, {430, 272});
@@ -277,17 +280,17 @@ private:
 		Rect hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
-		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
 		hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1230, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
-		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
 		hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1423, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
-		hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
 
 		// Rebels 
 		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
@@ -466,7 +469,7 @@ private:
 		waterFallAnimation->animate(camera, dt);
 		waterFall2Animation->animate(camera, dt);
 
-		for (Hostage *hostage: hostages) {
+		for (Hostage *hostage: *hostages) {
 			hostage->update(levelData, camera, dt);
 		}
 

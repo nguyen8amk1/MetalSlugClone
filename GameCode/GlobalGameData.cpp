@@ -15,6 +15,10 @@ std::vector<Bullet*>* GlobalGameData::getBullets() {
 	return &bullets;
 }
 
+std::vector<Hostage*>* GlobalGameData::getHostages() {
+	return &hostages;
+}
+
 void GlobalGameData::setPlayer(Player *player) {
 	this->player = player;
 }

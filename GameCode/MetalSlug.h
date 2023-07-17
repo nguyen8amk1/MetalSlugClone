@@ -106,12 +106,7 @@ public:
 
 struct LevelData {
 	std::vector<RectangleCollider*> groundColliders;
-	//Rect playerColliderRect;
-	//Rect playerInteractionRect;
-
 	std::vector<Rect> dangerRects;
-	//std::vector<Rect> bulletRects;
-
 	bool levelStarted = false;
 };
 
