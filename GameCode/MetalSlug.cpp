@@ -54,6 +54,17 @@ private:
 	Animation *waterFallAnimation;
 	AnimationMetaData waterFall2AnimationMetaData;
 	Animation *waterFall2Animation;
+
+	// River 
+	AnimationMetaData riverFrontAnimationMetaData;
+	Animation *riverFrontAnimation;
+	AnimationMetaData riverBackAnimationMetaData;
+	Animation *riverBackAnimation;
+
+	AnimationMetaData river2FrontAnimationMetaData;
+	Animation *river2FrontAnimation;
+	AnimationMetaData river2BackAnimationMetaData;
+	Animation *river2BackAnimation;
 	
 
 	Rect cameraOpeningRect, cameraAfterLandingRect,
@@ -210,6 +221,7 @@ private:
 		camera = new Camera(cameraPosition);
 
 		loadAssets();
+
 		PlatformSpecificImage *mission1BackgroundSpriteSheet = globalGameData->getSpriteSheet("MISSION_1_BACKGROUND");
 		PlatformSpecificImage *mission1SpriteSheet = globalGameData->getSpriteSheet("MISSION_1");
 

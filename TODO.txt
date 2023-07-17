@@ -1,32 +1,4 @@
 TODAY: 
-	PLAYER SHOOTING (4h) [] 
-		in all 3 directions (right, left, up) (2h) [] 
-			pts [X] 
-				right/left - 0, 168, 52, 29
-				up - 0, 197, 30, 65
-			bullet sprite [X] - 74, 476, 12, 11
-			add the animation into the player animation [] 
-				Problem: 
-					state transition flickering between states (ex: walking and shooting at the same time) []
-					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset) []
-
-			shoot a bullet out [X] 
-			shoot multiple bullets [X] 
-
-			enemy get hit by the bullet (with animation, die, blood,..)	[] 
-				-> the bullet should be in level data and the enemies should check that on its own and change state 
-				-> have enemy die sprite sheet [] @Current 
-
-		let's clean the animation state machine code (2h) [X] 
-			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
-
-	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
-		something wrong with the throwing animation when trying to make it complete the animation
-	
-	ENEMY ANIMATIONS (2h) []
-		ANIMATION PTS [] 
-		ANIMATION Installation []
-	
 	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
@@ -45,10 +17,41 @@ TODAY:
 				THE OTHER HALF OF THE WATERFALL (1h) [X] 
 					0, 346, 832, 304
 					rect: 3320, 0, 832, 304
-				THE RIVER (1h) [] @Later
+				THE RIVER (1h) [] @Current
+					-> move the waterfall state machine into separate files (2h) []
+
 				THE HOUSES (1h) [] @Later
+
 			INTO THE LEVEL 
 	-> there are some dependencies and obscurity going on in here 
+
+	PLAYER SHOOTING (4h) [] 
+		in all 3 directions (right, left, up) (2h) [] 
+			pts [X] 
+				right/left - 0, 168, 52, 29
+				up - 0, 197, 30, 65
+			bullet sprite [X] - 74, 476, 12, 11
+			add the animation into the player animation [] 
+				Problem: 
+					state transition flickering between states (ex: walking and shooting at the same time) []
+					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset) []
+
+			shoot a bullet out [X] 
+			shoot multiple bullets [X] 
+
+			enemy get hit by the bullet (with animation, die, blood,..)	[] 
+				-> the bullet should be in level data and the enemies should check that on its own and change state 
+				-> have enemy die sprite sheet [] 
+
+		let's clean the animation state machine code (2h) [X] 
+			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
+
+	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
+		something wrong with the throwing animation when trying to make it complete the animation
+	
+	ENEMY ANIMATIONS (2h) []
+		ANIMATION PTS [] 
+		ANIMATION Installation []
 
 TODO:
 	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] 
