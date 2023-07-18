@@ -17,10 +17,8 @@ TODAY:
 				THE OTHER HALF OF THE WATERFALL (1h) [X] 
 					0, 346, 832, 304
 					rect: 3320, 0, 832, 304
-				THE RIVER (1h) [] @Current
-					-> move the waterfall state machine into separate files (2h) []
-
-				THE HOUSES (1h) [] @Later
+				THE RIVER (1h) [X] 
+				THE HOUSES (1h) [] @Current
 
 			INTO THE LEVEL 
 	-> there are some dependencies and obscurity going on in here 
@@ -54,13 +52,15 @@ TODAY:
 		ANIMATION Installation []
 
 TODO:
-	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] 
-
 	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
 
 	Idea: SHOULD ALL THE COLLISION CODE STAY IN THE LEVEL CODE INSTEAD THE ENTITY (HOSTAGES, PLAYER,...) []
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
+
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] 
+
+	ADDING SOUND (2h) []
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 

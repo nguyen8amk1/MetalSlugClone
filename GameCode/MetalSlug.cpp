@@ -145,6 +145,7 @@ public:
 			break;
 		}
 		case Level1State::PLAYING: {
+			// This is where everything thing works 
 			doLevelPlayingState(input, dt);
 			break;
 		}
@@ -236,15 +237,8 @@ private:
 
 		globalGameData->setPlayer(player);
 
-		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, mission1SpriteSheet, .1f, 1, 8, {0, 0}, {430, 272});
-		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
-		Rect waterFallRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
-		waterFallAnimation->setRect(waterFallRect);
-
-		Util::AnimationUtil::initAnimationMetaData(waterFall2AnimationMetaData, mission1SpriteSheet, .1f, 2, 4, {0, 346}, {832, 304});
-		waterFall2Animation = new Animation(waterFall2AnimationMetaData, platformMethods);
-		Rect waterFall2Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
-		waterFall2Animation->setRect(waterFall2Rect);
+		waterFallInit(mission1SpriteSheet, backgroundPixelWidth, backgroundPixelHeight);
+		riverInit(mission1SpriteSheet, backgroundPixelWidth, backgroundPixelHeight);
 
 		groundColliders.push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight))
@@ -324,6 +318,41 @@ private:
 		for (RebelSoilder *rebelSoilder: *rebelSoilders) {
 			levelData.dangerRects.push_back(rebelSoilder->getInteractionRect());
 		}
+	}
+
+	void waterFallInit(PlatformSpecificImage *mission1SpriteSheet, int backgroundPixelWidth, int backgroundPixelHeight) {
+		Util::AnimationUtil::initAnimationMetaData(waterFallAnimationMetaData, mission1SpriteSheet, .1f, 1, 8, {0, 0}, {430, 272});
+		waterFallAnimation = new Animation(waterFallAnimationMetaData, platformMethods);
+		Rect waterFallRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3338, 0, 430, 272}, backgroundPixelWidth, backgroundPixelHeight);
+		waterFallAnimation->setRect(waterFallRect);
+
+		Util::AnimationUtil::initAnimationMetaData(waterFall2AnimationMetaData, mission1SpriteSheet, .1f, 2, 4, {0, 346}, {832, 304});
+		waterFall2Animation = new Animation(waterFall2AnimationMetaData, platformMethods);
+		Rect waterFall2Rect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3320, 0, 832, 304}, backgroundPixelWidth, backgroundPixelHeight);
+		waterFall2Animation->setRect(waterFall2Rect);
+
+	}
+
+	void riverInit(PlatformSpecificImage *mission1SpriteSheet, int backgroundPixelWidth, int backgroundPixelHeight) {
+		Util::AnimationUtil::initAnimationMetaData(riverFrontAnimationMetaData, mission1SpriteSheet, .1f, 8, 1, {0, 954}, {901, 32});
+		riverFrontAnimation = new Animation(riverFrontAnimationMetaData, platformMethods);
+		Rect riverFrontRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1859, 272, 901, 32}, backgroundPixelWidth, backgroundPixelHeight);
+		riverFrontAnimation->setRect(riverFrontRect);
+
+		Util::AnimationUtil::initAnimationMetaData(riverBackAnimationMetaData, mission1SpriteSheet, .1f, 8, 1, {901, 954}, {901, 16});
+		riverBackAnimation = new Animation(riverBackAnimationMetaData, platformMethods);
+		Rect riverBackRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1860, 256, 901, 16}, backgroundPixelWidth, backgroundPixelHeight);
+		riverBackAnimation->setRect(riverBackRect);
+
+		Util::AnimationUtil::initAnimationMetaData(river2BackAnimationMetaData, mission1SpriteSheet, .1f, 8, 1, {901, 1082}, {287, 16});
+		river2BackAnimation = new Animation(river2BackAnimationMetaData, platformMethods);
+		Rect river2BackRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({2757, 256, 287, 16}, backgroundPixelWidth, backgroundPixelHeight);
+		river2BackAnimation->setRect(river2BackRect);
+
+		Util::AnimationUtil::initAnimationMetaData(river2FrontAnimationMetaData, mission1SpriteSheet, .1f, 8, 1, {0, 1210}, {605, 32});
+		river2FrontAnimation = new Animation(river2FrontAnimationMetaData, platformMethods);
+		Rect river2FrontRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({2760, 272, 605, 32}, backgroundPixelWidth, backgroundPixelHeight);
+		river2FrontAnimation->setRect(river2FrontRect);
 	}
 
 	void displayDebug() {
@@ -475,11 +504,18 @@ private:
 		}
 
 		levelData.groundColliders = groundColliders;
-		//levelData.bulletRects = player->getBulletRects();
+
+		river2BackAnimation->animate(camera, dt);
 
 		background->animate(camera, dt);
+
+		riverBackAnimation->animate(camera, dt);
+		riverFrontAnimation->animate(camera, dt);
+		river2FrontAnimation->animate(camera, dt);
+
 		waterFallAnimation->animate(camera, dt);
 		waterFall2Animation->animate(camera, dt);
+
 
 		for (Hostage *hostage: *hostages) {
 			hostage->update(levelData, camera, dt);

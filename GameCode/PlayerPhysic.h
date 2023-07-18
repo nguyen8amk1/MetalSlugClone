@@ -37,11 +37,13 @@ public:
 	}
 
 	PlayerPhysicResult update(PlayerEvent &event, double dt, Rect colliderRect, bool die, LevelData &levelData) {
-		if (event.moveLeft) {
-			colliderRect.x -= (float)(moveSpeed*dt); 
-		}
-		else if (event.moveRight) {
-			colliderRect.x += (float)(moveSpeed*dt); 
+		if (!die) {
+			if (event.moveLeft) {
+				colliderRect.x -= (float)(moveSpeed*dt); 
+			}
+			else if (event.moveRight) {
+				colliderRect.x += (float)(moveSpeed*dt); 
+			}
 		}
 
 		// Physics state machine

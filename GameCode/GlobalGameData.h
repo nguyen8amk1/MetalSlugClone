@@ -58,7 +58,6 @@ public:
 	PlatformSpecificImage* getSpriteSheet(const std::string &name) {
 		return spriteSheets[name];
 	}
-
 };
 
 }
