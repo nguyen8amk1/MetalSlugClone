@@ -6,6 +6,7 @@
 
 namespace MetalSlug {
 class GlobalGameData;
+enum class PlayerPhysicState;
 
 class Bullet {
 private: 

@@ -120,5 +120,11 @@ struct PlayerEvent {
 	bool shoot = false;
 };
 
+enum class PlayerPhysicState {
+	ONGROUND,
+	JUMPUP,
+	JUMPDOWN,
+	FALL
+};
 
 }

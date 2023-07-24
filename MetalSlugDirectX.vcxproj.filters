@@ -72,9 +72,6 @@
     <ClCompile Include="GameCode\GlobalGameData.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
-    <ClCompile Include="GameCode\PlayerAnimation.cpp">
-      <Filter>Source Files\GameCode</Filter>
-    </ClCompile>
     <ClCompile Include="GameCode\Grenade.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
@@ -104,12 +101,6 @@
       <Filter>Source Files\GameCode</Filter>
     </ClInclude>
     <ClInclude Include="GameCode\Physics.h">
-      <Filter>Source Files\GameCode</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCode\PlayerPhysic.h">
-      <Filter>Source Files\GameCode</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCode\PlayerAnimation.h">
       <Filter>Source Files\GameCode</Filter>
     </ClInclude>
     <ClInclude Include="GameCode\Bullet.h">

@@ -153,7 +153,6 @@
     <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
     <ClCompile Include="GameCode\Player.cpp" />
-    <ClCompile Include="GameCode\PlayerAnimation.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.h" />
     <ClCompile Include="GameCode\Tinyc2CollisionChecker.h" />
@@ -181,8 +180,6 @@
     <ClInclude Include="GameCode\MetalSlug.h" />
     <ClInclude Include="GameCode\Physics.h" />
     <ClInclude Include="GameCode\Player.h" />
-    <ClInclude Include="GameCode\PlayerAnimation.h" />
-    <ClInclude Include="GameCode\PlayerPhysic.h" />
     <ClInclude Include="GameCode\TimeBoundedLerp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
