@@ -68,8 +68,8 @@ private:
 	
 
 	Rect cameraOpeningRect, cameraAfterLandingRect,
-		cameraWaterFall1Rect, cameraWaterFall2Rect, cameraWaterFall3Rect,
-		cameraWaterFall4Rect, cameraWaterFall5Rect;
+		 cameraWaterFall1Rect, cameraWaterFall2Rect, cameraWaterFall3Rect,
+		 cameraWaterFall4Rect, cameraWaterFall5Rect;
 
 	enum class Level1CameraState {
 		OPENING, 

@@ -1,5 +1,7 @@
 TODAY: 
-	PLACE ALL THE STUFF ON THE LEVEL (4h) [] 
+	JOIN THE PLAYER ANIMATION, PHYSIC AND PLAYER INTO ONE (1h) [] @Current 	
+
+	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
 		have all the colliders in place as well [X] 
@@ -18,7 +20,9 @@ TODAY:
 					0, 346, 832, 304
 					rect: 3320, 0, 832, 304
 				THE RIVER (1h) [X] 
-				THE HOUSES (1h) [] @Current
+				THE HOUSES (1h) [] @Later
+				THE OBJECTS ON THE HOUSE (2h) [] @Later 
+				ENEMIES ON THE MAP (2h) [] @later 
 
 			INTO THE LEVEL 
 	-> there are some dependencies and obscurity going on in here 
@@ -34,7 +38,7 @@ TODAY:
 					state transition flickering between states (ex: walking and shooting at the same time) []
 					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset) []
 
-			shoot a bullet out [X] 
+			shoot a bullet out [X]
 			shoot multiple bullets [X] 
 
 			enemy get hit by the bullet (with animation, die, blood,..)	[] 
@@ -44,14 +48,18 @@ TODAY:
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
-	FIXME: LET THE THROWING ANIMATION FINISH (1h) []
+	FIXME: LET THE THROWING ANIMATION FINISH (1h) [] 
 		something wrong with the throwing animation when trying to make it complete the animation
-	
+
 	ENEMY ANIMATIONS (2h) []
 		ANIMATION PTS [] 
 		ANIMATION Installation []
 
 TODO:
+	OBJECT EXPLOSION (2h) []
+
+	CREATE A TRIGGER SYSTEM (2h) []
+
 	HAVE DEBUG INFO ON SCREEN THAT SPECIFIES HOW MANY ENTITIES OF EACH TYPE ARE THERE (to check whether they're freed or not) (2h) []
 
 	Idea: SHOULD ALL THE COLLISION CODE STAY IN THE LEVEL CODE INSTEAD THE ENTITY (HOSTAGES, PLAYER,...) []
@@ -165,7 +173,7 @@ BUG:
 			-> meaning the sprites is still in their own pixel size by the position will be way more precise since the range is larger 
 
 
-	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF []  
+	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF [] -> does this even happens anymore ??  
 	
 DONE: 
 	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [X] 
