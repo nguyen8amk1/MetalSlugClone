@@ -171,6 +171,8 @@ private:
 
 	void commonLegDieEventTransition(bool die);
 
+	void commonLegIdlingEventTransition(PlayerEvent& event, PlayerPhysicState physicState);
+
 	void commonBodyDieEventTransition(bool die);
 
 	void commonThrowingBombEventTransition(PlayerEvent &event);

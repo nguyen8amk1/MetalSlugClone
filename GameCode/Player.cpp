@@ -1,5 +1,6 @@
 #pragma once 
 #include "Player.h"
+#include<Windows.h>
 
 
 namespace MetalSlug { 
@@ -52,10 +53,6 @@ void Player::update(const GameInputContext &input, LevelData &levelData, Camera 
 
 	updateAnimation(event, dt, camera, levelData);
 
-	if (grenadeIsThrow) {
-		throwGrenade();
-	}
-
 	for (Grenade *grenade: grenades) {
 		grenade->update(camera, dt, levelData);
 	}
@@ -63,25 +60,6 @@ void Player::update(const GameInputContext &input, LevelData &levelData, Camera 
 	for (Bullet* bullet : *(globalGameData->getBullets())) {
 		bullet->update(dt, levelData, camera);
 	}
-
-	/*
-	bool collided = false;
-	for (RectangleCollider *ground: levelData.groundColliders) {
-		collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
-		if (collided) break;
-	}
-	*/
-
-	/*
-	if (collided) {
-		groundColor = collidedColor;
-		playerColor = collidedColor;
-	}
-	else {
-		groundColor = {255, 255, 0, 255};
-		playerColor = {0, 0, 255, 255};
-	}
-	*/
 }
 
 void Player::interactionRectInit() {
@@ -208,8 +186,8 @@ void Player::commonDieEventTransition(LevelData &levelData) {
 		die = true;
 	}
 }
-// Animations
 
+// Animations
 void Player::animationInit() {
 	PlatformSpecificImage *spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
 	Util::AnimationUtil::initAnimationMetaData(idlingAnimationMetaData, spriteSheet, .15f, 1, 4, {0, 0}, {31, 29});
@@ -284,14 +262,7 @@ void Player::legAnimationStateMachineUpdate(PlayerEvent &event, double dt, Camer
 	}break;
 
 	case LegAnimationState::WALKING: {
-		bool isPressingMove = event.moveLeft || event.moveRight;
-		if (!isPressingMove && 
-			physicState != PlayerPhysicState::JUMPUP && 
-			physicState != PlayerPhysicState::JUMPDOWN && 
-			physicState != PlayerPhysicState::FALL) {
-
-			toLegIdlingAnimation();
-		}
+		commonLegIdlingEventTransition(event, physicState);
 
 		commonLegJumpFallEventTransition(physicState);
 		commonLegDieEventTransition(die);
@@ -382,28 +353,18 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		}
 	} break;
 	case BodyAnimationState::THROWING: {
-
-		bool isPressingMove = event.moveLeft || event.moveRight;
-		if (!isPressingMove && 
-			physicState != PlayerPhysicState::JUMPUP && 
-			physicState != PlayerPhysicState::JUMPDOWN && 
-			physicState != PlayerPhysicState::FALL) {
-			currentBodyAnimation = idlingAnimation;
-		}
-
 		// event: 
 		bool doneThrowAnimation = throwingAnimation->finishOneCycle();
 		if (doneThrowAnimation) {
 			// TODO: some how go to the state that it should be, one of 4:  jumping, falling, walking, idling 
-			toBodyIdlingAnimation();
+			//OutputDebugStringA("DONE THROWING ANIMATION\n");
+			//toBodyIdlingAnimation();
+			commonBodyWalkingEventTransition(event);
+			commonBodyJumpFallEventTransition(physicState);
+			commonThrowingBombEventTransition(event);
+			commonShootingEventTransition(event);
 		}
-
-		commonBodyWalkingEventTransition(event);
-		commonBodyJumpFallEventTransition(physicState);
 		commonBodyDieEventTransition(die);
-
-		commonThrowingBombEventTransition(event);
-		commonShootingEventTransition(event);
 	} break;
 
 	case BodyAnimationState::HORIZONTAL_SHOOTING: {
@@ -433,8 +394,17 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 	} break;
 
 	}
+}
 
+void Player::commonLegIdlingEventTransition(PlayerEvent &event, PlayerPhysicState physicState) {
+	bool isPressingMove = event.moveLeft || event.moveRight;
+	if (!isPressingMove && 
+		physicState != PlayerPhysicState::JUMPUP && 
+		physicState != PlayerPhysicState::JUMPDOWN && 
+		physicState != PlayerPhysicState::FALL) {
 
+		toLegIdlingAnimation();
+	}
 }
 
 void Player::commonLegJumpFallEventTransition(PlayerPhysicState physicState) {
@@ -470,11 +440,8 @@ void Player::commonBodyDieEventTransition(bool die) {
 
 void Player::commonThrowingBombEventTransition(PlayerEvent &event) {
 	if (event.throwGrenade) {
-		grenadeIsThrow = true;
+		throwGrenade();
 		toThrowingAnimation();
-	}
-	else {
-		grenadeIsThrow = false;
 	}
 }
 

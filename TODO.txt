@@ -1,6 +1,4 @@
 TODAY: 
-	JOIN THE PLAYER ANIMATION, PHYSIC AND PLAYER INTO ONE (1h) [] @Current 	
-
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]
 			the camera will move with the player when the player go about 1/3 of the width 
@@ -41,15 +39,12 @@ TODAY:
 			shoot a bullet out [X]
 			shoot multiple bullets [X] 
 
-			enemy get hit by the bullet (with animation, die, blood,..)	[] 
+			enemy get hit by the bullet (with animation, die, blood,..)	[] @Current 
 				-> the bullet should be in level data and the enemies should check that on its own and change state 
 				-> have enemy die sprite sheet [] 
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
-
-	FIXME: LET THE THROWING ANIMATION FINISH (1h) [] 
-		something wrong with the throwing animation when trying to make it complete the animation
 
 	ENEMY ANIMATIONS (2h) []
 		ANIMATION PTS [] 
@@ -176,6 +171,9 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF [] -> does this even happens anymore ??  
 	
 DONE: 
+	FIXME: LET THE THROWING ANIMATION FINISH (1h) [X] 
+		something wrong with the throwing animation when trying to make it complete the animation
+	JOIN THE PLAYER ANIMATION, PHYSIC AND PLAYER INTO ONE (1h) [X] 
 	ONLY LOAD THE GAME ASSETS ONCE AT THE START OF THE LEVEL (2h) [X] 
 	Idea: THERE ARE CERTAIN OBSCURITY WHEN USING COMMONTRANSITION METHOD (should have better name or just expand them all out) [X] ?? 
 	Idea: should all the input handling in the player.cpp file and then transfered to other files [X] 
