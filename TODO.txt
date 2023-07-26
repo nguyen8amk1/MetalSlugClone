@@ -31,7 +31,7 @@ TODAY:
 				right/left - 0, 168, 52, 29
 				up - 0, 197, 30, 65
 			bullet sprite [X] - 74, 476, 12, 11
-			add the animation into the player animation [] 
+			add the animation into the player animation []
 				Problem: 
 					state transition flickering between states (ex: walking and shooting at the same time) []
 					animation position can't depend directly on the colliderRect xy anymore (every state should have it's own offset) []
@@ -39,9 +39,9 @@ TODAY:
 			shoot a bullet out [X]
 			shoot multiple bullets [X] 
 
-			enemy get hit by the bullet (with animation, die, blood,..)	[] @Current 
-				-> the bullet should be in level data and the enemies should check that on its own and change state 
-				-> have enemy die sprite sheet [] 
+			enemy get hit by the bullet (with animation, die, blood,..)	[] 
+				-> the bullet should be in global game data and the enemies should check that on its own and change state [X]
+				-> have enemy die sprite sheet [] @Current
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
@@ -171,6 +171,8 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF [] -> does this even happens anymore ??  
 	
 DONE: 
+	REMOVE LEVELDATA (2h) [X] 
+
 	FIXME: LET THE THROWING ANIMATION FINISH (1h) [X] 
 		something wrong with the throwing animation when trying to make it complete the animation
 	JOIN THE PLAYER ANIMATION, PHYSIC AND PLAYER INTO ONE (1h) [X] 

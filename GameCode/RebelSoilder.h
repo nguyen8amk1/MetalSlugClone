@@ -51,7 +51,7 @@ private:
 
 public: 
 	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods); 
-	void update(LevelData& levelData, Camera* camera, double dt);
+	void update(Camera* camera, double dt);
 
 	void moveXBy(float d) {
 		colliderRect.x += d;

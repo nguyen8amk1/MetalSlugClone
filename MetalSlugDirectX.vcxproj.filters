@@ -78,6 +78,9 @@
     <ClCompile Include="GameCode\Hostage.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
+    <ClCompile Include="GameCode\Physics.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

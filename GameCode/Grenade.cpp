@@ -1,7 +1,6 @@
 #include "Grenade.h"
 namespace MetalSlug {
-Grenade::Grenade(const Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods) {
-	this->colliderRect = colliderRect;
+Grenade::Grenade(PlatformSpecficMethodsCollection *platformMethods) {
 	xLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 	yLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 
@@ -20,7 +19,7 @@ void Grenade::startThrow(int facingDirection, float playerX, float playerY) {
 	direction = facingDirection;
 }
 
-void Grenade::update(Camera *camera, double dt, LevelData &levelData) {
+void Grenade::update(Camera *camera, double dt) {
 	//  State Machine  
 	switch (currentPhysicState) {
 	case PhysicState::FIRST_HOP_UP: {
@@ -57,7 +56,7 @@ void Grenade::update(Camera *camera, double dt, LevelData &levelData) {
 		yLerp->update(dt, false);
 
 		bool hitGround = false;
-		for (RectangleCollider *rect: levelData.groundColliders) {
+		for (RectangleCollider *rect: *(globalGameData->getGroundColliders())) {
 			hitGround = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, rect->getRect());
 			if (hitGround) break;
 		}
@@ -120,7 +119,7 @@ void Grenade::update(Camera *camera, double dt, LevelData &levelData) {
 		yLerp->update(dt, false);
 
 		bool hitGround = false;
-		for (RectangleCollider *rect: levelData.groundColliders) {
+		for (RectangleCollider *rect: *(globalGameData->getGroundColliders())) {
 			hitGround = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, rect->getRect());
 			if (hitGround) break;
 		}

@@ -115,8 +115,6 @@ private:
 
 	int horizontalFacingDirection = 1;
 
-	std::vector<Grenade*> grenades;
-	Rect grenadeRect = { 0, 0, .1f, .1f };
 
 	PlatformSpecficMethodsCollection* platformMethods;
 
@@ -129,7 +127,7 @@ public:
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection* platformMethods);
 	~Player();
 
-	void update(const GameInputContext& input, LevelData& levelData, Camera* camera, double dt);
+	void update(const GameInputContext& input, Camera* camera, double dt);
 
 	void moveXBy(float d) {
 		colliderRect.x += d;
@@ -151,19 +149,19 @@ private:
 	void throwGrenade();
 	
 	// Physics 
-	void updatePhysics(PlayerEvent &event, LevelData &levelData, double dt);
-	void commonDieEventTransition(LevelData &levelData);
-	void commonOnGroundEventTransition(LevelData &levelData);
+	void updatePhysics(PlayerEvent &event, double dt);
+	void commonDieEventTransition();
+	void commonOnGroundEventTransition();
 
 
 	// Animations
 	void animationInit();
 
-	void updateAnimation(PlayerEvent& event, double dt, Camera* camera, LevelData& levelData);
+	void updateAnimation(PlayerEvent& event, double dt, Camera* camera);
 
-	void legAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera, LevelData& levelData);
+	void legAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera);
 
-	void bodyAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera, LevelData& levelData);
+	void bodyAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera);
 
 	void commonLegJumpFallEventTransition(PlayerPhysicState physicState);
 

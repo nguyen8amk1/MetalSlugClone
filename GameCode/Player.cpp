@@ -26,7 +26,7 @@ Player::~Player() {
 }
 
 
-void Player::update(const GameInputContext &input, LevelData &levelData, Camera *camera, double dt) {
+void Player::update(const GameInputContext &input, Camera *camera, double dt) {
 
 	PlayerEvent event;
 	event.jump = input.jump.isDown;
@@ -37,7 +37,7 @@ void Player::update(const GameInputContext &input, LevelData &levelData, Camera 
 	event.throwGrenade = input.throwGrenade.isPressed;
 	event.shoot = input.shoot.isDown;
 
-	if (levelData.levelStarted) {
+	if (globalGameData->doesLevelStarted()) {
 		if (!die) {
 			if (event.shoot) {
 				interactionRectInit();
@@ -48,18 +48,11 @@ void Player::update(const GameInputContext &input, LevelData &levelData, Camera 
 			}
 		}
 
-		updatePhysics(event, levelData, dt);
+		updatePhysics(event, dt);
 	}
 
-	updateAnimation(event, dt, camera, levelData);
+	updateAnimation(event, dt, camera);
 
-	for (Grenade *grenade: grenades) {
-		grenade->update(camera, dt, levelData);
-	}
-	
-	for (Bullet* bullet : *(globalGameData->getBullets())) {
-		bullet->update(dt, levelData, camera);
-	}
 }
 
 void Player::interactionRectInit() {
@@ -80,18 +73,17 @@ void Player::interactionRectInit() {
 void Player::shootBullet() {
 	Bullet *bullet = new Bullet(platformMethods);
 	bullet->shoot(colliderRect.x, colliderRect.y);
-
 	globalGameData->getBullets()->push_back(bullet);
 }
 
 void Player::throwGrenade() {
-	Grenade *grenade = new Grenade(grenadeRect, platformMethods);
+	Grenade *grenade = new Grenade(platformMethods);
 	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
-	grenades.push_back(grenade);
+	globalGameData->getGrenades()->push_back(grenade);
 }
 
 // Physics 
-void Player::updatePhysics(PlayerEvent &event, LevelData &levelData, double dt) {
+void Player::updatePhysics(PlayerEvent &event, double dt) {
 	if (!die) {
 		if (event.moveLeft) {
 			colliderRect.x -= (float)(moveSpeed*dt); 
@@ -105,12 +97,12 @@ void Player::updatePhysics(PlayerEvent &event, LevelData &levelData, double dt) 
 	if (physicState == PlayerPhysicState::FALL) {
 		colliderRect.y -= (float)(gravity*dt); 
 
-		commonOnGroundEventTransition(levelData);
-		commonDieEventTransition(levelData);
+		commonOnGroundEventTransition();
+		commonDieEventTransition();
 	}
 	else if (physicState == PlayerPhysicState::ONGROUND) {
 		bool collided = false;
-		for (RectangleCollider* ground : levelData.groundColliders) {
+		for (RectangleCollider* ground : *(globalGameData->getGroundColliders())) {
 			collided = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect());
 			if (collided) {
 				break;
@@ -128,7 +120,7 @@ void Player::updatePhysics(PlayerEvent &event, LevelData &levelData, double dt) 
 			originalGroundY = colliderRect.y; 
 		}
 
-		commonDieEventTransition(levelData);
+		commonDieEventTransition();
 	}
 	else if (physicState == PlayerPhysicState::JUMPUP) {
 
@@ -145,7 +137,7 @@ void Player::updatePhysics(PlayerEvent &event, LevelData &levelData, double dt) 
 			float yd = Util::Math::upCurve(jumpT)* jumpHeight;
 			colliderRect.y = originalGroundY + yd;
 		}
-		commonDieEventTransition(levelData);
+		commonDieEventTransition();
 	}
 	else if (physicState == PlayerPhysicState::JUMPDOWN) {
 		jumpTimeAccumulator += dt;
@@ -154,14 +146,14 @@ void Player::updatePhysics(PlayerEvent &event, LevelData &levelData, double dt) 
 		float yd = Util::Math::downCurve(jumpT) * jumpHeight;
 		colliderRect.y = originalGroundY + yd;
 
-		commonOnGroundEventTransition(levelData);
-		commonDieEventTransition(levelData);
+		commonOnGroundEventTransition();
+		commonDieEventTransition();
 	}
 }
 
-void Player::commonOnGroundEventTransition(LevelData &levelData) {
+void Player::commonOnGroundEventTransition() {
 	CollisionInfo colInfo;
-	for (RectangleCollider* ground : levelData.groundColliders) {
+	for (RectangleCollider* ground : *(globalGameData->getGroundColliders())) {
 		CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, ground->getRect(), colInfo);
 		if (colInfo.count > 0) {
 			break;
@@ -175,9 +167,9 @@ void Player::commonOnGroundEventTransition(LevelData &levelData) {
 	}
 }
 
-void Player::commonDieEventTransition(LevelData &levelData) {
+void Player::commonDieEventTransition() {
 	bool hitDangerRect = false;
-	for (Rect dangerRect: levelData.dangerRects) {
+	for (Rect dangerRect: *(globalGameData->getDangerRects())) {
 		hitDangerRect = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, dangerRect);
 		if (hitDangerRect) break;
 	}
@@ -234,9 +226,9 @@ void Player::animationInit() {
 	currentLegAnimation = idlingLegAnimation;
 }
 
-void Player::updateAnimation(PlayerEvent &event, double dt, Camera *camera, LevelData &levelData) {
-	bodyAnimationStateMachineUpdate(event, dt, camera, levelData);
-	legAnimationStateMachineUpdate(event, dt, camera, levelData);
+void Player::updateAnimation(PlayerEvent &event, double dt, Camera *camera) {
+	bodyAnimationStateMachineUpdate(event, dt, camera);
+	legAnimationStateMachineUpdate(event, dt, camera);
 	
 	float legX = colliderRect.x;
 	float legY = colliderRect.y - .15f;
@@ -253,7 +245,7 @@ void Player::updateAnimation(PlayerEvent &event, double dt, Camera *camera, Leve
 }
 
 
-void Player::legAnimationStateMachineUpdate(PlayerEvent &event, double dt, Camera *camera, LevelData &levelData) {
+void Player::legAnimationStateMachineUpdate(PlayerEvent &event, double dt, Camera *camera) {
 	switch (legAnimationState) {
 	case LegAnimationState::IDLING: {
 		commonWalkingLegEventTransition(event);
@@ -295,7 +287,7 @@ void Player::legAnimationStateMachineUpdate(PlayerEvent &event, double dt, Camer
 	}
 }
 
-void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Camera *camera, LevelData &levelData) {
+void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Camera *camera ) {
 	switch (bodyAnimationState) {
 	case BodyAnimationState::IDLING: {
 		commonBodyWalkingEventTransition(event);
@@ -358,7 +350,7 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		if (doneThrowAnimation) {
 			// TODO: some how go to the state that it should be, one of 4:  jumping, falling, walking, idling 
 			//OutputDebugStringA("DONE THROWING ANIMATION\n");
-			//toBodyIdlingAnimation();
+			toBodyIdlingAnimation();
 			commonBodyWalkingEventTransition(event);
 			commonBodyJumpFallEventTransition(physicState);
 			commonThrowingBombEventTransition(event);

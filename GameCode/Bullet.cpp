@@ -9,7 +9,7 @@ Bullet::Bullet(PlatformSpecficMethodsCollection *platformMethods) {
 	anim = new Animation(animMetaData, platformMethods);
 }
 
-void Bullet::update(double dt, LevelData &levelData, Camera *camera) {
+void Bullet::update(double dt, Camera *camera) {
 	//  state machine 
 	switch (currentState) {
 	case State::FLY: {

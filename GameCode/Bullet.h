@@ -31,7 +31,7 @@ private:
 public: 
 	Bullet(PlatformSpecficMethodsCollection* platformMethods);
 
-	void update(double dt, LevelData& levelData, Camera* camera);
+	void update(double dt, Camera* camera);
 
 	void reset(float playerX, float playerY);
 

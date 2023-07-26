@@ -29,7 +29,7 @@ private:
 	GameText *playerPhysicStateText = NULL;
 	GameText *playerAnimationStateText = NULL;
 
-	std::vector<RectangleCollider*> groundColliders;
+	std::vector<RectangleCollider*>* groundColliders;
 
 	Color collidedColor = {255, 0, 0, 255};
 	Color groundColor = {255, 255, 0, 255};
@@ -96,14 +96,6 @@ private:
 	float tempSpeed = 1;
 	float gravity = 2.2f;
 
-	LevelData levelData;
-
-	//RebelSoilder *rebelSoilder;
-
-	// TODO: I need a template class that takes  
-	// Collider 
-	// PhysicStateMachine 
-	// AnimationStateMachine 
 	GlobalGameData *globalGameData;
 	std::vector<RebelSoilder*> *rebelSoilders;
 	std::vector<Hostage*>* hostages;
@@ -240,46 +232,47 @@ private:
 		waterFallInit(mission1SpriteSheet, backgroundPixelWidth, backgroundPixelHeight);
 		riverInit(mission1SpriteSheet, backgroundPixelWidth, backgroundPixelHeight);
 
-		groundColliders.push_back(
+		groundColliders = globalGameData->getGroundColliders();
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 0, 252, 672, 52 }, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({ 660, 282, 1156, 22 }, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1815, 254, 65, 50}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({851, 236, 71, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({932, 196, 184, 21}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1166, 194, 149, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1350, 195, 174, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1518, 237, 79, 19}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1886, 279, 1600, 25}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3368, 229, 316, 36}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3474, 205, 290, 34}, backgroundPixelWidth, backgroundPixelHeight))
 		);
-		groundColliders.push_back(
+		groundColliders->push_back(
 			new RectangleCollider(Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({3544, 144, 608, 55}, backgroundPixelWidth, backgroundPixelHeight))
 		);
 
@@ -316,7 +309,7 @@ private:
 		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
 
 		for (RebelSoilder *rebelSoilder: *rebelSoilders) {
-			levelData.dangerRects.push_back(rebelSoilder->getInteractionRect());
+			globalGameData->getDangerRects()->push_back(rebelSoilder->getInteractionRect());
 		}
 	}
 
@@ -388,7 +381,7 @@ private:
 		}
 		//OutputDebugStringA(Util::MessageFormater::print("Interaction rect: ", levelData.playerInteractionRect.x, ", ", levelData.playerInteractionRect.y, ", ", levelData.playerInteractionRect.width, ", ", levelData.playerInteractionRect.height, '\n').c_str());
 
-		for (RectangleCollider *ground : groundColliders) {
+		for (RectangleCollider *ground : *groundColliders) {
 			r = ground->getRect();
 			Vec2f t = camera->convertWorldPosToScreenPos({r.x, r.y});
 			r.x = t.x;
@@ -463,20 +456,20 @@ private:
 	void doLevelOpeningState(GameInputContext &input, double dt) {
 		// action: the player will move slowly down, 
 		GameInputContext i;
-		levelData.groundColliders = groundColliders;
+		//globalGameData->groundColliders->= groundColliders->
 
 		player->moveYBy(-gravity*.2f*dt);
-		player->update(i, levelData, camera, dt);
+		player->update(i, camera, dt);
 
 		// event: once touch the ground will: 
 			// switch the level state to playing mode 
 		CollisionInfo colInfo;
-		CollisionChecker::doesRectangleVsRectangleCollide(player->getRect(), groundColliders[0]->getRect(), colInfo);
+		CollisionChecker::doesRectangleVsRectangleCollide(player->getRect(), (*groundColliders)[0]->getRect(), colInfo);
 		if (colInfo.count > 0) {
 			player->moveXBy(-colInfo.normal.x * colInfo.depths[0]);
 			player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
 			currentLevel1State = Level1State::PLAYING;
-			levelData.levelStarted = true;
+			globalGameData->startLevel();
 		}
 	}
 
@@ -503,7 +496,7 @@ private:
 			player->moveYBy(-colInfo.normal.y * colInfo.depths[0]);
 		}
 
-		levelData.groundColliders = groundColliders;
+		//levelData.groundColliders->= groundColliders->
 
 		river2BackAnimation->animate(camera, dt);
 
@@ -518,24 +511,34 @@ private:
 
 
 		for (Hostage *hostage: *hostages) {
-			hostage->update(levelData, camera, dt);
+			hostage->update(camera, dt);
 		}
 
 		for (int i = 0; i < rebelSoilders->size(); i++) {
 			RebelSoilder* rebelSoilder = (*rebelSoilders)[i];
-			rebelSoilder->update(levelData, camera, dt);
-			levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
+			rebelSoilder->update(camera, dt);
+			//levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
+			(*(globalGameData->getDangerRects()))[i] = rebelSoilder->getInteractionRect();
 		}
 
 
-		player->update(input, levelData, camera, dt);
+		player->update(input, camera, dt);
+
+		// grenade and bullet update 
+		for (Grenade *grenade: *(globalGameData->getGrenades())) {
+			grenade->update(camera, dt);
+		}
+		
+		for (Bullet* bullet : *(globalGameData->getBullets())) {
+			bullet->update(dt, camera);
+		}
 	}
 
 	void doCameraOpeningState() {
 		// action: maybe the camera moving should be here  
 		//...
 		// event: player touch the ground -> camera y position = ... , transition to after landing
-		if (levelData.levelStarted) {
+		if (globalGameData->doesLevelStarted()) {
 			currentCameraState = Level1CameraState::AFTER_LANDING;
 			float d = cameraAfterLandingRect.y - cameraOpeningRect.y;
 			camera->moveYBy(d);

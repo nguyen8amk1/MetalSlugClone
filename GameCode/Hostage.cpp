@@ -22,8 +22,8 @@ Hostage::Hostage(float gravity, float moveSpeed, Rect hostageColliderRect, Platf
 	hostageCurrentAnimation = hostageTiedAnimation;
 }
 
-void Hostage::update(LevelData &levelData, Camera *camera, double dt) {
-	basicPhysicResult = basicPhysicStateMachine->update(dt, hostageColliderRect, levelData);
+void Hostage::update(Camera *camera, double dt) {
+	basicPhysicResult = basicPhysicStateMachine->update(dt, hostageColliderRect, globalGameData->getGroundColliders());
 	hostageColliderRect = basicPhysicResult.colliderRect;
 
 	// Animation state machine 

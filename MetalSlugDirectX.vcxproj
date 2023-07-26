@@ -152,6 +152,7 @@
     <ClCompile Include="GameCode\Hostage.cpp" />
     <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
+    <ClCompile Include="GameCode\Physics.cpp" />
     <ClCompile Include="GameCode\Player.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.h" />

@@ -25,8 +25,8 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 	currentAnimation = idleAnimation;
 }
 
-void RebelSoilder::update(LevelData &levelData, Camera *camera, double dt) {
-	physicResult = physicStateMachine->update(dt, colliderRect, levelData);
+void RebelSoilder::update(Camera *camera, double dt) {
+	physicResult = physicStateMachine->update(dt, colliderRect, globalGameData->getGroundColliders());
 	colliderRect = physicResult.colliderRect;
 
 	// Animation state machine 
@@ -103,7 +103,7 @@ void RebelSoilder::toSlashingAnimation() {
 
 void RebelSoilder::toDieAnimation() {
 	// TODO: die animation
-	//OutputDebugStringA("ENEMY DIEEEEEEE\n");
+	OutputDebugStringA("ENEMY DIEEEEEEE\n");
 }
 
 void RebelSoilder::dieEventTransition() {
@@ -112,7 +112,7 @@ void RebelSoilder::dieEventTransition() {
 		bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, bullet->getColliderRect());
 		if (bulletHit) {
 			globalGameData->removeBulletAt(i);
-			OutputDebugStringA(Util::MessageFormater::print("TODO: Remove bullet at index: ", i, '\n').c_str());
+			//OutputDebugStringA(Util::MessageFormater::print("TODO: Remove bullet at index: ", i, '\n').c_str());
 			toDieAnimation();
 			break;
 		}

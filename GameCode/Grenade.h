@@ -56,11 +56,11 @@ private:
 	Point originalPos;
 
 public:
-	Grenade(const Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods);
+	Grenade(PlatformSpecficMethodsCollection* platformMethods);
 
 	void startThrow(int facingDirection, float playerX, float playerY);
 
-	void update(Camera* camera, double dt, LevelData& levelData);
+	void update(Camera* camera, double dt);
 };
 
 

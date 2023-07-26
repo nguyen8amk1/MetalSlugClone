@@ -19,6 +19,18 @@ std::vector<Hostage*>* GlobalGameData::getHostages() {
 	return &hostages;
 }
 
+std::vector<RectangleCollider*>* GlobalGameData::getGroundColliders() {
+	return &groundColliders;
+}
+
+std::vector<Rect>* GlobalGameData::getDangerRects() {
+	return &dangerRects;
+}
+
+std::vector<Grenade*>* GlobalGameData::getGrenades() {
+	return &grenades;
+}
+
 void GlobalGameData::setPlayer(Player *player) {
 	this->player = player;
 }
@@ -35,4 +47,7 @@ void GlobalGameData::removeBulletAt(int index) {
 	bullets.erase(bullets.begin() + index); // Deleting the fourth element
 }
 
+bool GlobalGameData::doesLevelStarted() { return levelStarted; }
+void GlobalGameData::stopLevel() { levelStarted = false; }
+void GlobalGameData::startLevel() { levelStarted = true; }
 }

@@ -104,11 +104,13 @@ public:
 	Rect getRect() { return this->rect; }
 };
 
+/*
 struct LevelData {
 	std::vector<RectangleCollider*> groundColliders;
 	std::vector<Rect> dangerRects;
 	bool levelStarted = false;
 };
+*/
 
 struct PlayerEvent {
 	bool jump = false;
