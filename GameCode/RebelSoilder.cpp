@@ -2,7 +2,37 @@
 
 namespace MetalSlug {
 
-RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods) {
+// SKETCH OUT THE DESIGN OF OUR STATE MACHINE SYSTEM 
+/*
+class Transition {
+public: 
+	State *toNextState() {
+
+	}
+};
+
+class EventTransition {
+
+};
+
+class State {
+public:
+	State *update() {
+		//do the actual work
+
+		for(EventTransition *transition: eventTransitions) {
+			nextState = transition->transit();
+		}
+		return nextState;
+	}
+};
+
+class StateMachine {
+
+};
+*/
+
+RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods, AnimationState animationState) {
 	this->gravity = gravity;
 	this->moveSpeed = moveSpeed;
 	this->platformMethods = platformMethods;
@@ -19,28 +49,37 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 	Util::AnimationUtil::initAnimationMetaData(slashingAnimationMetaData, spriteSheet, .1f, 1, 15, {0, 42}, {735/15, 37});
 	slashingAnimation = new Animation(slashingAnimationMetaData, platformMethods);
 
-	Util::AnimationUtil::initAnimationMetaData(throwingBombAnimationMetaData, spriteSheet, .1f, 1, 17, {0, 79}, {782/17, 42});
+	Util::AnimationUtil::initAnimationMetaData(throwingBombAnimationMetaData, spriteSheet, .1f, 1, 17, {0, 79}, {46, 42});
 	throwingBombAnimation = new Animation(throwingBombAnimationMetaData, platformMethods);
 
-	currentAnimation = idleAnimation;
+	currentAnimationState = animationState;
+
+	if (currentAnimationState == AnimationState::IDLING) {
+		currentAnimation = idleAnimation;
+	}
+	else if (currentAnimationState == AnimationState::SLASHING) {
+		currentAnimation = slashingAnimation;
+	}
+	else if (currentAnimationState == AnimationState::THROWING_BOMB) {
+		currentAnimation = throwingBombAnimation;
+	}
 }
 
 void RebelSoilder::update(Camera *camera, double dt) {
 	physicResult = physicStateMachine->update(dt, colliderRect, globalGameData->getGroundColliders());
 	colliderRect = physicResult.colliderRect;
 
+	// Physics checking right here 
+	touchPlayer = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, globalGameData->getPlayer()->getRect());
+	playerInThrowingRange = false;
+
 	// Animation state machine 
 	switch (currentAnimationState) {
 	case AnimationState::IDLING: {
-		bool touchPlayer = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, globalGameData->getPlayer()->getRect());
-		bool playerInThrowingRange = false;
-		if (touchPlayer) {
-			toSlashingAnimation();
-		}
-		else if (playerInThrowingRange) {
-			toThrowingBombAnimation();
-		}
 
+		// transition
+		slashingEventTransition();
+		throwingBombEventTransition();
 		dieEventTransition();
 	} break;
 
@@ -65,14 +104,13 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		// TODO: 
 		// action:...
 		// transition: to idling or slashing  
-		// event: ...
+		slashingEventTransition();
 		dieEventTransition();
 	} break;
 
 	case AnimationState::DIE: {
 		// TODO: 
-		// action:...
-		// transition: to idling or slashing  
+		// action: when die animation finish reseting the state of the object and go back into the object pool 
 		// event: ...
 	} break;
 	}
@@ -104,6 +142,18 @@ void RebelSoilder::toSlashingAnimation() {
 void RebelSoilder::toDieAnimation() {
 	// TODO: die animation
 	OutputDebugStringA("ENEMY DIEEEEEEE\n");
+}
+
+void RebelSoilder::slashingEventTransition() {
+	if (touchPlayer) {
+		toSlashingAnimation();
+	}
+}
+
+void RebelSoilder::throwingBombEventTransition() {
+	if (!touchPlayer && playerInThrowingRange) {
+		toThrowingBombAnimation();
+	}
 }
 
 void RebelSoilder::dieEventTransition() {

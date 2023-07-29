@@ -10,6 +10,15 @@ namespace MetalSlug {
 class GlobalGameData;
 
 class RebelSoilder {
+public:
+	// Animation state machine 
+	enum class AnimationState {
+		IDLING,			// 0, 4, 108, 38
+		SLASHING,		// 0, 42, 735, 37
+		THROWING_BOMB,	// 0, 79, 782, 42 
+		DIE
+	};
+
 private:
 	// Collider 
 	Rect colliderRect;
@@ -27,15 +36,8 @@ private:
 	AnimationMetaData throwingBombAnimationMetaData;
 	Animation* throwingBombAnimation;
 
-	// Animation state machine 
-	enum class AnimationState {
-		IDLING,			// 0, 4, 108, 38
-		SLASHING,		// 0, 42, 735, 37
-		THROWING_BOMB,	// 0, 79, 782, 42 
-		DIE
-	};
 
-	AnimationState currentAnimationState = AnimationState::IDLING;
+	AnimationState currentAnimationState;
 	Animation* currentAnimation;
 
 	PlatformSpecficMethodsCollection* platformMethods;
@@ -45,12 +47,14 @@ private:
 
 	double timeAccumulator = 0.0;
 
-	BasicPhysicStateMachineResult physicResult = {colliderRect};
+	BasicPhysicStateMachineResult physicResult = { colliderRect };
 
-	GlobalGameData *globalGameData;
+	GlobalGameData* globalGameData;
+	bool touchPlayer = false;
+	bool playerInThrowingRange = false;
 
-public: 
-	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods); 
+public:
+	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods, AnimationState animationState = AnimationState::IDLING);
 	void update(Camera* camera, double dt);
 
 	void moveXBy(float d) {
@@ -63,15 +67,17 @@ public:
 
 	Rect getInteractionRect() { return interactionRect; }
 
-private: 
+private:
 	void toThrowingBombAnimation();
 
 	void toSlashingAnimation();
 
 	void toDieAnimation();
 
+	// event transitions
 	void dieEventTransition();
-
+	void slashingEventTransition();
+	void throwingBombEventTransition();
 };
-
 }
+

@@ -296,7 +296,7 @@ private:
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
 
-		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods, RebelSoilder::AnimationState::THROWING_BOMB));
 
 		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({630, 100 ,18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
