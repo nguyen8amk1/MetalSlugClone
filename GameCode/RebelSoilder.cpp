@@ -2,55 +2,6 @@
 
 namespace MetalSlug {
 
-// SKETCH OUT THE DESIGN OF OUR STATE MACHINE SYSTEM 
-/*
-
-class EventTransition {
-public: 
-	void transit(StateMachineEvents &events);
-};
-
-class StateContent {
-public:
-	void go();
-};
-
-class State {
-private: 
-	StateContent &content;
-	vector<EventTransition> &eventTransitions;
-	
-public:
-	State(StateContent &content, vector<EventTransition> &eventTransitions) {
-		this.content = content;
-		this.eventTransitions = eventTransitions;
-	}
-
-	 void update(StateMachine *stateMachine) {
-		 content.go();
-		// May be inject the work and the eventTransition from outside  
-
-		for(EventTransition *transition: eventTransitions) {
-			State *nextState = transition->transit();
-			if(nextState) {
-				stateMachine->setState(nextState);
-				return;
-			}
-		}
-	}
-};
-
-class StateMachine {
-private: 
-	State *currentState;
-public:
-	void update() {
-		currentState->update(this);
-	}
-};
-
-*/
-
 RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection *platformMethods, AnimationState animationState) {
 	this->gravity = gravity;
 	this->moveSpeed = moveSpeed;
