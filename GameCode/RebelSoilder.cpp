@@ -120,8 +120,11 @@ void RebelSoilder::update(Camera *camera, double dt) {
 	} break;
 
 	case AnimationState::THROWING_BOMB: {
-		// TODO: 
 		// action:...
+		bool finish1Cycle = currentAnimation->finishOneCycle();
+		if (finish1Cycle) {
+			throwGrenade();
+		}
 		// transition: to idling or slashing  
 		slashingEventTransition();
 		dieEventTransition();
@@ -167,6 +170,12 @@ void RebelSoilder::slashingEventTransition() {
 	if (touchPlayer) {
 		toSlashingAnimation();
 	}
+}
+
+void RebelSoilder::throwGrenade() {
+	Grenade *grenade = new Grenade(platformMethods);
+	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
+	globalGameData->getGrenades()->push_back(grenade);
 }
 
 void RebelSoilder::throwingBombEventTransition() {

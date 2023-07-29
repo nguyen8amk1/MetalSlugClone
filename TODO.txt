@@ -1,5 +1,8 @@
 TODAY: 
 	ENEMY GRENADE THROW (2h) [] @Current 
+		-> attach an already have grenade to the rebelsoilder [X]
+		-> change the grenade texture 
+
 	Migrate to a new state machine system (2h) []
 
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 

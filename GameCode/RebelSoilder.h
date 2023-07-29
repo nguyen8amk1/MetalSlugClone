@@ -24,6 +24,7 @@ private:
 	Rect colliderRect;
 	Rect interactionRectDisabledRect = { 0, -5.0f, 0, 0 };
 	Rect interactionRect;
+	int horizontalFacingDirection = -1;
 
 
 	// Animation
@@ -49,9 +50,10 @@ private:
 
 	BasicPhysicStateMachineResult physicResult = { colliderRect };
 
-	GlobalGameData* globalGameData;
 	bool touchPlayer = false;
 	bool playerInThrowingRange = false;
+
+	GlobalGameData* globalGameData;
 
 public:
 	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods, AnimationState animationState = AnimationState::IDLING);
@@ -73,6 +75,8 @@ private:
 	void toSlashingAnimation();
 
 	void toDieAnimation();
+
+	void throwGrenade(); 
 
 	// event transitions
 	void dieEventTransition();

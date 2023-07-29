@@ -1,5 +1,6 @@
 #include "Grenade.h"
 namespace MetalSlug {
+
 Grenade::Grenade(PlatformSpecficMethodsCollection *platformMethods) {
 	xLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 	yLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
