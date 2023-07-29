@@ -12,6 +12,7 @@ class GrenadeAnimationContextFactory;
 class GlobalGameData;
 
 struct GrenadeAnimationContext {
+	float grenadeWidth, grenadeHeight;
 	AnimationMetaData spinningAnimationMetaData;
 };
 	
@@ -69,6 +70,7 @@ private:
 
 	GlobalGameData* globalGameData;
 	Point originalPos;
+	PlatformSpecficMethodsCollection* platformMethods;
 
 public:
 	Grenade(PlatformSpecficMethodsCollection* platformMethods, GrenadeAnimationContext *grenadeAnimationContext);

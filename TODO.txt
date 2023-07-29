@@ -1,11 +1,5 @@
 TODAY: 
-	ENEMY GRENADE THROW (2h) [] 
-		-> attach an already have grenade to the rebelsoilder [X]
-		-> change the grenade texture to a rebel soilder grenade [] 
-			-> grenade factory [X]
-			-> grenade sprite [] @Current 
-
-	Migrate RebelSoilder to a new state machine system (2h) [] @Next 
+	Migrate RebelSoilder to a new state machine system (2h) [] @Current 
 
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]
@@ -179,6 +173,12 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF [] -> does this even happens anymore ??  
 	
 DONE: 
+	ENEMY GRENADE THROW (2h) [X] 
+		-> attach an already have grenade to the rebelsoilder [X]
+		-> change the grenade texture to a rebel soilder grenade [X] 
+			-> grenade factory [X]
+			-> grenade sprite [X] 
+
 	REMOVE LEVELDATA (2h) [X] 
 
 	FIXME: LET THE THROWING ANIMATION FINISH (1h) [X] 

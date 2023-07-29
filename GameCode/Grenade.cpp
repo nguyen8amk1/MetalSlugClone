@@ -6,6 +6,8 @@ GrenadeAnimationContextFactory::GrenadeAnimationContextFactory() {
 
 GrenadeAnimationContext GrenadeAnimationContextFactory::createPlayerGrenadeAnimationContext() {
 	GrenadeAnimationContext context;
+	context.grenadeWidth = .1f;
+	context.grenadeHeight = .1f;
 	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
 	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 1, { 0, 428 }, { 11, 18 }); 
 	return context;
@@ -13,8 +15,10 @@ GrenadeAnimationContext GrenadeAnimationContextFactory::createPlayerGrenadeAnima
 
 GrenadeAnimationContext GrenadeAnimationContextFactory::createRebelSoilderGrenadeAnimationContext() {
 	GrenadeAnimationContext context;
-	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
-	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 1, { 0, 428 }, { 11, 18 }); 
+	context.grenadeWidth = .2f;
+	context.grenadeHeight = .2f;
+	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("REBEL_SOILDER");
+	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 7, { 0, 385 }, {21, 24}); 
 	return context;
 }
 
@@ -24,6 +28,9 @@ GrenadeAnimationContext GrenadeAnimationContextFactory::createRebelSoilderGrenad
 Grenade::Grenade(PlatformSpecficMethodsCollection *platformMethods, GrenadeAnimationContext *grenadeAnimationContext) {
 	xLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 	yLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
+	colliderRect.width = grenadeAnimationContext->grenadeWidth;
+	colliderRect.height = grenadeAnimationContext->grenadeHeight;
+	this->platformMethods = platformMethods;
 
 	globalGameData = GlobalGameData::getInstance();
 
@@ -185,6 +192,10 @@ void Grenade::update(Camera *camera, double dt) {
 		currentAnimation->changeSize(colliderRect.width, colliderRect.height);
 		currentAnimation->animate(camera, dt);
 	}
+
+	Color c = { 255, 0, 255 };
+	Rect r = camera->convertWorldRectToScreenRect(colliderRect);
+	platformMethods->drawRectangle(r, c);
 
 }
 
