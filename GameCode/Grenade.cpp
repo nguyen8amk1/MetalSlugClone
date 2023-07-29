@@ -1,13 +1,37 @@
 #include "Grenade.h"
 namespace MetalSlug {
+GrenadeAnimationContextFactory::GrenadeAnimationContextFactory() {
+	 globalGameData = GlobalGameData::getInstance();
+}
 
-Grenade::Grenade(PlatformSpecficMethodsCollection *platformMethods) {
+GrenadeAnimationContext GrenadeAnimationContextFactory::createPlayerGrenadeAnimationContext() {
+	GrenadeAnimationContext context;
+	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
+	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 1, { 0, 428 }, { 11, 18 }); 
+	return context;
+}
+
+GrenadeAnimationContext GrenadeAnimationContextFactory::createRebelSoilderGrenadeAnimationContext() {
+	GrenadeAnimationContext context;
+	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
+	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 1, { 0, 428 }, { 11, 18 }); 
+	return context;
+}
+
+
+
+
+Grenade::Grenade(PlatformSpecficMethodsCollection *platformMethods, GrenadeAnimationContext *grenadeAnimationContext) {
 	xLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 	yLerp = new TimeBoundedLerp(firstHopDuration/2.0f);
 
 	globalGameData = GlobalGameData::getInstance();
-	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
-	Util::AnimationUtil::initAnimationMetaData(spinningAnimationMetaData, spriteSheet, .1f, 1, 1, {0, 428}, {11, 18}); //0, 428, 11, 18
+
+	// TODO: should i inject the animations of the grenade into here or something else ??   
+	//PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
+	//Util::AnimationUtil::initAnimationMetaData(spinningAnimationMetaData, spriteSheet, .1f, 1, 1, {0, 428}, {11, 18}); //0, 428, 11, 18
+
+	spinningAnimationMetaData = grenadeAnimationContext->spinningAnimationMetaData;
 	spinningAnimation = new Animation(spinningAnimationMetaData, platformMethods);
 }
 

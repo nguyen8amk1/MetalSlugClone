@@ -10,6 +10,7 @@ Player::Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection 
 	this->gravity = gravity;
 	this->platformMethods = platformMethods;
 	globalGameData = GlobalGameData::getInstance();
+	grenadeAnimationContextFactory = new GrenadeAnimationContextFactory();
 	animationInit();
 }
 
@@ -77,7 +78,8 @@ void Player::shootBullet() {
 }
 
 void Player::throwGrenade() {
-	Grenade *grenade = new Grenade(platformMethods);
+	GrenadeAnimationContext grenadeAnimationContext = grenadeAnimationContextFactory->createPlayerGrenadeAnimationContext();
+	Grenade *grenade = new Grenade(platformMethods, &grenadeAnimationContext);
 	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 	globalGameData->getGrenades()->push_back(grenade);
 }

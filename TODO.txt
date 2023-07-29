@@ -1,9 +1,9 @@
 TODAY: 
-	ENEMY GRENADE THROW (2h) [] @Current 
+	ENEMY GRENADE THROW (2h) [] 
 		-> attach an already have grenade to the rebelsoilder [X]
-		-> change the grenade texture 
+		-> change the grenade texture to a rebel soilder grenade [] @Current 
 
-	Migrate to a new state machine system (2h) []
+	Migrate RebelSoilder to a new state machine system (2h) [] @Next 
 
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]

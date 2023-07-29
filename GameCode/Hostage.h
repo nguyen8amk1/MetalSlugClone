@@ -9,6 +9,7 @@
 #include "GlobalGameData.h"
 
 namespace MetalSlug {
+class GrenadeAnimationContextFactory;
 class GlobalGameData;
 
 class Hostage {

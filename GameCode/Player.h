@@ -123,6 +123,8 @@ private:
 
 	GlobalGameData* globalGameData;
 
+	GrenadeAnimationContextFactory *grenadeAnimationContextFactory;
+
 public: 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection* platformMethods);
 	~Player();

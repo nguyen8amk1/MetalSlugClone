@@ -8,7 +8,21 @@
 //#include "Windows.h"
 
 namespace MetalSlug {
+class GrenadeAnimationContextFactory;
 class GlobalGameData;
+
+struct GrenadeAnimationContext {
+	AnimationMetaData spinningAnimationMetaData;
+};
+	
+class GrenadeAnimationContextFactory {
+private:
+	GlobalGameData* globalGameData;
+public:
+	GrenadeAnimationContextFactory();
+	GrenadeAnimationContext createPlayerGrenadeAnimationContext();
+	GrenadeAnimationContext createRebelSoilderGrenadeAnimationContext();
+};
 
 class Grenade {
 private: 
@@ -56,7 +70,7 @@ private:
 	Point originalPos;
 
 public:
-	Grenade(PlatformSpecficMethodsCollection* platformMethods);
+	Grenade(PlatformSpecficMethodsCollection* platformMethods, GrenadeAnimationContext *grenadeAnimationContext);
 
 	void startThrow(int facingDirection, float playerX, float playerY);
 

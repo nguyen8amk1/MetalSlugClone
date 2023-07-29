@@ -60,6 +60,7 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 	physicStateMachine = new BasicPhysicStateMachine(gravity);
 	interactionRect = interactionRectDisabledRect;
 	globalGameData = GlobalGameData::getInstance();
+	grenadeAnimationContextFactory = new GrenadeAnimationContextFactory();
 
 	PlatformSpecificImage *spriteSheet = globalGameData->getSpriteSheet("REBEL_SOILDER");
 	Util::AnimationUtil::initAnimationMetaData(idleAnimationMetaData, spriteSheet, .1f, 1, 4, {0, 4}, {108/4, 38});
@@ -173,7 +174,8 @@ void RebelSoilder::slashingEventTransition() {
 }
 
 void RebelSoilder::throwGrenade() {
-	Grenade *grenade = new Grenade(platformMethods);
+	GrenadeAnimationContext grenadeAnimationContext = grenadeAnimationContextFactory->createRebelSoilderGrenadeAnimationContext();
+	Grenade *grenade = new Grenade(platformMethods, &grenadeAnimationContext);
 	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 	globalGameData->getGrenades()->push_back(grenade);
 }
