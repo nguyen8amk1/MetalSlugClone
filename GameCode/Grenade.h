@@ -24,6 +24,7 @@ public:
 	GrenadeAnimationContext createRebelSoilderGrenadeAnimationContext();
 };
 
+
 class Grenade {
 private: 
 	Rect colliderRect = { 0, 0, .1f, .1f };
@@ -77,5 +78,13 @@ public:
 	void update(Camera* camera, double dt);
 };
 
+class GrenadeFactory {
+	GrenadeAnimationContextFactory* contextFactory;
+	PlatformSpecficMethodsCollection* platformMethods;
+public:
+	GrenadeFactory(PlatformSpecficMethodsCollection* platformMethods);
+	Grenade* createPlayerGrenade();
+	Grenade* createRebelSoilderGrenade();
+};
 
 }

@@ -7,7 +7,7 @@
 #include <Windows.h>
 
 namespace MetalSlug {
-class GrenadeAnimationContextFactory;
+class GrenadeFactory;
 class GlobalGameData;
 
 class RebelSoilder {
@@ -55,7 +55,7 @@ private:
 	bool playerInThrowingRange = false;
 
 	GlobalGameData* globalGameData;
-	GrenadeAnimationContextFactory* grenadeAnimationContextFactory;
+	GrenadeFactory* grenadeFactory;
 
 public:
 	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods, AnimationState animationState = AnimationState::IDLING);

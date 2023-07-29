@@ -187,4 +187,24 @@ void Grenade::update(Camera *camera, double dt) {
 	}
 
 }
+
+
+// GRENADE FACTORY
+GrenadeFactory::GrenadeFactory(PlatformSpecficMethodsCollection* platformMethods) {
+	contextFactory = new GrenadeAnimationContextFactory();
+	this->platformMethods = platformMethods;
+}
+
+Grenade* GrenadeFactory::createPlayerGrenade() {
+	GrenadeAnimationContext grenadeAnimationContext = contextFactory->createRebelSoilderGrenadeAnimationContext();
+	Grenade* grenade = new Grenade(platformMethods, &grenadeAnimationContext);
+	return grenade;
+}
+
+Grenade* GrenadeFactory::createRebelSoilderGrenade() {
+	GrenadeAnimationContext grenadeAnimationContext = contextFactory->createRebelSoilderGrenadeAnimationContext();
+	Grenade* grenade = new Grenade(platformMethods, &grenadeAnimationContext);
+	return grenade;
+}
+
 }
