@@ -114,6 +114,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		platformMethods->drawRectangle(r, testCol);
 	}
 
+	beingSlashedByPlayer = false;
 	hitByBullet = false;
 }
 

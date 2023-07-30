@@ -39,9 +39,11 @@ void Player::update(const GameInputContext &input, Camera *camera, double dt) {
 	event.shoot = input.shoot.isDown;
 
 	// @Debug
+	/*
 	if (hostageDoesHitInteractionRect) {
 		OutputDebugStringA("HOSTAGE HIT INTERACTION RECT \n");
 	}
+	*/
 
 	if (globalGameData->doesLevelStarted()) {
 		if (!die) {
@@ -428,6 +430,11 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		// TODO: 
 		// action 
 		// transition
+		bool finish1Cycle = currentBodyAnimation->finishOneCycle();
+		if (finish1Cycle) {
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyWalkingEventTransition(event);
+		}
 	} break;
 
 	}

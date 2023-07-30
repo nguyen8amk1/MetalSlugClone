@@ -509,7 +509,6 @@ private:
 		waterFall2Animation->animate(camera, dt);
 
 
-		player->update(input, camera, dt);
 
 		// TODO: player interaction rect vs hostages, rebel soilders here  
 		for (Hostage *hostage: *hostages) {
@@ -533,12 +532,17 @@ private:
 		// Rebel soilders update
 		for (int i = 0; i < rebelSoilders->size(); i++) {
 			RebelSoilder* rebelSoilder = (*rebelSoilders)[i];
+			bool hitInteractionRect = CollisionChecker::doesRectangleVsRectangleCollide(rebelSoilder->getRect(), player->getInteractionRect());
+			if (hitInteractionRect) {
+				OutputDebugStringA("METALSLUG: REBEL SOILDER HIT\n");
+				rebelSoilder->slashedByPlayer();
+				player->rebelHitInteractionRect();
+			}
 			rebelSoilder->update(camera, dt);
 			//levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
 			(*(globalGameData->getDangerRects()))[i] = rebelSoilder->getInteractionRect();
 
 			int bulletIndex = 0;
-			// Bullet update 
 			for (Bullet* bullet : *(globalGameData->getBullets())) {
 				bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(rebelSoilder->getRect(), bullet->getColliderRect());
 				if (bulletHit) {
@@ -549,6 +553,8 @@ private:
 				bulletIndex++;
 			}
 		}
+
+		player->update(input, camera, dt);
 
 	}
 

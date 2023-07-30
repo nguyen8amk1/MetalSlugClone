@@ -57,6 +57,7 @@ private:
 
 	bool touchPlayer = false;
 	bool playerInThrowingRange = false;
+	bool beingSlashedByPlayer = false;
 	bool hitByBullet = false;
 
 	GlobalGameData* globalGameData;
@@ -79,6 +80,10 @@ public:
 
 	void bulletHit() {
 		hitByBullet = true;
+	}
+
+	void slashedByPlayer() {
+		beingSlashedByPlayer = true;
 	}
 
 private:

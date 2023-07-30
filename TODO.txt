@@ -1,17 +1,5 @@
 TODAY: 
-
-	PLAYER SLASHING (2h) [] 
-		player only slash when near hostage or rebel soilder  
-		player have spritesheet: 
-			stab (for rebels) [X]
-			slash (for hostage) [X]
-		add it into player code [] 
-			stab when rebel soilders hit player's interaction box [] @Current
-				-> need a system that notify both player (1) and rebel soilder (1 of n)
-					when rebel soilder and interaction rect hit
-			slash when hostage hit player's interaction box []
-
-	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Next
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Current
 
 	sidenote:
 		// What i have to do when i want to add a new state: 
@@ -210,6 +198,15 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF [] -> does this even happens anymore ??  
 	
 DONE: 
+	PLAYER SLASHING (2h) [X] 
+		player only slash when near hostage or rebel soilder  
+		player have spritesheet: 
+			stab (for rebels) [X]
+			slash (for hostage) [X]
+		add it into player code [] 
+			slash when hostage hit player's interaction box [X]
+			stab when rebel soilders hit player's interaction box [X] 
+
 	ENEMY GRENADE THROW (2h) [X] 
 		-> attach an already have grenade to the rebelsoilder [X]
 		-> change the grenade texture to a rebel soilder grenade [X] 
