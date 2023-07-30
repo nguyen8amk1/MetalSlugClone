@@ -23,6 +23,9 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 	Util::AnimationUtil::initAnimationMetaData(throwingBombAnimationMetaData, spriteSheet, .1f, 1, 17, {0, 79}, {46, 42});
 	throwingBombAnimation = new Animation(throwingBombAnimationMetaData, platformMethods);
 
+	Util::AnimationUtil::initAnimationMetaData(slashedDieAnimationMetaData, spriteSheet, .1f, 1, 12, {0, 409}, {53, 49});
+	slashedDieAnimation = new Animation(slashedDieAnimationMetaData, platformMethods);
+
 	currentAnimationState = animationState;
 
 	if (currentAnimationState == AnimationState::IDLING) {
@@ -51,7 +54,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		// transition
 		slashingEventTransition();
 		throwingBombEventTransition();
-		dieEventTransition();
+		slashedDieEventTransition();
 	} break;
 
 	case AnimationState::SLASHING: {
@@ -68,7 +71,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		}
 		// transition: to idling or throwing bomb 
 		// event: ...
-		dieEventTransition();
+		slashedDieEventTransition();
 	} break;
 
 	case AnimationState::THROWING_BOMB: {
@@ -79,28 +82,34 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		}
 		// transition: to idling or slashing  
 		slashingEventTransition();
-		dieEventTransition();
+		slashedDieEventTransition();
 	} break;
 
-	case AnimationState::DIE: {
+	case AnimationState::SLASHED_DIE: {
 		// TODO: 
 		// action: when die animation finish reseting the state of the object and go back into the object pool 
 		// event: ...
+		bool finish1Cycle = currentAnimation->finishOneCycle();
+		if (finish1Cycle) {
+			currentAnimation = NULL;
+			currentAnimationState = AnimationState::NONE;
+		}
 	} break;
 	}
 
 	// NOTE: The common event check outside (hit bullet): 
 	// Rendering 
-	currentAnimation->changePos(colliderRect.x, colliderRect.y);
-	currentAnimation->animate(camera, dt);
-	Color testCol = { 255, 255, 0 };
+	if (currentAnimation) {
+		currentAnimation->changePos(colliderRect.x, colliderRect.y);
+		currentAnimation->animate(camera, dt);
 
-	Rect r = colliderRect;
-	Vec2f t = camera->convertWorldPosToScreenPos({ r.x, r.y });
-	r.x = t.x;
-	r.y = t.y;
-	platformMethods->drawRectangle(r, testCol);
-
+		Color testCol = { 255, 255, 0 };
+		Rect r = colliderRect;
+		Vec2f t = camera->convertWorldPosToScreenPos({ r.x, r.y });
+		r.x = t.x;
+		r.y = t.y;
+		platformMethods->drawRectangle(r, testCol);
+	}
 }
 
 void RebelSoilder::toThrowingBombAnimation() {
@@ -114,8 +123,9 @@ void RebelSoilder::toSlashingAnimation() {
 }
 
 void RebelSoilder::toDieAnimation() {
-	// TODO: die animation
-	OutputDebugStringA("ENEMY DIEEEEEEE\n");
+	//OutputDebugStringA("ENEMY DIEEEEEEE\n");
+	currentAnimationState = AnimationState::SLASHED_DIE;
+	currentAnimation = slashedDieAnimation;
 }
 
 void RebelSoilder::slashingEventTransition() {
@@ -136,7 +146,7 @@ void RebelSoilder::throwingBombEventTransition() {
 	}
 }
 
-void RebelSoilder::dieEventTransition() {
+void RebelSoilder::slashedDieEventTransition() {
 	for (int i = 0; i < globalGameData->getBullets()->size(); i++) {
 		Bullet* bullet = (*globalGameData->getBullets())[i];
 		bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, bullet->getColliderRect());

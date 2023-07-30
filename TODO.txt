@@ -1,5 +1,6 @@
 TODAY: 
-	Migrate RebelSoilder to a new state machine system (2h) [] @Current 
+	PLAYER SLASHING (2h) [] @Current
+		player only slash when near hostage or rebel soilder  
 
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]
@@ -44,13 +45,20 @@ TODAY:
 			enemy get hit by the bullet (with animation, die, blood,..)	[] 
 				-> the bullet should be in global game data and the enemies should check that on its own and change state [X]
 				-> have enemy die sprite sheet [] 
+					die when slash, explode (tan bien) [X] 
+					die when hit by bullet (nam xuong dat) [] @Later 
 
 		let's clean the animation state machine code (2h) [X] 
 			-> refactor the transition code so that it way more comfortable to use (4h) [X] 
 
+
 	ENEMY ANIMATIONS (2h) []
 		ANIMATION PTS [] 
 		ANIMATION Installation []
+
+	REBEL SOILDER AI (4h) []
+
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] 
 
 TODO:
 	OBJECT EXPLOSION (2h) []
@@ -63,9 +71,21 @@ TODO:
 
 	ENEMY THROWING GRENADE (with animation) (2h) [] 
 
-	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] 
 
 	ADDING SOUND (2h) []
+
+	Migrate RebelSoilder to a new state machine system (2h) [] @Later 
+		rebel soilder state machine what it should look like (kinda): 
+			rebel soilder state machine: 
+				walkingstate.addEventTransition(dieEventTransition);
+				walkingstate.addEventTransition(dieEventTransition);
+
+				dieState.addEventTransition(walkingEventTransition);
+				dieState.addEventTransition(jumpEventTransition);
+
+				dieState.addEventTransitions(commonEventTransitions);
+
+				statemachine.addstate(walkingstate);
 
 	HAVE A GENERAL STATE MACHINE CLASS THAT CAN BE REUSE (2h) [] 
 		what all the state machine have in common ??: 

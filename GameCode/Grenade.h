@@ -43,7 +43,7 @@ private:
 		NONE,
 		FIRST_HOP, 
 		SECOND_HOP, 
-		EXPLODE
+		EXPLODE,
 	};
 
 	PhysicState currentPhysicState = PhysicState::NONE;

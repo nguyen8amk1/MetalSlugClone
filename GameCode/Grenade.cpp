@@ -52,7 +52,9 @@ void Grenade::startThrow(int facingDirection, float playerX, float playerY) {
 }
 
 void Grenade::update(Camera *camera, double dt) {
-	//  State Machine  
+	// TODO: Animation State Machine 
+
+	//  Physic State Machine  
 	switch (currentPhysicState) {
 	case PhysicState::FIRST_HOP_UP: {
 		xLerp->update(dt, false);
@@ -181,9 +183,8 @@ void Grenade::update(Camera *camera, double dt) {
 
 	case PhysicState::ON_GROUND: {
 		// TODO: 
-		// action: 
+		// action:
 		// event: 
-
 	} break;
 	}
 	

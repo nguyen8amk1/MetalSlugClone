@@ -17,7 +17,8 @@ public:
 		IDLING,			// 0, 4, 108, 38
 		SLASHING,		// 0, 42, 735, 37
 		THROWING_BOMB,	// 0, 79, 782, 42 
-		DIE
+		SLASHED_DIE,
+		NONE
 	};
 
 private:
@@ -37,6 +38,9 @@ private:
 
 	AnimationMetaData throwingBombAnimationMetaData;
 	Animation* throwingBombAnimation;
+
+	AnimationMetaData slashedDieAnimationMetaData;
+	Animation* slashedDieAnimation;
 
 
 	AnimationState currentAnimationState;
@@ -81,7 +85,7 @@ private:
 	void throwGrenade(); 
 
 	// event transitions
-	void dieEventTransition();
+	void slashedDieEventTransition();
 	void slashingEventTransition();
 	void throwingBombEventTransition();
 };
