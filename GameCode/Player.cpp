@@ -38,6 +38,11 @@ void Player::update(const GameInputContext &input, Camera *camera, double dt) {
 	event.throwGrenade = input.throwGrenade.isPressed;
 	event.shoot = input.shoot.isDown;
 
+	// @Debug
+	if (hostageDoesHitInteractionRect) {
+		OutputDebugStringA("HOSTAGE HIT INTERACTION RECT \n");
+	}
+
 	if (globalGameData->doesLevelStarted()) {
 		if (!die) {
 			if (event.shoot) {
@@ -54,6 +59,8 @@ void Player::update(const GameInputContext &input, Camera *camera, double dt) {
 
 	updateAnimation(event, dt, camera);
 
+	rebelDoesHitInteractionRect = false;
+	hostageDoesHitInteractionRect = false;
 }
 
 void Player::interactionRectInit() {
@@ -299,9 +306,11 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 	case BodyAnimationState::IDLING: {
 		commonBodyWalkingEventTransition(event);
 		commonThrowingBombEventTransition(event);
-		commonShootingEventTransition(event);
 		commonBodyJumpFallEventTransition(physicState);
 		commonBodyDieEventTransition(die);
+		commonSlashingEventTransition();
+		commonStabbingEventTransition();
+		commonShootingEventTransition(event);
 	}break;
 
 	case BodyAnimationState::WALKING: {
@@ -318,6 +327,8 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		commonBodyDieEventTransition(die);
 		commonThrowingBombEventTransition(event);
 		commonShootingEventTransition(event);
+		commonSlashingEventTransition();
+		commonStabbingEventTransition();
 	} break;
 
 	case BodyAnimationState::JUMPING: {
@@ -329,6 +340,8 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		commonBodyDieEventTransition(die);
 		commonThrowingBombEventTransition(event);
 		commonShootingEventTransition(event);
+		commonSlashingEventTransition();
+		commonStabbingEventTransition();
 	} break;
 
 	case BodyAnimationState::FALLING: {
@@ -339,6 +352,8 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		commonBodyDieEventTransition(die);
 		commonThrowingBombEventTransition(event);
 		commonShootingEventTransition(event);
+		commonSlashingEventTransition();
+		commonStabbingEventTransition();
 	} break;
 
 	case BodyAnimationState::DYING: {
@@ -362,6 +377,8 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 			commonBodyJumpFallEventTransition(physicState);
 			commonThrowingBombEventTransition(event);
 			commonShootingEventTransition(event);
+			commonSlashingEventTransition();
+			commonStabbingEventTransition();
 		}
 		commonBodyDieEventTransition(die);
 	} break;
@@ -377,6 +394,8 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		commonBodyDieEventTransition(die);
 
 		commonThrowingBombEventTransition(event);
+		commonSlashingEventTransition();
+		commonStabbingEventTransition();
 	} break;
 
 	case BodyAnimationState::UP_SHOOTING: {
@@ -390,12 +409,19 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		commonBodyDieEventTransition(die);
 
 		commonThrowingBombEventTransition(event);
+		commonSlashingEventTransition();
+		commonStabbingEventTransition();
 	} break;
 
 	case BodyAnimationState::SLASH: {
 		// TODO: 
 		// action 
 		// transition
+		bool finish1Cycle = currentBodyAnimation->finishOneCycle();
+		if (finish1Cycle) {
+			commonBodyJumpFallEventTransition(physicState);
+			commonBodyWalkingEventTransition(event);
+		}
 	} break;
 
 	case BodyAnimationState::STAB: {
@@ -406,6 +432,17 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 
 	}
 }
+
+
+void Player::rebelHitInteractionRect() {
+	rebelDoesHitInteractionRect = true;
+}
+
+void Player::hostageHitInteractionRect() {
+	hostageDoesHitInteractionRect = true;
+}
+
+
 
 void Player::commonLegIdlingEventTransition(PlayerEvent &event, PlayerPhysicState physicState) {
 	bool isPressingMove = event.moveLeft || event.moveRight;
@@ -457,14 +494,16 @@ void Player::commonThrowingBombEventTransition(PlayerEvent &event) {
 }
 
 void Player::commonShootingEventTransition(PlayerEvent &event) {
-	bool verticaleventIsDown = event.up && event.down;
-	if (!verticaleventIsDown && event.shoot) {
-		toHorizontalShootingAnimation();
-	}
+	if (!rebelDoesHitInteractionRect && !hostageDoesHitInteractionRect) {
+		bool verticaleventIsDown = event.up && event.down;
+		if (!verticaleventIsDown && event.shoot) {
+			toHorizontalShootingAnimation();
+		}
 
-	if (event.up && event.shoot) {
-		toUpShootingAnimation();
+		if (event.up && event.shoot) {
+			toUpShootingAnimation();
 
+		}
 	}
 }
 
@@ -489,6 +528,27 @@ void Player::commonWalkingLegEventTransition(PlayerEvent &event) {
 }
 
 
+void Player::commonSlashingEventTransition() {
+	if (hostageDoesHitInteractionRect) {
+		toBodySlashingAnimation();
+	}
+}
+
+void Player::commonStabbingEventTransition() {
+	if (rebelDoesHitInteractionRect) {
+		toBodyStabbingAnimation();
+	}
+}
+
+void Player::toBodySlashingAnimation() {
+	bodyAnimationState = BodyAnimationState::SLASH;
+	currentBodyAnimation = slashingAnimation;
+}
+
+void Player::toBodyStabbingAnimation() {
+	bodyAnimationState = BodyAnimationState::STAB;
+	currentBodyAnimation = stabbingAnimation;
+}
 
 void Player::toBodyIdlingAnimation() {
 	bodyAnimationState = BodyAnimationState::IDLING;

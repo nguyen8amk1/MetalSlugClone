@@ -1,4 +1,5 @@
 TODAY: 
+
 	PLAYER SLASHING (2h) [] 
 		player only slash when near hostage or rebel soilder  
 		player have spritesheet: 
@@ -6,9 +7,11 @@ TODAY:
 			slash (for hostage) [X]
 		add it into player code [] 
 			stab when rebel soilders hit player's interaction box [] @Current
-				-> NEED A TRIGGER SYSTEM THAT NOTIFIY BOTH PLAYER AND THE REBEL SOILDER WHEN THIS EVENT HAPPENS 
-				-> Observer pattern  
+				-> need a system that notify both player (1) and rebel soilder (1 of n)
+					when rebel soilder and interaction rect hit
 			slash when hostage hit player's interaction box []
+
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Next
 
 	sidenote:
 		// What i have to do when i want to add a new state: 
@@ -73,7 +76,6 @@ TODAY:
 
 	REBEL SOILDER AI (4h) []
 
-	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] 
 
 TODO:
 	OBJECT EXPLOSION (2h) []

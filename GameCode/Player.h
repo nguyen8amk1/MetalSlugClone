@@ -130,8 +130,8 @@ private:
 
 	PlatformSpecficMethodsCollection* platformMethods;
 
-	//PlayerAnimationResult animationResult;
-	//PlayerAnimation *animation;
+	bool hostageDoesHitInteractionRect = false;
+	bool rebelDoesHitInteractionRect = false;
 
 	GlobalGameData* globalGameData;
 	GrenadeFactory *grenadeFactory;
@@ -151,8 +151,10 @@ public:
 	}
 
 	Rect getRect() { return colliderRect; }
-
 	Rect getInteractionRect() { return interactionRect; }
+
+	void rebelHitInteractionRect();
+	void hostageHitInteractionRect();
 
 private: 
 	void interactionRectInit();
@@ -169,52 +171,41 @@ private:
 
 	// Animations
 	void animationInit();
-
 	void updateAnimation(PlayerEvent& event, double dt, Camera* camera);
 
-	void legAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera);
-
+	// BODY ANIMATION
 	void bodyAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera);
-
-	void commonLegJumpFallEventTransition(PlayerPhysicState physicState);
-
 	void commonBodyJumpFallEventTransition(PlayerPhysicState physicState);
-
-	void commonLegDieEventTransition(bool die);
-
-	void commonLegIdlingEventTransition(PlayerEvent& event, PlayerPhysicState physicState);
-
 	void commonBodyDieEventTransition(bool die);
-
-	void commonThrowingBombEventTransition(PlayerEvent &event);
-
-	void commonShootingEventTransition(PlayerEvent& event);
-
 	void commonBodyWalkingEventTransition(PlayerEvent& event);
+	void commonShootingEventTransition(PlayerEvent& event);
+	void commonSlashingEventTransition();
+	void commonStabbingEventTransition();
 
-	void commonWalkingLegEventTransition(PlayerEvent& event);
-
+	void toBodySlashingAnimation();
+	void toBodyStabbingAnimation();
 	void toBodyIdlingAnimation();
-
-	void toLegIdlingAnimation();
-
 	void toBodyFallingAnimation();
-
-	void toLegFallingAnimation();
-
 	void toBodyDyingAnimation();
-
-	void toLegDyingAnimation();
-
 	void toBodyJumpingAnimation();
 
+	void toThrowingAnimation();
+	void toHorizontalShootingAnimation();
+	void toUpShootingAnimation();
+
+	// LEG ANIMATION
+	void legAnimationStateMachineUpdate(PlayerEvent& event, double dt, Camera* camera);
+	void commonLegJumpFallEventTransition(PlayerPhysicState physicState);
+	void commonLegDieEventTransition(bool die);
+	void commonLegIdlingEventTransition(PlayerEvent& event, PlayerPhysicState physicState);
+	void commonThrowingBombEventTransition(PlayerEvent &event);
+	void commonWalkingLegEventTransition(PlayerEvent& event);
+
+	void toLegIdlingAnimation();
+	void toLegFallingAnimation();
+	void toLegDyingAnimation();
 	void toLegJumpingAnimation();
 
-	void toThrowingAnimation();
-
-	void toHorizontalShootingAnimation();
-
-	void toUpShootingAnimation();
 };
 
 }

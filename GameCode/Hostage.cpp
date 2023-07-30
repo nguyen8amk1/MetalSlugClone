@@ -29,8 +29,7 @@ void Hostage::update(Camera *camera, double dt) {
 	// Animation state machine 
 	switch (hostageCurrentAnimationState) {
 	case HostageAnimationState::TIED: {
-		bool playerUntied = CollisionChecker::doesRectangleVsRectangleCollide(hostageColliderRect, globalGameData->getPlayer()->getInteractionRect());
-		if (playerUntied) {
+		if (untiedByPlayer) {
 			hostageCurrentAnimationState = HostageAnimationState::UNTIED;
 			hostageCurrentAnimation = hostageUntiedAnimation;
 		}
@@ -57,6 +56,8 @@ void Hostage::update(Camera *camera, double dt) {
 	r.x = t.x;
 	r.y = t.y;
 	platformMethods->drawRectangle(r, testCol);
+
+	untiedByPlayer = false;
 }
 
 void Hostage::moveXBy(float d) {
@@ -65,6 +66,14 @@ void Hostage::moveXBy(float d) {
 
 void Hostage::moveYBy(float d) {
 	hostageColliderRect.y += d;
+}
+
+void Hostage::setUntied(bool untied) {
+	untiedByPlayer = untied;
+}
+
+Rect Hostage::getRect() {
+	return hostageColliderRect;
 }
 
 }

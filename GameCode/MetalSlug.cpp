@@ -497,7 +497,6 @@ private:
 		}
 
 		//levelData.groundColliders->= groundColliders->
-
 		river2BackAnimation->animate(camera, dt);
 
 		background->animate(camera, dt);
@@ -510,28 +509,47 @@ private:
 		waterFall2Animation->animate(camera, dt);
 
 
+		player->update(input, camera, dt);
+
+		// TODO: player interaction rect vs hostages, rebel soilders here  
 		for (Hostage *hostage: *hostages) {
+			bool untiedByPlayer = CollisionChecker::doesRectangleVsRectangleCollide(hostage->getRect(), player->getInteractionRect());
+			hostage->setUntied(untiedByPlayer);
+			if (untiedByPlayer) {
+				OutputDebugStringA("METALSLUG: HOSTAGE HIT\n");
+				player->hostageHitInteractionRect();
+			}
 			hostage->update(camera, dt);
 		}
-
-		for (int i = 0; i < rebelSoilders->size(); i++) {
-			RebelSoilder* rebelSoilder = (*rebelSoilders)[i];
-			rebelSoilder->update(camera, dt);
-			//levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
-			(*(globalGameData->getDangerRects()))[i] = rebelSoilder->getInteractionRect();
-		}
-
-
-		player->update(input, camera, dt);
 
 		// grenade and bullet update 
 		for (Grenade *grenade: *(globalGameData->getGrenades())) {
 			grenade->update(camera, dt);
 		}
-		
 		for (Bullet* bullet : *(globalGameData->getBullets())) {
 			bullet->update(dt, camera);
 		}
+		
+		// Rebel soilders update
+		for (int i = 0; i < rebelSoilders->size(); i++) {
+			RebelSoilder* rebelSoilder = (*rebelSoilders)[i];
+			rebelSoilder->update(camera, dt);
+			//levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
+			(*(globalGameData->getDangerRects()))[i] = rebelSoilder->getInteractionRect();
+
+			int bulletIndex = 0;
+			// Bullet update 
+			for (Bullet* bullet : *(globalGameData->getBullets())) {
+				bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(rebelSoilder->getRect(), bullet->getColliderRect());
+				if (bulletHit) {
+					globalGameData->removeBulletAt(bulletIndex);
+					rebelSoilder->bulletHit();
+					//OutputDebugStringA("BULLET HIT REBEL SOILDER\n");
+				}
+				bulletIndex++;
+			}
+		}
+
 	}
 
 	void doCameraOpeningState() {

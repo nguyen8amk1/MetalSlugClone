@@ -55,6 +55,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		slashingEventTransition();
 		throwingBombEventTransition();
 		slashedDieEventTransition();
+		bulletDieEventTransition();
 	} break;
 
 	case AnimationState::SLASHING: {
@@ -72,6 +73,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		// transition: to idling or throwing bomb 
 		// event: ...
 		slashedDieEventTransition();
+		bulletDieEventTransition();
 	} break;
 
 	case AnimationState::THROWING_BOMB: {
@@ -83,6 +85,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		// transition: to idling or slashing  
 		slashingEventTransition();
 		slashedDieEventTransition();
+		bulletDieEventTransition();
 	} break;
 
 	case AnimationState::SLASHED_DIE: {
@@ -110,6 +113,8 @@ void RebelSoilder::update(Camera *camera, double dt) {
 		r.y = t.y;
 		platformMethods->drawRectangle(r, testCol);
 	}
+
+	hitByBullet = false;
 }
 
 void RebelSoilder::toThrowingBombAnimation() {
@@ -146,17 +151,14 @@ void RebelSoilder::throwingBombEventTransition() {
 	}
 }
 
-void RebelSoilder::slashedDieEventTransition() {
-	for (int i = 0; i < globalGameData->getBullets()->size(); i++) {
-		Bullet* bullet = (*globalGameData->getBullets())[i];
-		bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, bullet->getColliderRect());
-		if (bulletHit) {
-			globalGameData->removeBulletAt(i);
-			//OutputDebugStringA(Util::MessageFormater::print("TODO: Remove bullet at index: ", i, '\n').c_str());
-			toDieAnimation();
-			break;
-		}
+void RebelSoilder::bulletDieEventTransition() {
+	if (hitByBullet) {
+		toDieAnimation();
 	}
+}
+
+void RebelSoilder::slashedDieEventTransition() {
+	// TODO: 
 }
 
 }

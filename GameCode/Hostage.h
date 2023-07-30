@@ -44,6 +44,7 @@ private:
 
 	BasicPhysicStateMachine *basicPhysicStateMachine;
 	BasicPhysicStateMachineResult basicPhysicResult;
+	bool untiedByPlayer = false;
 
 	GlobalGameData *globalGameData;
 
@@ -53,6 +54,8 @@ public:
 
 	void moveXBy(float d);
 	void moveYBy(float d);
+	void setUntied(bool untied);
+	Rect getRect();
 };
 
 }

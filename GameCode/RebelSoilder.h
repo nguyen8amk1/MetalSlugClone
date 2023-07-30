@@ -57,6 +57,7 @@ private:
 
 	bool touchPlayer = false;
 	bool playerInThrowingRange = false;
+	bool hitByBullet = false;
 
 	GlobalGameData* globalGameData;
 	GrenadeFactory* grenadeFactory;
@@ -73,7 +74,12 @@ public:
 		colliderRect.y += d;
 	}
 
+	Rect getRect() { return colliderRect; }
 	Rect getInteractionRect() { return interactionRect; }
+
+	void bulletHit() {
+		hitByBullet = true;
+	}
 
 private:
 	void toThrowingBombAnimation();
@@ -85,6 +91,7 @@ private:
 	void throwGrenade(); 
 
 	// event transitions
+	void bulletDieEventTransition();
 	void slashedDieEventTransition();
 	void slashingEventTransition();
 	void throwingBombEventTransition();
