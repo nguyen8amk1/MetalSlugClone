@@ -223,6 +223,12 @@ void Player::animationInit() {
 	Util::AnimationUtil::initAnimationMetaData(bulletMetaData, spriteSheet, .1f, 1, 1, {74, 476}, {12, 11});
 	bullet = new Animation(bulletMetaData, platformMethods);
 
+	Util::AnimationUtil::initAnimationMetaData(slashingAnimationMetaData, spriteSheet, .1f, 1, 6, {0, 265}, {45, 48});
+	slashingAnimation = new Animation(slashingAnimationMetaData, platformMethods);
+
+	Util::AnimationUtil::initAnimationMetaData(stabbingAnimationMetaData, spriteSheet, .1f, 1, 6, {0,310}, {48,33});
+	stabbingAnimation = new Animation(stabbingAnimationMetaData, platformMethods);
+
 	currentBodyAnimation = idlingAnimation;
 	currentLegAnimation = idlingLegAnimation;
 }
@@ -384,6 +390,18 @@ void Player::bodyAnimationStateMachineUpdate (PlayerEvent &event, double dt, Cam
 		commonBodyDieEventTransition(die);
 
 		commonThrowingBombEventTransition(event);
+	} break;
+
+	case BodyAnimationState::SLASH: {
+		// TODO: 
+		// action 
+		// transition
+	} break;
+
+	case BodyAnimationState::STAB: {
+		// TODO: 
+		// action 
+		// transition
 	} break;
 
 	}

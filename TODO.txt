@@ -1,6 +1,21 @@
 TODAY: 
-	PLAYER SLASHING (2h) [] @Current
+	PLAYER SLASHING (2h) [] 
 		player only slash when near hostage or rebel soilder  
+		player have spritesheet: 
+			stab (for rebels) [X]
+			slash (for hostage) [X]
+		add it into player code [] 
+			stab when rebel soilders hit player's interaction box [] @Current
+				-> NEED A TRIGGER SYSTEM THAT NOTIFIY BOTH PLAYER AND THE REBEL SOILDER WHEN THIS EVENT HAPPENS 
+				-> Observer pattern  
+			slash when hostage hit player's interaction box []
+
+	sidenote:
+		// What i have to do when i want to add a new state: 
+			//declare them, 
+			//init them, 
+			//add the new state in the state machine, 
+			//add the transition code
 
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]

@@ -45,7 +45,9 @@ private:
 		DYING,
 		THROWING,
 		HORIZONTAL_SHOOTING, 
-		UP_SHOOTING
+		UP_SHOOTING, 
+		SLASH, 
+		STAB 
 	};
 
 	enum class LegAnimationState {
@@ -56,9 +58,8 @@ private:
 		DYING
 	};
 
+	//Body animation
 	BodyAnimationState bodyAnimationState = BodyAnimationState::IDLING;
-	LegAnimationState legAnimationState = LegAnimationState::IDLING;
-
 	AnimationMetaData idlingAnimationMetaData;
 	AnimationMetaData jumpingAnimationMetaData;
 	AnimationMetaData fallingAnimationMetaData;
@@ -68,18 +69,6 @@ private:
 	Animation* jumpingAnimation;
 	Animation* fallingAnimation;
 	Animation* walkingAnimation;
-
-	AnimationMetaData walkingLegAnimationMetaData;
-	Animation* walkingLegAnimation;
-
-	AnimationMetaData idlingLegAnimationMetaData;
-	Animation* idlingLegAnimation;
-
-	AnimationMetaData jumpingLegAnimationMetaData;
-	Animation* jumpingLegAnimation;
-
-	AnimationMetaData fallingLegAnimationMetaData;
-	Animation* fallingLegAnimation;
 
 	AnimationMetaData dieAnimationMetaData; 
 	Animation* dieAnimation;
@@ -93,8 +82,31 @@ private:
 	AnimationMetaData upShootingAnimationMetaData; 
 	Animation* upShootingAnimation;
 
+	AnimationMetaData slashingAnimationMetaData; 
+	Animation* slashingAnimation;
+
+	AnimationMetaData stabbingAnimationMetaData; 
+	Animation* stabbingAnimation;
+
+
 	AnimationMetaData bulletMetaData; 
 	Animation* bullet;
+
+	// Leg animation
+	LegAnimationState legAnimationState = LegAnimationState::IDLING;
+	AnimationMetaData walkingLegAnimationMetaData;
+	Animation* walkingLegAnimation;
+
+	AnimationMetaData idlingLegAnimationMetaData;
+	Animation* idlingLegAnimation;
+
+	AnimationMetaData jumpingLegAnimationMetaData;
+	Animation* jumpingLegAnimation;
+
+	AnimationMetaData fallingLegAnimationMetaData;
+	Animation* fallingLegAnimation;
+
+
 
 	Animation* currentBodyAnimation;
 	Animation* currentLegAnimation;
