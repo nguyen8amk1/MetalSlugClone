@@ -33,6 +33,7 @@ public:
 
 	void update(double dt, Camera* camera);
 
+	void reset();
 	void reset(float playerX, float playerY);
 
 	void shoot(float playerX, float playerY);

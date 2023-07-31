@@ -44,7 +44,8 @@ void GlobalGameData::removeBulletAt(int index) {
 	Bullet *address = bullets[index];
 	delete address;
 	*/
-	bullets.erase(bullets.begin() + index); // Deleting the fourth element
+	//bullets.erase(bullets.begin() + index); // Deleting the fourth element
+	bullets.at(index)->reset();
 }
 
 bool GlobalGameData::doesLevelStarted() { return levelStarted; }

@@ -17,24 +17,20 @@ void Bullet::update(double dt, Camera *camera) {
 		t = Util::Math::normalizef(timeAccumulator, timeToGoFromAToB);
 		float xd = Util::Math::lerp(0, howFarTheGoes, t);
 		colliderRect.x = originalX + xd;
-		//OutputDebugStringA(Util::MessageFormater::print(" x: ", colliderRect.x, '\n').c_str());
 
-		/*
-		if (hitEnemy) {
-			currentState = State::HIT;
-			reset(colliderRect.x, colliderRect.y);
-		}
-		*/
+		anim->changePos(colliderRect.x, colliderRect.y);
+		anim->changeSize(colliderRect.width, colliderRect.height);
+		anim->animate(camera, dt);
 	} break;
 
 	case State::HIT: {
 		// TODO: hit means do nothing :v 
 	} break;
 	}
+}
 
-	anim->changePos(colliderRect.x, colliderRect.y);
-	anim->changeSize(colliderRect.width, colliderRect.height);
-	anim->animate(camera, dt);
+void Bullet::reset() {
+	currentState = State::HIT;
 }
 
 void Bullet::reset(float playerX, float playerY) {

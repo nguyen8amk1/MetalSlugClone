@@ -1,6 +1,4 @@
 TODAY: 
-	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Current
-
 	sidenote:
 		// What i have to do when i want to add a new state: 
 			//declare them, 
@@ -27,12 +25,14 @@ TODAY:
 					0, 346, 832, 304
 					rect: 3320, 0, 832, 304
 				THE RIVER (1h) [X] 
-				THE HOUSES (1h) [] @Later
+				THE HOUSES (1h) [] @Current
 				THE OBJECTS ON THE HOUSE (2h) [] @Later 
 				ENEMIES ON THE MAP (2h) [] @later
 
 			INTO THE LEVEL 
 	-> there are some dependencies and obscurity going on in here 
+
+	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Later
 
 	PLAYER SHOOTING (4h) [] 
 		in all 3 directions (right, left, up) (2h) [] 
