@@ -134,7 +134,6 @@ private:
 	bool rebelDoesHitInteractionRect = false;
 
 	GlobalGameData* globalGameData;
-	GrenadeFactory *grenadeFactory;
 
 public: 
 	Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection* platformMethods);

@@ -1,8 +1,8 @@
 TODAY: 
 	IMPLEMENT A SPAWN AND REMOVE METHODS FOR GLOBAL GAME DATA (2h) [] 
 		-> rebelsoilders [X] 
-		-> grenades [] @Current 
-		-> hostages []
+		-> grenades [X] 
+		-> hostages [] @Current 
 
 	sidenote:
 		// What i have to do when i want to add a new state: 

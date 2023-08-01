@@ -9,9 +9,7 @@
 #include "GlobalGameData.h"
 
 namespace MetalSlug {
-class GrenadeFactory;
 class GlobalGameData;
-
 class Hostage {
 private: 
 	Rect hostageColliderRect;

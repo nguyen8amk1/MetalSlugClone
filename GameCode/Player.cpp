@@ -10,7 +10,6 @@ Player::Player(float gravity, float moveSpeed, PlatformSpecficMethodsCollection 
 	this->gravity = gravity;
 	this->platformMethods = platformMethods;
 	globalGameData = GlobalGameData::getInstance();
-	grenadeFactory = new GrenadeFactory(platformMethods);
 	animationInit();
 }
 
@@ -90,9 +89,12 @@ void Player::shootBullet() {
 }
 
 void Player::throwGrenade() {
+	/*
 	Grenade *grenade = grenadeFactory->createPlayerGrenade();
 	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
 	globalGameData->getGrenades()->push_back(grenade);
+	*/
+	globalGameData->spawnGrenade("PLAYER", horizontalFacingDirection, colliderRect.x, colliderRect.y);
 }
 
 // Physics 

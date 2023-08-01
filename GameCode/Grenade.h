@@ -5,26 +5,14 @@
 #include "TimeBoundedLerp.h"
 #include "Camera.h"
 #include "GlobalGameData.h"
+#include "GrenadeFactory.h"
 //#include "Windows.h"
 
 namespace MetalSlug {
+struct GrenadeAnimationContext;
 class GrenadeAnimationContextFactory;
+class GrenadeFactory;
 class GlobalGameData;
-
-struct GrenadeAnimationContext {
-	float grenadeWidth, grenadeHeight;
-	AnimationMetaData spinningAnimationMetaData;
-};
-	
-class GrenadeAnimationContextFactory {
-private:
-	GlobalGameData* globalGameData;
-public:
-	GrenadeAnimationContextFactory();
-	GrenadeAnimationContext createPlayerGrenadeAnimationContext();
-	GrenadeAnimationContext createRebelSoilderGrenadeAnimationContext();
-};
-
 
 class Grenade {
 private: 
@@ -78,15 +66,6 @@ public:
 	void startThrow(int facingDirection, float playerX, float playerY);
 
 	void update(Camera* camera, double dt);
-};
-
-class GrenadeFactory {
-	GrenadeAnimationContextFactory* contextFactory;
-	PlatformSpecficMethodsCollection* platformMethods;
-public:
-	GrenadeFactory(PlatformSpecficMethodsCollection* platformMethods);
-	Grenade* createPlayerGrenade();
-	Grenade* createRebelSoilderGrenade();
 };
 
 }

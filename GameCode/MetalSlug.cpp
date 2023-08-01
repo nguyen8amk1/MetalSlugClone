@@ -115,7 +115,8 @@ public:
 
 	void setup() {
 		globalGameData = GlobalGameData::getInstance();
-		globalGameData->setPlatformMethods(platformMethods);
+		//globalGameData->setPlatformMethods(platformMethods);
+		globalGameData->init(platformMethods);
 		
 		initLevel1();
 

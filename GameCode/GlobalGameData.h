@@ -10,12 +10,14 @@
 #include "Bullet.h"
 #include "Player.h"
 #include "Grenade.h"
+#include "GrenadeFactory.h"
 
 namespace MetalSlug {
 class RebelSoilder;
 class Bullet;
 class Player;
 class Hostage;
+class GrenadeFactory;
 class Grenade;
 class RectangleCollider;
 
@@ -43,6 +45,7 @@ class GlobalGameData {
 	bool levelStarted = false;
 	Player* player;
 
+	GrenadeFactory *grenadeFactory;
 	std::unordered_map<std::string, PlatformSpecificImage*> spriteSheets;
 
 	GlobalGameData() {
@@ -51,6 +54,7 @@ class GlobalGameData {
 public: 
 	static GlobalGameData* getInstance(); 
 
+	void init(PlatformSpecficMethodsCollection* platformMethods);
 	void spawnRebelSoilder(Rect rebelColliderRect, float gravity, float tempSpeed); 
 	void removeRebelSoilderAt(int index);
 	std::vector<RebelSoilder*>* getRebelSoilders();
@@ -59,13 +63,9 @@ public:
 	void removeHostageAt(int index);
 	std::vector<Hostage*>* getHostages();
 
-	void spawnGrenade(float x, float y);
+	void spawnGrenade(std::string role, int facingDirection, float x, float y);
 	void removeGrenadeAt(int index);
 	std::vector<Grenade*> *getGrenades();
-
-	void setPlatformMethods( PlatformSpecficMethodsCollection* platformMethods ) {
-		this->platformMethods = platformMethods;
-	}
 
 	std::vector<RectangleCollider*> *getGroundColliders();
 

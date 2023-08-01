@@ -149,6 +149,7 @@
     <ClCompile Include="GameCode\CollisionChecker.cpp" />
     <ClCompile Include="GameCode\GlobalGameData.cpp" />
     <ClCompile Include="GameCode\Grenade.cpp" />
+    <ClCompile Include="GameCode\GrenadeFactory.cpp" />
     <ClCompile Include="GameCode\Hostage.cpp" />
     <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="GameCode\CollisionChecker.h" />
     <ClInclude Include="GameCode\GlobalGameData.h" />
     <ClInclude Include="GameCode\Grenade.h" />
+    <ClInclude Include="GameCode\GrenadeFactory.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />
     <ClInclude Include="GameCode\Physics.h" />
     <ClInclude Include="GameCode\Player.h" />

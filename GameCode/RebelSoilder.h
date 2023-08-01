@@ -7,7 +7,6 @@
 #include <Windows.h>
 
 namespace MetalSlug {
-class GrenadeFactory;
 class GlobalGameData;
 
 class RebelSoilder {
@@ -61,8 +60,6 @@ private:
 	bool hitByBullet = false;
 
 	GlobalGameData* globalGameData;
-	GrenadeFactory* grenadeFactory;
-
 public:
 	RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, PlatformSpecficMethodsCollection* platformMethods, AnimationState animationState = AnimationState::IDLING);
 	void update(Camera* camera, double dt);
