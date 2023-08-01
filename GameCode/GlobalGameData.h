@@ -29,12 +29,11 @@ class GlobalGameData {
 	// danger rects [X]
 	// level started [X]
 	// and have coresponse methods to release them as well  
-
-private: 
+ private: 
 	// TODO: these vectors need to be an object pool
 		// Test this on the rebel soilders first 
+	PlatformSpecficMethodsCollection* platformMethods;
 	std::vector<RebelSoilder*> rebelSoilders;
-
 	std::vector<Bullet*> bullets;
 	std::vector<Hostage*> hostages;
 	std::vector<RectangleCollider*> groundColliders;
@@ -52,13 +51,21 @@ private:
 public: 
 	static GlobalGameData* getInstance(); 
 
+	void spawnRebelSoilder(Rect rebelColliderRect, float gravity, float tempSpeed); 
+	void removeRebelSoilderAt(int index);
 	std::vector<RebelSoilder*>* getRebelSoilders();
 
-	std::vector<Bullet*>* getBullets();
-
+	void spawnHostage(float x, float y);
+	void removeHostageAt(int index);
 	std::vector<Hostage*>* getHostages();
 
+	void spawnGrenade(float x, float y);
+	void removeGrenadeAt(int index);
 	std::vector<Grenade*> *getGrenades();
+
+	void setPlatformMethods( PlatformSpecficMethodsCollection* platformMethods ) {
+		this->platformMethods = platformMethods;
+	}
 
 	std::vector<RectangleCollider*> *getGroundColliders();
 
@@ -68,6 +75,8 @@ public:
 
 	std::vector<Rect> *getDangerRects();
 
+	std::vector<Bullet*>* getBullets();
+	void spawnBullet(float x, float y);
 	void removeBulletAt(int index);
 
 	void setPlayer(Player* player);

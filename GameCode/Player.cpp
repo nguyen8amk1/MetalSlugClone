@@ -81,9 +81,12 @@ void Player::interactionRectInit() {
 }
 
 void Player::shootBullet() {
+	/*
 	Bullet *bullet = new Bullet(platformMethods);
 	bullet->shoot(colliderRect.x, colliderRect.y);
 	globalGameData->getBullets()->push_back(bullet);
+	*/
+	globalGameData->spawnBullet(colliderRect.x, colliderRect.y);
 }
 
 void Player::throwGrenade() {

@@ -1,4 +1,9 @@
 TODAY: 
+	IMPLEMENT A SPAWN AND REMOVE METHODS FOR GLOBAL GAME DATA (2h) [] 
+		-> rebelsoilders [X] 
+		-> grenades [] @Current 
+		-> hostages []
+
 	sidenote:
 		// What i have to do when i want to add a new state: 
 			//declare them, 
@@ -74,9 +79,6 @@ TODO:
 
 	Idea: SHOULD ALL THE COLLISION CODE STAY IN THE LEVEL CODE INSTEAD THE ENTITY (HOSTAGES, PLAYER,...) []
 
-	ENEMY THROWING GRENADE (with animation) (2h) [] 
-
-
 	ADDING SOUND (2h) []
 
 	Migrate RebelSoilder to a new state machine system (2h) [] @Later 
@@ -142,8 +144,6 @@ TODO:
 	ENEMY GENERATION (2h) [] 
 
 	LOAD THE ANIMATION METADATA FROM A FILE SO THAT NO NEED TO RECOMPILE (2h) []
-
-	REBELS AI (4h) []
 
 	SIMPLE BOSS FIGHT (4h) []
 

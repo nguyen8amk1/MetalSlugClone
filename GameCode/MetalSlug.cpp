@@ -115,8 +115,9 @@ public:
 
 	void setup() {
 		globalGameData = GlobalGameData::getInstance();
+		globalGameData->setPlatformMethods(platformMethods);
+		
 		initLevel1();
-
 
 		frameMillis = platformMethods->createText(0, 0, 10);
 		fps  = platformMethods->createText(0, 15, 10);
@@ -295,18 +296,17 @@ private:
 		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-
-		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods, RebelSoilder::AnimationState::THROWING_BOMB));
+		globalGameData->spawnRebelSoilder(rebelColliderRect, gravity, tempSpeed);
 
 		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({630, 100 ,18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+		globalGameData->spawnRebelSoilder(rebelColliderRect, gravity, tempSpeed);
 
 		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({870, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		rebelSoilders->push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+		globalGameData->spawnRebelSoilder(rebelColliderRect, gravity, tempSpeed);
 
 		for (RebelSoilder *rebelSoilder: *rebelSoilders) {
 			globalGameData->getDangerRects()->push_back(rebelSoilder->getInteractionRect());
@@ -530,8 +530,8 @@ private:
 		}
 		
 		// Rebel soilders update
-		for (int i = 0; i < rebelSoilders->size(); i++) {
-			RebelSoilder* rebelSoilder = (*rebelSoilders)[i];
+		for (int rebelSoilderIndex = 0; rebelSoilderIndex < rebelSoilders->size(); rebelSoilderIndex++) {
+			RebelSoilder* rebelSoilder = (*rebelSoilders)[rebelSoilderIndex];
 			bool hitInteractionRect = CollisionChecker::doesRectangleVsRectangleCollide(rebelSoilder->getRect(), player->getInteractionRect());
 			if (hitInteractionRect) {
 				OutputDebugStringA("METALSLUG: REBEL SOILDER HIT\n");
@@ -540,13 +540,14 @@ private:
 			}
 			rebelSoilder->update(camera, dt);
 			//levelData.dangerRects[i] = rebelSoilder->getInteractionRect();
-			(*(globalGameData->getDangerRects()))[i] = rebelSoilder->getInteractionRect();
+			(*(globalGameData->getDangerRects()))[rebelSoilderIndex] = rebelSoilder->getInteractionRect();
 
 			int bulletIndex = 0;
 			for (Bullet* bullet : *(globalGameData->getBullets())) {
 				bool bulletHit = CollisionChecker::doesRectangleVsRectangleCollide(rebelSoilder->getRect(), bullet->getColliderRect());
 				if (bulletHit) {
 					globalGameData->removeBulletAt(bulletIndex);
+					globalGameData->removeRebelSoilderAt(rebelSoilderIndex);
 					rebelSoilder->bulletHit();
 					//OutputDebugStringA("BULLET HIT REBEL SOILDER\n");
 				}
