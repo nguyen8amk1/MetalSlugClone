@@ -48,7 +48,6 @@ void Player::update(const GameInputContext &input, Camera *camera, double dt) {
 		if (!die) {
 			if (event.shoot) {
 				interactionRectInit();
-				shootBullet();
 			}
 			else {
 				interactionRect = interactionRectDisabledRect;
@@ -80,20 +79,10 @@ void Player::interactionRectInit() {
 }
 
 void Player::shootBullet() {
-	/*
-	Bullet *bullet = new Bullet(platformMethods);
-	bullet->shoot(colliderRect.x, colliderRect.y);
-	globalGameData->getBullets()->push_back(bullet);
-	*/
 	globalGameData->spawnBullet(colliderRect.x, colliderRect.y);
 }
 
 void Player::throwGrenade() {
-	/*
-	Grenade *grenade = grenadeFactory->createPlayerGrenade();
-	grenade->startThrow(horizontalFacingDirection, colliderRect.x, colliderRect.y);
-	globalGameData->getGrenades()->push_back(grenade);
-	*/
 	globalGameData->spawnGrenade("PLAYER", horizontalFacingDirection, colliderRect.x, colliderRect.y);
 }
 
@@ -510,11 +499,12 @@ void Player::commonShootingEventTransition(PlayerEvent &event) {
 		bool verticaleventIsDown = event.up && event.down;
 		if (!verticaleventIsDown && event.shoot) {
 			toHorizontalShootingAnimation();
+			shootBullet();
 		}
 
 		if (event.up && event.shoot) {
 			toUpShootingAnimation();
-
+			shootBullet();
 		}
 	}
 }

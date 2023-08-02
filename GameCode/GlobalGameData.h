@@ -59,7 +59,7 @@ public:
 	void removeRebelSoilderAt(int index);
 	std::vector<RebelSoilder*>* getRebelSoilders();
 
-	void spawnHostage(float x, float y);
+	void spawnHostage(float gravity, float tempSpeed, Rect hostageColliderRect);
 	void removeHostageAt(int index);
 	std::vector<Hostage*>* getHostages();
 

@@ -153,6 +153,7 @@
     <ClCompile Include="GameCode\Hostage.cpp" />
     <ClCompile Include="GameCode\Hostage.h" />
     <ClCompile Include="GameCode\MetalSlug.cpp" />
+    <ClCompile Include="GameCode\ObjectPool.cpp" />
     <ClCompile Include="GameCode\Physics.cpp" />
     <ClCompile Include="GameCode\Player.cpp" />
     <ClCompile Include="GameCode\RebelSoilder.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="GameCode\Grenade.h" />
     <ClInclude Include="GameCode\GrenadeFactory.h" />
     <ClInclude Include="GameCode\MetalSlug.h" />
+    <ClInclude Include="GameCode\ObjectPool.h" />
     <ClInclude Include="GameCode\Physics.h" />
     <ClInclude Include="GameCode\Player.h" />
     <ClInclude Include="GameCode\TimeBoundedLerp.h" />

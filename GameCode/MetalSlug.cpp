@@ -281,17 +281,18 @@ private:
 		Rect hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1009, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
-		hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		//hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		globalGameData->spawnHostage(gravity, tempSpeed, hostageColliderRect);
 
 		hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1230, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
-		hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		globalGameData->spawnHostage(gravity, tempSpeed, hostageColliderRect);
 
 		hostageColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({1423, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		hostageColliderRect.width = .2f;
 		hostageColliderRect.height = .4f;
-		hostages->push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+		globalGameData->spawnHostage(gravity, tempSpeed, hostageColliderRect);
 
 		// Rebels 
 		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);

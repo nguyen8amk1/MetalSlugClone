@@ -1,5 +1,5 @@
 #pragma once
-#include<vector>
+#include<queue>
 
 namespace MetalSlug {
 class PooledObject {
@@ -9,7 +9,7 @@ public:
 
 class ObjectPool {
 private: 
-	std::vector<PooledObject*> objects;
+	std::queue<PooledObject*> objects;
 public: 
 	template<typename T> 
 	T *getObject();

@@ -1,9 +1,4 @@
 TODAY: 
-	IMPLEMENT A SPAWN AND REMOVE METHODS FOR GLOBAL GAME DATA (2h) [] 
-		-> rebelsoilders [X] 
-		-> grenades [X] 
-		-> hostages [] @Later 
-
 	sidenote:
 		// What i have to do when i want to add a new state: 
 			//declare them, 
@@ -36,6 +31,8 @@ TODAY:
 
 			INTO THE LEVEL 
 	-> there are some dependencies and obscurity going on in here 
+
+	OBJECT EXPLOSION (2h) [] @Next
 
 	HAVE A POOL FOR GAME ENTITY SUCH AS BULLETS, REBELS,... INSTEAD OF FREEING THEM (SINCE I CAN'T DO THAT :v) [] @Later
 
@@ -71,7 +68,7 @@ TODAY:
 
 
 TODO:
-	OBJECT EXPLOSION (2h) []
+	INPUT TIMING (FOR VARIABLE JUMP AND ANIMATION TRANSITION AND STUFF) (4h) []
 
 	CREATE A TRIGGER SYSTEM (2h) []
 
@@ -157,7 +154,6 @@ TODO:
 
 	CLEAN THE PROJECT STRUCTOR: EACH BACKEND IN IT'S OWN FOLDER (1h) []
 
-	INPUT TIMING (FOR VARIABLE JUMP AND ANIMATION TRANSITION AND STUFF) (4h) []
 
 	WHEN SHOULD WE WRITE A LEVEL EDITOR ?? []
 		-> when level1 done, have proper structure for a level, a separate file for level 
@@ -198,6 +194,10 @@ BUG:
 	THE FRAMES LOOK DISTORED BECAUSE THE CALCULATED AXIS IS KINDA OFF [] -> does this even happens anymore ??  
 	
 DONE: 
+	IMPLEMENT A SPAWN AND REMOVE METHODS FOR GLOBAL GAME DATA (2h) [X] 
+		-> rebelsoilders [X] 
+		-> grenades [X] 
+		-> hostages [X] 
 	PLAYER SLASHING (2h) [X] 
 		player only slash when near hostage or rebel soilder  
 		player have spritesheet: 

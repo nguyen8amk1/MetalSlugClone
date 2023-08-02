@@ -28,6 +28,14 @@ std::vector<Bullet*>* GlobalGameData::getBullets() {
 	return &bullets;
 }
 
+void GlobalGameData::spawnHostage(float gravity, float tempSpeed, Rect hostageColliderRect) {
+	hostages.push_back(new Hostage(gravity, tempSpeed, hostageColliderRect, platformMethods));
+}
+
+void GlobalGameData::removeHostageAt(int index) {
+	OutputDebugStringA(Util::MessageFormater::print("TODO: remove hostage at index ", index, '\n').c_str());
+}
+
 std::vector<Hostage*>* GlobalGameData::getHostages() {
 	return &hostages;
 }
