@@ -65,6 +65,7 @@ TODAY:
 		ANIMATION Installation []
 
 	REBEL SOILDER AI (4h) []
+		-> this ai (behaviour state machine) should just be intergrated into the rebel soilder class itself 
 
 
 TODO:
@@ -177,6 +178,8 @@ TODO:
 	DESTROY ALL THE FONT RESOURCES AFTER USING (SDL DESTROY) -> CURRENTLY HAVE MEMORY LEAKS (1H) []
 
 BUG: 
+	FIXME: bullet still shoot when player untie the hostage
+
 	FIXME: collision on the hortizontal side not working ?? 
 		-> this happens because the game only checking a single collision at a time  
 

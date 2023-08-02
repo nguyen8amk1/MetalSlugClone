@@ -298,7 +298,7 @@ private:
 		Rect rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({500, 100, 18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;
 		rebelColliderRect.height = .4f;
-		globalGameData->spawnRebelSoilder(rebelColliderRect, gravity, tempSpeed);
+		globalGameData->spawnRebelSoilder(rebelColliderRect, gravity, tempSpeed, "THROWING_BOMB");
 
 		rebelColliderRect = Util::LevelUtil::convertLevelColliderBlockPixelRectToGameRect({630, 100 ,18, 38}, backgroundPixelWidth, backgroundPixelHeight);
 		rebelColliderRect.width = .2f;

@@ -496,13 +496,13 @@ void Player::commonThrowingBombEventTransition(PlayerEvent &event) {
 
 void Player::commonShootingEventTransition(PlayerEvent &event) {
 	if (!rebelDoesHitInteractionRect && !hostageDoesHitInteractionRect) {
-		bool verticaleventIsDown = event.up && event.down;
+		bool verticaleventIsDown = event.up || event.down;
 		if (!verticaleventIsDown && event.shoot) {
 			toHorizontalShootingAnimation();
 			shootBullet();
 		}
 
-		if (event.up && event.shoot) {
+		if (verticaleventIsDown) {
 			toUpShootingAnimation();
 			shootBullet();
 		}

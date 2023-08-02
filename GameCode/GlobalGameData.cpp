@@ -8,6 +8,10 @@ GlobalGameData* GlobalGameData::getInstance() {
 }
 
 void GlobalGameData::init(PlatformSpecficMethodsCollection* platformMethods) {
+	/************
+	NOTE: Init need to be called in order to initialize first before global game data can be use 
+	************/
+
 	this->platformMethods = platformMethods;
 	grenadeFactory = new GrenadeFactory(platformMethods);
 }
@@ -16,8 +20,14 @@ std::vector<RebelSoilder*>* GlobalGameData::getRebelSoilders() {
 	return &rebelSoilders;
 }
 
-void GlobalGameData::spawnRebelSoilder(Rect rebelColliderRect, float gravity, float tempSpeed) {
-	rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods));
+void GlobalGameData::spawnRebelSoilder(Rect rebelColliderRect, float gravity, float tempSpeed, std::string initialState) {
+	// TODO: this is just temporary, this never gonna be in my final game  
+	if (initialState.compare("IDLING") == 0) {
+		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods, RebelSoilder::AnimationState::IDLING));
+	}
+	else if (initialState.compare("THROWING_BOMB") == 0) {
+		rebelSoilders.push_back(new RebelSoilder(gravity, tempSpeed, rebelColliderRect, platformMethods, RebelSoilder::AnimationState::THROWING_BOMB));
+	}
 }
 
 void GlobalGameData::removeRebelSoilderAt(int index) {

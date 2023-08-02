@@ -55,7 +55,7 @@ public:
 	static GlobalGameData* getInstance(); 
 
 	void init(PlatformSpecficMethodsCollection* platformMethods);
-	void spawnRebelSoilder(Rect rebelColliderRect, float gravity, float tempSpeed); 
+	void spawnRebelSoilder(Rect rebelColliderRect, float gravity, float tempSpeed, std::string initialState="IDLING");
 	void removeRebelSoilderAt(int index);
 	std::vector<RebelSoilder*>* getRebelSoilders();
 
