@@ -5,6 +5,65 @@ TODAY:
 			//init them, 
 			//add the new state in the state machine, 
 			//add the transition code
+	BOMB EXPLOSION (2h) []
+
+	PLACE ALL THE REBEL SOILDERS ON THE LEVEL (4h) [] 
+		-> know all the state of the rebel soilder [] 
+			THESE (the one have the '[]') SHOULD BE DONE FIRST behaviour animations 
+
+			idle []
+			run, [] 
+			jump []
+			slash []
+			spooked (het hon) []
+			throwing bomb []
+			sneaky walk []
+			xoay cai loa []
+
+			chui tui trong nha ra (tu 2 phia) []
+			leo len cai cot (ca 2 phia) (output_1425)  []
+				then saw the rock  []
+
+			lie on the ground die (there are many fall direction, from shooting)
+				fall onto the ground when on the air (then lie)
+			smashing die (from explosion and slashed by player)
+			blink then gone 
+			burning  
+			burned die 
+			chom nguoi ra truoc 
+			nam tren san ne dan
+
+			linh mau vang 
+
+		-> have 1 frame of each type [] 
+			idle[X]
+			run, [] @Current
+			jump []
+			slash [X]
+			throwing bomb [X]
+			spooked (het hon) []
+			sneaky walk []
+			xoay cai loa []
+
+			chui tui trong nha ra (tu 2 phia) []
+			leo len cai cot (ca 2 phia) (output_1425)  []
+				then saw the rock  []
+
+		-> place them all on to the map (know their coords) []
+
+		-> describe the behaviour of the rebel soilders []
+		// OVERALL THEY REACT QUITE RANDOMLY :v
+			see player from far then run towards 
+				the rebel soilders view might be pretty far, when they are offscreen they still see and react in someway
+				idle for a bit 
+				then spooked 
+			jump when face rock or see a gap 
+			sometime they randomly jump 
+			sneaky when having another rebel soilder in front 
+
+			// these is common behaviour
+			if get shot -> die -> body blinked -> gone  
+			if get bombed -> burn and get knock back 
 
 	PLACE ALL THE STUFF ON THE LEVEL (10h) [] 
 		have the camera working [X]
@@ -17,7 +76,7 @@ TODAY:
 		place the sceneries into RIGHT place as well, with animation (4h) [] 
 			have the houses explode when it collide with player 
 			let's test with something that is the most visible and the easiest to implement  
-				-> The waterfall -> test out with PTS first  
+				-> The waterfall -> test out with PTS first
 				-> add more collider blocks on the level [X]
 
 			NOW PLACE: 
@@ -25,7 +84,7 @@ TODAY:
 					0, 346, 832, 304
 					rect: 3320, 0, 832, 304
 				THE RIVER (1h) [X] 
-				THE HOUSES (1h) [] @Current
+				THE HOUSES (1h) [] 
 				THE OBJECTS ON THE HOUSE (2h) [] @Later 
 				ENEMIES ON THE MAP (2h) [] @later
 
@@ -69,7 +128,13 @@ TODAY:
 
 
 TODO:
+	HANDLE ALL THE STATS ON THE SCREEN OF THE GAME (2h) []
+
+	UNDER WATER ANIMATION (2h) []
+
 	INPUT TIMING (FOR VARIABLE JUMP AND ANIMATION TRANSITION AND STUFF) (4h) []
+
+	FLOATING SCORE WHEN EATING SOMETHING (2h) []
 
 	CREATE A TRIGGER SYSTEM (2h) []
 

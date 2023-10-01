@@ -30,6 +30,7 @@ class GlobalGameData {
 	// ground colliders [X]
 	// danger rects [X]
 	// level started [X]
+	// explosions animations []
 	// and have coresponse methods to release them as well  
  private: 
 	// TODO: these vectors need to be an object pool

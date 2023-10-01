@@ -8,7 +8,7 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 	this->platformMethods = platformMethods;
 	this->colliderRect = colliderRect;
 
-	physicStateMachine = new BasicPhysicStateMachine(gravity);
+	basicPhysicStateMachine = new BasicPhysicStateMachine(gravity);
 	interactionRect = interactionRectDisabledRect;
 	globalGameData = GlobalGameData::getInstance();
 
@@ -39,16 +39,35 @@ RebelSoilder::RebelSoilder(float gravity, float moveSpeed, Rect colliderRect, Pl
 }
 
 void RebelSoilder::update(Camera *camera, double dt) {
-	physicResult = physicStateMachine->update(dt, colliderRect, globalGameData->getGroundColliders());
-	colliderRect = physicResult.colliderRect;
+	basicPhysicResult = basicPhysicStateMachine->update(dt, colliderRect, globalGameData->getGroundColliders());
+	colliderRect = basicPhysicResult.colliderRect;
 
 	// Physics checking right here 
 	touchPlayer = CollisionChecker::doesRectangleVsRectangleCollide(colliderRect, globalGameData->getPlayer()->getRect());
 	playerInThrowingRange = false;
 
+	// TODO: Custome physic state machine  
+	switch (basicPhysicResult.basicPhysicState) {
+	case BasicPhysicState::ONGROUND: {
+		// TODO: add additional behaviour 
+
+	} break;
+	case BasicPhysicState::FALL: {
+		// TODO: add additional behaviour 
+
+	} break;
+	}
+
+	switch (currentPhysicState) {
+	case PhysicState::JUMP: {
+
+	} break;
+	}
+
 	// Animation state machine 
 	switch (currentAnimationState) {
 	case AnimationState::IDLING: {
+		// TODO: writing the idling AI behaviour here  
 
 		// transition
 		slashingEventTransition();
@@ -58,6 +77,8 @@ void RebelSoilder::update(Camera *camera, double dt) {
 	} break;
 
 	case AnimationState::SLASHING: {
+		// TODO: writing the slashing AI behaviour here  
+
 		timeAccumulator += dt;
 		if (timeAccumulator >= .7f) {
 			interactionRect.x = colliderRect.x - colliderRect.width/2;
@@ -76,6 +97,8 @@ void RebelSoilder::update(Camera *camera, double dt) {
 	} break;
 
 	case AnimationState::THROWING_BOMB: {
+		// TODO: writing the throwing bomb AI behaviour here  
+
 		// action:...
 		bool finish1Cycle = currentAnimation->finishOneCycle();
 		if (finish1Cycle) {
@@ -88,7 +111,7 @@ void RebelSoilder::update(Camera *camera, double dt) {
 	} break;
 
 	case AnimationState::SLASHED_DIE: {
-		// TODO: 
+		// TODO: writing the slashed die AI behaviour here  
 		// action: when die animation finish reseting the state of the object and go back into the object pool 
 		// event: ...
 		bool finish1Cycle = currentAnimation->finishOneCycle();
@@ -96,6 +119,11 @@ void RebelSoilder::update(Camera *camera, double dt) {
 			currentAnimation = NULL;
 			currentAnimationState = AnimationState::NONE;
 		}
+	} break;
+
+	case AnimationState::BURNED_DIE: {
+		// TODO: writing the burned die AI behaviour here 
+		// 
 	} break;
 	}
 

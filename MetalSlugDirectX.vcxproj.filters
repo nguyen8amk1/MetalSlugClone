@@ -81,6 +81,12 @@
     <ClCompile Include="GameCode\Physics.cpp">
       <Filter>Source Files\GameCode</Filter>
     </ClCompile>
+    <ClCompile Include="GameCode\ObjectPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCode\GrenadeFactory.cpp">
+      <Filter>Source Files\GameCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
@@ -120,6 +126,12 @@
     </ClInclude>
     <ClInclude Include="GameCode\Camera.h">
       <Filter>Source Files\GameCode</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\GrenadeFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCode\ObjectPool.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ GrenadeAnimationContextFactory::GrenadeAnimationContextFactory() {
 GrenadeAnimationContext GrenadeAnimationContextFactory::createPlayerGrenadeAnimationContext() {
 	GrenadeAnimationContext context;
 	context.grenadeWidth = .1f;
-	context.grenadeHeight = .1f;
+	context.grenadeHeight = .15f;
 	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("MARCO_ROSSI");
 	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 1, { 0, 428 }, { 11, 18 }); 
 	return context;
@@ -16,7 +16,7 @@ GrenadeAnimationContext GrenadeAnimationContextFactory::createPlayerGrenadeAnima
 
 GrenadeAnimationContext GrenadeAnimationContextFactory::createRebelSoilderGrenadeAnimationContext() {
 	GrenadeAnimationContext context;
-	context.grenadeWidth = .2f;
+	context.grenadeWidth = .15f;
 	context.grenadeHeight = .2f;
 	PlatformSpecificImage* spriteSheet = globalGameData->getSpriteSheet("REBEL_SOILDER");
 	Util::AnimationUtil::initAnimationMetaData(context.spinningAnimationMetaData, spriteSheet, .1f, 1, 7, { 0, 385 }, {21, 24}); 

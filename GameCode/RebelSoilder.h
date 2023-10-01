@@ -17,6 +17,12 @@ public:
 		SLASHING,		// 0, 42, 735, 37
 		THROWING_BOMB,	// 0, 79, 782, 42 
 		SLASHED_DIE,
+		BURNED_DIE,
+		NONE
+	};
+
+	enum class PhysicState {
+		JUMP, 
 		NONE
 	};
 
@@ -26,7 +32,6 @@ private:
 	Rect interactionRectDisabledRect = { 0, -5.0f, 0, 0 };
 	Rect interactionRect;
 	int horizontalFacingDirection = -1;
-
 
 	// Animation
 	AnimationMetaData idleAnimationMetaData;
@@ -48,11 +53,13 @@ private:
 	PlatformSpecficMethodsCollection* platformMethods;
 	float gravity;
 	float moveSpeed;
-	BasicPhysicStateMachine* physicStateMachine;
+
 
 	double timeAccumulator = 0.0;
 
-	BasicPhysicStateMachineResult physicResult = { colliderRect };
+	BasicPhysicStateMachine* basicPhysicStateMachine;
+	BasicPhysicStateMachineResult basicPhysicResult = { colliderRect };
+	PhysicState currentPhysicState = PhysicState::NONE;
 
 	bool touchPlayer = false;
 	bool playerInThrowingRange = false;
